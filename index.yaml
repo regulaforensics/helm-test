@@ -1,0 +1,63 @@
+apiVersion: v1
+entries:
+  docreader:
+  - annotations:
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.regulaforensics.com/develop/doc-reader-sdk/web-service/
+    apiVersion: v2
+    appVersion: 6.3.160953.535
+    created: "2022-05-14T14:27:05.5688621+03:00"
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: eb149db497a61fe327f6d8dbf022d9ca1ae3fac920de1789c8e881501587fea0
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    sources:
+    - https://github.com/regulaforensics/docreader-helm
+    type: application
+    urls:
+    - https://regulaforensics.github.io/helm-test/docreader-0.1.0.tgz
+    version: 0.1.0
+  face-api:
+  - annotations:
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.regulaforensics.com/develop/face-sdk/web-service/
+    apiVersion: v2
+    appVersion: 3.2.325.304
+    created: "2022-05-14T14:27:05.5720563+03:00"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.5.3
+    description: Face Recognition Service
+    digest: e6e185e2350a23d7a348ae92bd60a72bfab447877554ad91230096c012da61e3
+    home: https://faceapi.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - face-api
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: face-api
+    sources:
+    - https://github.com/regulaforensics/face-api-helm
+    type: application
+    urls:
+    - https://regulaforensics.github.io/helm-test/face-api-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-05-14T14:27:05.5681716+03:00"

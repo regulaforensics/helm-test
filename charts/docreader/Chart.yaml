@@ -1,0 +1,24 @@
+# apiVersion v2 is Helm 3
+---
+apiVersion: v2
+name: docreader
+version: 0.1.0
+appVersion: "6.3.160953.535"
+description: Fast and accurate data extraction from identity documents. On-premise and cloud integration
+home: https://api.regulaforensics.com/
+sources:
+  - https://github.com/regulaforensics/docreader-helm
+icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+keywords:
+  - regula
+  - docreader
+  - regulaforensics
+maintainers:
+  - email: support@regulaforensics.com
+    name: Regula Forensics Support
+    url: https://support.regulaforensics.com
+type: application
+annotations:
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.regulaforensics.com/develop/doc-reader-sdk/web-service/
