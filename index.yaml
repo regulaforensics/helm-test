@@ -28,4 +28,36 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/docreader-0.1.1/docreader-0.1.1.tgz
     version: 0.1.1
-generated: "2022-05-16T13:36:18.535444359Z"
+  face-api:
+  - annotations:
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.regulaforensics.com/develop/face-sdk/web-service/
+    apiVersion: v2
+    appVersion: 3.2.325.304
+    created: "2022-05-16T13:50:24.126708652Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.5.3
+    description: Face Recognition Service
+    digest: fb21b5cf248544ad255e8758e5a132baf78440821517c3d008bfb45e309280d8
+    home: https://faceapi.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - face-api
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: face-api
+    sources:
+    - https://github.com/regulaforensics/face-api-helm
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/face-api-0.1.1/face-api-0.1.1.tgz
+    version: 0.1.1
+generated: "2022-05-16T13:50:24.126720552Z"
