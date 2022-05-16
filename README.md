@@ -9,6 +9,7 @@ Once Helm is set up properly, add the repo as follows:
 
 ```
 helm repo add regulaforensics https://regulaforensics.github.io/helm-charts
+helm repo update
 ```
 
 You can then run `helm search repo regulaforensics` to see the charts.
