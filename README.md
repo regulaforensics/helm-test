@@ -8,7 +8,7 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 Once Helm is set up properly, add the repo as follows:
 
 ```
-helm repo add regulaforensics https://regulaforensics.github.io/helm-charts
+helm repo add regulaforensics https://regulaforensics.github.io/helm-test
 helm repo update
 ```
 
