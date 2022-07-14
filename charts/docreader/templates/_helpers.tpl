@@ -52,9 +52,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{ default (printf "%s-license" .Release.Name) .Values.licenseSecretName }}
 {{- end }}
 
+
 {{/* Docreader certificates secret name */}}
 {{- define "certificate_secret" -}}
-{{ default (printf "%s-certificates" .Release.Name) .Values.httpsCertificateSecretName }}
+{{- if .Values.https.certificatesSecretName -}}
+  {{ default (printf "%s-certificates" .Release.Name) .Values.https.certificatesSecretName }}
+{{- end }}
 {{- end }}
 
 

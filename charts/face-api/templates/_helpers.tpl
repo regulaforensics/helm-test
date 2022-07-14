@@ -46,15 +46,43 @@ app.kubernetes.io/name: {{ include "faceapi.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/* Version name */}}
+{{- define "version" -}}
+{{- if .Values.version | default "cpu" | lower | regexMatch "^(cpu|gpu)$" -}}
+  {{ .Values.version | default "cpu" | lower }}
+{{- else}}
+  {{ required (printf "Incorrect 'version': %s. Possible value: cpu or gpu" .Values.version) nil }}
+{{- end -}}
+{{- end -}}
+
+
+{{/* Storage endpoint */}}
+{{- define "identification.storage_endpoint" -}}
+{{ default (printf "%s-minio:9000" .Release.Name) .Values.storageEndpoint }}
+{{- end }}
+
+
+{{/* Milvus host */}}
+{{- define "identification.milvus_host" -}}
+{{ default (printf "%s-milvus" .Release.Name) .Values.milvusHost }}
+{{- end }}
+
+
+{{/* PostgreSQL host */}}
+{{- define "identification.postgresql" -}}
+{{ default (printf "%s-postgresql" .Release.Name) }}
+{{- end }}
+
 
 {{/* faceapi license secret name */}}
 {{- define "license_secret" -}}
 {{ default (printf "%s-license" .Release.Name) .Values.licenseSecretName }}
 {{- end }}
 
+
 {{/* faceapi certificates secret name */}}
 {{- define "certificate_secret" -}}
-{{ default (printf "%s-certificates" .Release.Name) .Values.httpsCertificateSecretName }}
+{{ default (printf "%s-certificates" .Release.Name) .Values.https.certificatesSecretName }}
 {{- end }}
 
 
@@ -62,16 +90,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "config" -}}
 {{ (printf "%s-config" .Release.Name) }}
 {{- end }}
-
-
-{{/* version name */}}
-{{- define "version" -}}
-{{- if .Values.version | default "cpu" | lower | regexMatch "^(cpu|gpu)$" -}}
-  {{ .Values.version | default "cpu" | lower }}
-{{- else}}
-  {{ required (printf "Incorrect 'version': %s. Possible value: cpu or gpu" .Values.version ) nil }}
-{{- end -}}
-{{- end -}}
 
 
 {{/* User defined faceapi environment variables */}}
@@ -82,50 +100,32 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   {{- end }}
 {{- end }}
 
+
 {{/* Create a default fully qualified postgresql name. */}}
 {{- define "faceapi.postgresql.fullname" -}}
 {{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/* identification enabled */}}
-{{- define "identification" -}}
-{{- if .Values.identification.enabled }}
-- name: ENABLE_IDENTIFICATION
-  value: "true"
-{{- end -}}
-{{- end -}}
 
-{{- define "faceapi_postgres_envs" -}}
-{{- if and .Values.identification.enabled .Values.postgresql.enabled }}
-- name: SQL_USER
-  value: "{{ .Values.postgresql.postgresqlUsername }}"
-- name: SQL_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Release.Name }}-postgresql
-      key: postgresql-password
-- name: SQL_HOST
-  value: "{{ include "faceapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}"
-- name: SQL_DB
-  value: "{{ .Values.postgresql.postgresqlDatabase }}"
-- name: SQL_DIALECT
-  value: "postgresql"
-{{- else if and .Values.identification.enabled (not .Values.postgresql.enabled) (or .Values.externalPostgreSQLSecret .Values.externalPostgreSQL) }}
-- name: SQL_URL
-  {{- if .Values.externalPostgreSQLSecret }}
+{{- define "faceapi_identification_env" -}}
+{{- if .Values.identification.enabled }}
+- name: FACEAPI_ENABLE_IDENTIFICATION
+  value: {{ .Values.identification.enabled | quote }}
+{{- end }}
+{{- end }}
+
+
+{{- define "faceapi_postgre_secret_env" -}}
+{{- if .Values.externalPostgreSQLSecret }}
+- name: FACEAPI_SQL_URL
   valueFrom:
     secretKeyRef:
       {{- .Values.externalPostgreSQLSecret | toYaml | nindent 6 }}
-  {{- else }}
-  value: {{ default "" .Values.externalPostgreSQL | quote }}
-  {{- end }}
-{{- else if .Values.identification.enabled }}
-{{ required (printf "Identification mode require postgresql to be enabled or externalPostgreSQL/externalPostgreSQLSecret values are set") nil }}
 {{- end }}
 {{- end }}
 
 
-{{/* faceapi logs existing volume claim */}}
+{{/* Face-API logs existing volume claim */}}
 {{- define "logs_volume_claim" -}}
 {{- if .Values.logs.persistence.existingClaim -}}
   {{ .Values.logs.persistence.existingClaim }}

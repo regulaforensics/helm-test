@@ -1,11 +1,11 @@
 ---
-{{- if and (not .Values.logs.persistence.existingClaim ) .Values.logs.persistence.enabled }}
+{{- if and (not .Values.logs.persistence.existingClaim) .Values.logs.persistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "logs_volume_claim" . }}
   labels:
-    tier: face-api
+    tier: faceapi
     component: logs-pvc
     release: {{ .Release.Name }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -14,7 +14,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  accessModes: ["ReadWriteMany"]
+  accessModes:
+    - {{ .Values.logs.persistence.accessMode }}
   resources:
     requests:
       storage: {{ .Values.logs.persistence.size | quote }}

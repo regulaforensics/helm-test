@@ -2,12 +2,10 @@
 ---
 apiVersion: v2
 name: face-api
-version: 0.1.1
-appVersion: "3.2.325.304"
-description: Face Recognition Service
 home: https://faceapi.regulaforensics.com/
-sources:
-  - https://github.com/regulaforensics/face-api-helm
+version: 0.2.0
+appVersion: nightly
+description: Face Recognition Service. On-premise and cloud integration
 icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
 keywords:
   - regula
@@ -15,15 +13,15 @@ keywords:
   - regulaforensics
 dependencies:
   - name: postgresql
-    version: 10.5.3
+    version: 10.16.2
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgresql.enabled
+  - name: milvus
+    version: 3.0.28
+    repository: "https://milvus-io.github.io/milvus-helm"
+    condition: milvus.enabled
 maintainers:
   - email: support@regulaforensics.com
     name: Regula Forensics Support
     url: https://support.regulaforensics.com
 type: application
-annotations:
-  artifacthub.io/links: |
-    - name: Documentation
-      url: https://docs.regulaforensics.com/develop/face-sdk/web-service/

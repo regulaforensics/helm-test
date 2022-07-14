@@ -6,7 +6,7 @@ metadata:
     {{- include "faceapi.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicas }}
   {{- end }}
   selector:
     matchLabels:
@@ -49,20 +49,43 @@ spec:
             - name: faceapi
               containerPort: 41101
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: faceapi
+              {{- if .Values.https.enabled }}
+              scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
+              {{- end }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /api/ping
+              port: faceapi
               {{- if .Values.https.enabled }}
               scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
               {{- end }}
-              port: faceapi
-            initialDelaySeconds: 5
-            periodSeconds: 20
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- include "identification" . | indent 10 }}
-            {{- include "faceapi_postgres_envs" . | indent 10 }}
+            {{- include "faceapi_identification_env" . | indent 10 }}
+            {{- include "faceapi_postgre_secret_env" . | indent 10 }}
             {{- include "faceapi_envs" . | indent 10 }}
           volumeMounts:
             - name: config
@@ -71,11 +94,11 @@ spec:
               readOnly: true
             {{- if .Values.licenseSecretName }}
             - name: license
-              mountPath: /app/extBin/unix_x64/{{ include "version" . }}/regula.license
+              mountPath: /app/extBin/unix_x64/{{ template "version" . }}/regula.license
               subPath: regula.license
               readOnly: true
             {{- end }}
-            {{- if .Values.httpsCertificateSecretName }}
+            {{- if .Values.https.certificatesSecretName }}
             - name: certificates
               mountPath: /app/certs
               readOnly: true
@@ -96,7 +119,7 @@ spec:
           secret:
             secretName: {{ template "license_secret" . }}
         {{- end }}
-        {{- if .Values.httpsCertificateSecretName }}
+        {{- if .Values.https.certificatesSecretName }}
         - name: certificates
           secret:
             secretName: {{ template "certificate_secret" . }}

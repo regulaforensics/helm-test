@@ -6,7 +6,7 @@ metadata:
     {{- include "docreader.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicas }}
   {{- end }}
   selector:
     matchLabels:
@@ -49,15 +49,38 @@ spec:
             - name: docreader
               containerPort: 8080
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: docreader
+              {{- if .Values.https.enabled }}
+              scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
+              {{- end }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /api/ping
+              port: docreader
               {{- if .Values.https.enabled }}
               scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
               {{- end }}
-              port: docreader
-            initialDelaySeconds: 5
-            periodSeconds: 20
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
@@ -73,7 +96,7 @@ spec:
               subPath: regula.license
               readOnly: true
             {{- end }}
-            {{- if .Values.httpsCertificateSecretName }}
+            {{- if .Values.https.certificatesSecretName }}
             - name: certificates
               mountPath: /app/certs
               readOnly: true
@@ -98,7 +121,7 @@ spec:
           secret:
             secretName: {{ template "license_secret" . }}
         {{- end }}
-        {{- if .Values.httpsCertificateSecretName }}
+        {{- if .Values.https.certificatesSecretName }}
         - name: certificates
           secret:
             secretName: {{ template "certificate_secret" . }}

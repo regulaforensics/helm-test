@@ -2,6 +2,35 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+replicas: 1
+
+image:
+  # Image is also available at registry.connect.redhat.com/regulaforensics/docreader repository
+  repository: regulaforensics/docreader
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ~
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
+  # Thus setting more workers would require to multiply resources respectively
+  # Also, the resources (both requests and limits) section is mandatory for autoscaling
+  # limits:
+  #   cpu: 2000m
+  #   memory: 2Gi
+  # requests:
+  #   cpu: 1000m
+  #   memory: 2Gi
+
+podAnnotations: {}
+podSecurityContext:
+  fsGroup: 0
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -13,38 +42,28 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1001
 
-replicaCount: 1
-
-image:
-  repository: regulaforensics/docreader
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "nightly"
-  pullPolicy: Always
-imagePullSecrets: []
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 0
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 2000m
-  #   memory: 2Gi
-  # requests:
-  #   cpu: 1000m
-  #   memory: 2Gi
-
 nodeSelector: {}
 tolerations: []
 affinity: {}
 
+
+general:
+  bind: "0.0.0.0:8080"
+  workers: 1
+  backlog: 15
+  timeout: 120
+  demoSite: true
+  # URL to regula.license file for further download, if the mount option is not available.
+  # The recommended way is to use Kubernetes generic secret
+  licenseUrl: ~
+  # Useful in closed perimeters
+  # HTTP proxy, used to connect to the license service. Do not specify protocol prefix in proxy URL.
+  # Use host:port without protocol specification
+  # If you use your own TLS certs, place them in /etc/ssl/certs folder
+  httpsProxy: ~
+
 # Supply the name of existing secret with regula.license file.
-# You can load it to a k8s generic secret via:
+# You can load it to a k8s generic secret via the following options:
 # 1. `kubectl create secret generic docreader-license -n namespace --from-file=regula.license`
 # 2. manifest file:
 # apiVersion: v1
@@ -55,36 +74,54 @@ affinity: {}
 #   regula.license: <base64_encoded regula.license file content>
 # type: Opaque
 
-# docraderLicenseSecretName: docreader-license
+# licenseSecretName: docreader-license
 #
 licenseSecretName: ~
 
-config: ~
-# This string (can be templated) will be mounted into the Docreader as a custom .env file
-# You can bake a .env in to your image instead.
-# config: |-
-#   DOCREADER_BIND="0.0.0.0:8080"
-#   DOCREADER_WORKERS="1"
-#   DOCREADER_BACKLOG="15"
 
-env: []
-# - name: ""
-#   value: ""
+# HTTPS mode
+# We recommend to expose service to public via Ingress
+https:
+  enabled: false
+  # If enabled, supply the name of existing secret with key/cert files.
+  # You can load it to a k8s tls secret via:
+  # 1. `kubectl create secret tls certificates --key="tls.key" --cert="tls.crt"`
+  # 2. manifest file:
+  # apiVersion: v1
+  # kind: Secret
+  # metadata:
+  #   name: certificates
+  # data:
+  #   tls.crt: <base64_encoded tls.crt file content>
+  #   tls.key: <base64_encoded tls.key file content>
+  # type: kubernetes.io/tls
 
-# Mount additional volumes into docreader.
-extraVolumes: []
-extraVolumeMounts: []
+  # certificatesSecretName: certificates
+  certificatesSecretName: ~
+
+cors:
+  # No default, that means the web browser will allow requests to the web server from the same domain only
+  origins: ~
+  # Default "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE"
+  methods: ~
+  # Default "*"
+  headers: ~
 
 logs:
+  level: "info"
+  type:
+    accessLog: true
+    appLog: true
+    processLog:
+      enabled: true
+      saveResult: true
+  format: "text"
+
   persistence:
     # Enable persistent volume for storing logs (Access/App/Process)
-    # If set, please ensure propper envs are set (any or all):
-    # DOCREADER_LOGS_ACCESS_FILE="true"
-    # DOCREADER_LOGS_APP_FILE="true"
-    # DOCREADER_PROCESS_RESULTS_LOG_FILE="true"
-    # DOCREADER_PROCESS_RESULTS_LOG_PATH="logs/process"
-    # should start with "logs/required_path" or leave deafault values
     enabled: false
+    # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+    accessMode: ReadWriteMany
     # Volume size for logs
     size: 10Gi
     # If using a custom storageClass, pass name here
@@ -92,49 +129,35 @@ logs:
     # If defined, PVC must be created manually before volume will be bound
     existingClaim:
 
-# Supply the name of an existing PVC with prepopulated PKD files.
-# Please ensure propper envs are set
-# DOCREADER_RFID_PKD_PA_FILE="true"
-# DOCREADER_RFID_PKD_PA_PATH="/app/rfid_pkd"
 rfidpkd:
+  enabled: false
+  # If enabled, Supply the name of an existing PVC with prepopulated PKD masterlists files.
   existingClaim: ~
 
-# We recommend to expose service to public via Ingress
-# In case it is not possible please ensure propper envs are set:
-# DOCREADER_HTTPS="true"
-# DOCREADER_CERT_FILE="certs/tls.cert"
-# DOCREADER_KEY_FILE="certs/tls.key"
-# tls secret is created and httpsCertificateSecretName is populated
-https:
-  enabled: false
 
-# Supply the name of existing secret with key/cert files.
-# You can load it to a k8s tls secret via:
-# 1. `kubectl create secret tls certificates --key="tls.key" --cert="tls.crt"`
-# 2. manifest file:
-# apiVersion: v1
-# kind: Secret
-# metadata:
-#   name: certificates
-# data:
-#   tls.crt: <base64_encoded tls.crt file content>
-#   tls.key: <base64_encoded tls.key file content>
-# type: kubernetes.io/tls
+env: []
+# - name: ""
+#   value: ""
 
-# httpsCertificateSecretName: certificates
-#
-httpsCertificateSecretName: ~
+
+# Mount additional volumes into docreader pod.
+extraVolumes: []
+extraVolumeMounts: []
+
 
 service:
   type: ClusterIP
+  port: 80
   ## service annotations
   annotations: {}
-  port: 80
-  loadBalancerIP: ~
-  ## Limit load balancer source ips to list of CIDRs
+  # Optionally assign a known public LB IP
+  # loadBalancerIP: ~
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
   # loadBalancerSourceRanges:
   #   - "10.123.0.0/16"
   loadBalancerSourceRanges: []
+
 
 ingress:
   # Enable ingress resource
@@ -142,8 +165,7 @@ ingress:
   # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
   className: ""
   # Annotations for the web Ingress
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # The hostnames or hosts configuration for the web Ingress
@@ -159,9 +181,26 @@ ingress:
   #      - chart-example.local
 
 
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 20
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ~
