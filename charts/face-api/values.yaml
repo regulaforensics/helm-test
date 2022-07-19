@@ -239,7 +239,7 @@ milvus:
     enabled: true
     mode: standalone
     accessKey: minioadmin
-    ecretKey: minioadmin
+    secretKey: minioadmin
     persistence:
       size: 10Gi
   pulsar:
