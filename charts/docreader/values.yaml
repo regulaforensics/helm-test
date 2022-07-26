@@ -182,7 +182,7 @@ ingress:
 
 
 livenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 5
   periodSeconds: 30
   timeoutSeconds: 5
@@ -190,7 +190,7 @@ livenessProbe:
   failureThreshold: 5
 
 readinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 5
   periodSeconds: 20
   timeoutSeconds: 5
