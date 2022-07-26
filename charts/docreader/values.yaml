@@ -9,7 +9,7 @@ image:
   repository: regulaforensics/docreader
   # Overrides the image tag whose default is the chart appVersion.
   tag: ~
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 imagePullSecrets: []
 
 resources: {}
