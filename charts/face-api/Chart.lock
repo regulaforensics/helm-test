@@ -4,6 +4,6 @@ dependencies:
   version: 10.16.2
 - name: milvus
   repository: https://milvus-io.github.io/milvus-helm
-  version: 3.0.28
+  version: 3.0.29
 digest: sha256:4578843e97a2ce17f7ce72e99b4a594f22ebe41cda5bac25a8c45b3edeade242
 generated: "2022-07-12T19:10:09.0008667+03:00"
