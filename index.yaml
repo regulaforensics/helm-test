@@ -3,6 +3,27 @@ entries:
   docreader:
   - apiVersion: v2
     appVersion: nightly
+    created: "2022-07-26T16:18:56.310235335Z"
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: 2be8028e2586bf068998d2a6536d9d485a8d2c5336ad68ab4f550aa58e99ea34
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/docreader-0.2.5/docreader-0.2.5.tgz
+    version: 0.2.5
+  - apiVersion: v2
+    appVersion: nightly
     created: "2022-07-26T16:16:42.685153091Z"
     description: Fast and accurate data extraction from identity documents. On-premise
       and cloud integration
@@ -239,4 +260,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/face-api-0.1.1/face-api-0.1.1.tgz
     version: 0.1.1
-generated: "2022-07-26T16:16:42.685190493Z"
+generated: "2022-07-26T16:18:56.310264436Z"
