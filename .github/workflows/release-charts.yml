@@ -26,7 +26,7 @@ jobs:
       - name: Add dependency chart repos
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm repo add minio https://helm.min.io
+          helm repo add minio https://charts.min.io/
           helm repo add milvus https://milvus-io.github.io/milvus-helm
 
       - name: Run chart-releaser
