@@ -1,5 +1,30 @@
 apiVersion: v1
 entries:
+  api-gateway:
+  - apiVersion: v2
+    appVersion: api-gateway-2.2.5
+    created: "2022-08-09T14:58:56.300302018Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.16.2
+    description: ML. Airflow API Gateway
+    digest: b85a3c87b49e43e14d317c9b824620c33587e456d602827d97ed12bb38a2e3e6
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - regulaforensics
+    - api-gateway
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: api-gateway
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/api-gateway-0.1.0/api-gateway-0.1.0.tgz
+    version: 0.1.0
   docreader:
   - apiVersion: v2
     appVersion: nightly
@@ -315,4 +340,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/face-api-0.1.1/face-api-0.1.1.tgz
     version: 0.1.1
-generated: "2022-08-03T07:16:10.783376532Z"
+generated: "2022-08-09T14:58:56.300494618Z"
