@@ -1,0 +1,126 @@
+# Default values for api-gateway.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+
+image:
+  # Image is also available at container-registry.regula.local:80/regulaforensics/ml repository
+  repository: regulaforensics/ml
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ~
+  pullPolicy: Always
+imagePullSecrets: []
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
+  # Thus setting more workers would require to multiply resources respectively
+  # Also, the resources (both requests and limits) section is mandatory for autoscaling
+  requests:
+    memory: "3Gi"
+    cpu: "1"
+  limits:
+    memory: "3Gi"
+    cpu: "4"
+
+podAnnotations: {}
+podSecurityContext:
+  fsGroup: 0
+
+nameOverride: ""
+fullnameOverride: ""
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1001
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+settings: ~
+# settings: |
+#   import os
+
+#   from pathlib import Path
+
+#   # Build paths inside the project like this: BASE_DIR / 'subdir'.
+#   BASE_DIR = Path(__file__).resolve().parent.parent
+
+envSettings:
+  sqlUser: admin
+  sqlPassword: admin
+  sqlHost: localhost
+  sqlPort: 5432
+  sqlDatabase: tagger
+
+
+# Configuration for postgresql subchart
+# Not recommended for production
+postgresql:
+  enabled: true
+  postgresqlUsername: gateway
+  postgresqlPassword: tvrZqzeKDoKd6w^!7QqHf7
+  postgresqlDatabase: api_gateway_db
+
+
+env: []
+# - name: ""
+#   value: ""
+
+
+# Mount additional volumes into api-gateway pod.
+extraVolumes: []
+extraVolumeMounts: []
+
+
+service:
+  type: ClusterIP
+  port: 8000
+  ## service annotations
+  annotations: {}
+  # Optionally assign a known public LB IP
+  # loadBalancerIP: ~
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  # loadBalancerSourceRanges:
+  #   - "10.123.0.0/16"
+  loadBalancerSourceRanges: []
+
+
+ingress:
+  # Enable ingress resource
+  enabled: false
+  # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
+  className: ""
+  # Annotations for the web Ingress
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # The hostnames or hosts configuration for the web Ingress
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  # Enable TLS termination for the web Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ~

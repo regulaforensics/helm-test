@@ -1,0 +1,9 @@
+{{- if .Values.settings }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "settings" . }}
+data:
+  settings.py: |
+    {{- tpl .Values.settings . | nindent 4 }}
+{{- end }}

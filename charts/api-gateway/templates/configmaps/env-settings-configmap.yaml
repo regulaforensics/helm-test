@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "env_settings" . }}
+data:
+  env_settings.py: |
+    {{- include "gateway.env_settings" . | nindent 4 }}
