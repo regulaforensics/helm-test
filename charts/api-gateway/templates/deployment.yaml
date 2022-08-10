@@ -61,7 +61,7 @@ spec:
               subPath: settings.py
               readOnly: true
             {{- end }}
-            - name: env_settings
+            - name: env-settings
               mountPath: /app/gateway/env_settings.py
               subPath: env_settings.py
               readOnly: true
@@ -74,7 +74,7 @@ spec:
           configMap:
             name: {{ template "settings" . }}
         {{- end }}
-        - name: env_settings
+        - name: env-settings
           configMap:
             name: {{ template "env_settings" . }}
 {{- if .Values.extraVolumes }}
