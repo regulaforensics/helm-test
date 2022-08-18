@@ -1,0 +1,30 @@
+# apiVersion v2 is Helm 3
+---
+apiVersion: v2
+name: idv-platform
+home: https://regulaforensics.com/
+version: 0.1.1
+appVersion: dev
+description: IDV Platform. On-premise and cloud integration
+icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+keywords:
+  - regula
+  - idv
+  - idv-platform
+  - face-api
+  - docreader
+  - regulaforensics
+dependencies:
+  - name: postgresql
+    version: 11.7.2
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: keycloakx
+    version: 1.6.0
+    repository: "https://codecentric.github.io/helm-charts"
+    condition: keycloakx.enabled
+maintainers:
+  - email: support@regulaforensics.com
+    name: Regula Forensics Support
+    url: https://support.regulaforensics.com
+type: application

@@ -1,0 +1,149 @@
+# Default values for face-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+
+images:
+  portal:
+    repository: regulaforensics/idv-portal
+    tag: dev
+    pullPolicy: Always
+  coordinator:
+    repository: regulaforensics/idv-coordinator
+    tag: latest
+    pullPolicy: Always
+  # identity:
+  #   repository: regulaforensics/idv-identity
+  #   tag: latest
+  #   pullPolicy: Always
+  proxy:
+    repository: envoyproxy/envoy
+    tag: v1.23.0
+    pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
+  # Thus setting more workers would require to multiply resources respectively
+  # Also, the resources (both requests and limits) section is mandatory for autoscaling
+  # limits:
+  #   cpu: 2000m
+  #   memory: 2Gi
+  # requests:
+  #   cpu: 1000m
+  #   memory: 2Gi
+
+podAnnotations: {}
+podSecurityContext:
+  fsGroup: 0
+
+nameOverride: ""
+fullnameOverride: ""
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1001
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+
+coordinator:
+  # Read external PostgreSQL configuration from a secret.
+  # This should point at a secret file with a single key which specifyies the connection string.
+  idvCoordinatorSecret: "idv-coordinator-db-secret"
+
+
+# Configuration for postgresql subchart
+# Not recommended for production
+postgresql:
+  enabled: true
+  primary:
+    initdb:
+      scriptsConfigMap: "init-db"
+
+keycloakx:
+  enabled: true
+  database:
+    existingSecret: "keycloak-db-secret"
+
+
+env: []
+# - name: ""
+#   value: ""
+
+
+# Mount additional volumes into face-api pod.
+extraVolumes: []
+extraVolumeMounts: []
+
+
+service:
+  type: ClusterIP
+  port: 80
+  ## service annotations
+  annotations: {}
+  # Optionally assign a known public LB IP
+  # loadBalancerIP: ~
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  # loadBalancerSourceRanges:
+  #   - "10.123.0.0/16"
+  loadBalancerSourceRanges: []
+
+
+ingress:
+  # Enable ingress resource
+  enabled: false
+  # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
+  className: ""
+  # Annotations for the web Ingress
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # The hostnames or hosts configuration for the web Ingress
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  # Enable TLS termination for the web Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 5
+  periodSeconds: 20
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ~
