@@ -1,7 +1,7 @@
 {{- define "gateway.env_settings" -}}
-MYSQL_USER = "{{ .Values.envSettings.sqlUser }}"
-MYSQL_PASSWORD = "{{ .Values.envSettings.sqlPassword }}"
-MYSQL_HOST = "{{ .Values.envSettings.sqlHost }}"
-MYSQL_PORT = "{{ .Values.envSettings.sqlPort }}"
-MYSQL_DATABASE = "{{ .Values.envSettings.sqlDatabase }}"
+SQL_USER = "{{ .Values.envSettings.sqlUser }}"
+SQL_PASSWORD = "{{ .Values.envSettings.sqlPassword }}"
+SQL_HOST = "{{ .Values.envSettings.sqlHost }}"
+SQL_PORT = "{{ .Values.envSettings.sqlPort }}"
+SQL_DATABASE = "{{ .Values.envSettings.sqlDatabase }}"
 {{- end }}
