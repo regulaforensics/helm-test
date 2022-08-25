@@ -1,4 +1,5 @@
 {{- define "gateway.env_settings" -}}
+## AIrflow DB SQL connection details
 SQL_USER = "{{ .Values.envSettings.sqlUser }}"
 SQL_PASSWORD = "{{ .Values.envSettings.sqlPassword }}"
 SQL_HOST = "{{ .Values.envSettings.sqlHost }}"

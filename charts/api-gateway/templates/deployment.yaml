@@ -53,6 +53,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{- include "gateway.redis" . | indent 10 }}
             {{- include "gateway_envs" . | indent 10 }}
           volumeMounts:
             {{- if .Values.settings }}
