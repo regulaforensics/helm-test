@@ -1,4 +1,3 @@
-{{- if .Values.settings }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -117,4 +116,3 @@ data:
         from .env_settings import *
     except:
         print('The env_settings.py file is not found.')
-{{- end }}
