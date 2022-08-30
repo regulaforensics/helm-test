@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "idv.identity.fullname" . }}
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: "identity"
+  {{- with .Values.identity.service.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.identity.service.type }}
+  ports:
+    - port: {{ .Values.identity.service.port }}
+      targetPort: identity
+      protocol: TCP
+      name: identity
+  {{- if .Values.identity.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.identity.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.identity.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- toYaml .Values.identity.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  selector:
+    {{- include "idv.selectorLabels" . | nindent 4 }}
+    component: "identity"

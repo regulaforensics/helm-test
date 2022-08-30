@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicas: 1
-
 images:
   portal:
     repository: regulaforensics/idv-portal
@@ -13,79 +11,38 @@ images:
     repository: regulaforensics/idv-coordinator
     tag: latest
     pullPolicy: Always
-  # identity:
-  #   repository: regulaforensics/idv-identity
-  #   tag: latest
-  #   pullPolicy: Always
+  identity:
+    repository: regulaforensics/idv-identity
+    tag: latest
+    pullPolicy: Always
   proxy:
     repository: envoyproxy/envoy
-    tag: v1.23.0
+    tag: v1.23.1
     pullPolicy: IfNotPresent
 imagePullSecrets: []
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
-  # Thus setting more workers would require to multiply resources respectively
-  # Also, the resources (both requests and limits) section is mandatory for autoscaling
-  # limits:
-  #   cpu: 2000m
-  #   memory: 2Gi
-  # requests:
-  #   cpu: 1000m
-  #   memory: 2Gi
-
-podAnnotations: {}
-podSecurityContext:
-  fsGroup: 0
 
 nameOverride: ""
 fullnameOverride: ""
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1001
-
+# Global node selector
+# If set, this will apply to all milvus components
+# Individual components can be set to a different node selector
 nodeSelector: {}
+
+# Global tolerations
+# If set, this will apply to all milvus components
+# Individual components can be set to a different tolerations
 tolerations: []
+
+# Global affinity
+# If set, this will apply to all milvus components
+# Individual components can be set to a different affinity
 affinity: {}
 
-
-coordinator:
-  # Read external PostgreSQL configuration from a secret.
-  # This should point at a secret file with a single key which specifyies the connection string.
-  idvCoordinatorSecret: "idv-coordinator-db-secret"
-
-
-# Configuration for postgresql subchart
-# Not recommended for production
-postgresql:
-  enabled: true
-  primary:
-    initdb:
-      scriptsConfigMap: "init-db"
-
-keycloakx:
-  enabled: true
-  database:
-    existingSecret: "keycloak-db-secret"
-
-
-env: []
-# - name: ""
-#   value: ""
-
-
-# Mount additional volumes into face-api pod.
-extraVolumes: []
-extraVolumeMounts: []
+# Global labels and annotations
+# If set, this will apply to all milvus components
+labels: {}
+podAnnotations: {}
 
 
 service:
@@ -124,6 +81,146 @@ ingress:
   #      - chart-example.local
 
 
+portal:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+
+proxy:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    # Optionally assign a known public LB IP
+    # loadBalancerIP: ~
+    # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+    # set allowed inbound rules on the security group assigned to the master load balancer
+    # loadBalancerSourceRanges:
+    #   - "10.123.0.0/16"
+    # loadBalancerSourceRanges: []
+
+  configYaml:
+
+
+coordinator:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+  service:
+    type: ClusterIP
+    port: 8000
+    annotations: {}
+    # Optionally assign a known public LB IP
+    # loadBalancerIP: ~
+    # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+    # set allowed inbound rules on the security group assigned to the master load balancer
+    # loadBalancerSourceRanges:
+    #   - "10.123.0.0/16"
+    # loadBalancerSourceRanges: []
+
+  # Read external PostgreSQL configuration from a secret.
+  # This should point at a secret file with a single key which specifyies the connection string.
+  idvCoordinatorSecret: "idv-coordinator-db-secret"
+
+identity:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    # Optionally assign a known public LB IP
+    # loadBalancerIP: ~
+    # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+    # set allowed inbound rules on the security group assigned to the master load balancer
+    # loadBalancerSourceRanges:
+    #   - "10.123.0.0/16"
+    # loadBalancerSourceRanges: []
+
+keycloakx:
+  enabled: true
+  command:
+    - "/opt/keycloak/bin/kc.sh"
+    - "--verbose"
+    - "start"
+    - "--auto-build"
+    - "--http-enabled=true"
+    - "--http-port=8080"
+    - "--hostname-strict=false"
+    - "--hostname-strict-https=false"
+    - "--spi-events-listener-jboss-logging-success-level=info"
+    - "--spi-events-listener-jboss-logging-error-level=warn"
+  extraEnv: |
+    - name: KEYCLOAK_ADMIN
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "keycloak.fullname" . }}-admin-creds
+          key: user
+    - name: KEYCLOAK_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "keycloak.fullname" . }}-admin-creds
+          key: password
+    - name: JAVA_OPTS_APPEND
+      value: >-
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=50.0
+        -Djava.awt.headless=true
+        -Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless
+
+  dbchecker:
+    enabled: true
+
+  database:
+    vendor: postgres
+    hostname: '{{ .Release.Name }}-postgresql'
+    port: 5432
+    username: dbusername
+    password: dbpassword
+    database: keycloak
+
+  secrets:
+    admin-creds:
+      annotations:
+        my-test-annotation: Test secret for {{ include "keycloak.fullname" . }}
+      stringData:
+        user: admin
+        password: secret
+
+
+env: []
+# - name: ""
+#   value: ""
+
+
+# Mount additional volumes into face-api pod.
+extraVolumes: []
+extraVolumeMounts: []
+
+
+
+
+
 livenessProbe:
   enabled: false
   initialDelaySeconds: 5
@@ -139,11 +236,3 @@ readinessProbe:
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 5
-
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: ~

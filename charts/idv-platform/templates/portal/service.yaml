@@ -1,9 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "faceapi.fullname" . }}
+  name: {{ include "idv.portal.fullname" . }}
   labels:
-    {{- include "faceapi.labels" . | nindent 4 }}
+    {{- include "idv.labels" . | nindent 4 }}
+    component: "portal"
   {{- with .Values.service.annotations }}
   annotations:
   {{- toYaml . | nindent 4 }}
@@ -12,9 +13,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: faceapi
+      targetPort: portal
       protocol: TCP
-      name: faceapi
+      name: portal
   {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
@@ -23,4 +24,5 @@ spec:
   {{- toYaml .Values.service.loadBalancerSourceRanges | nindent 4 }}
   {{- end }}
   selector:
-    {{- include "faceapi.selectorLabels" . | nindent 4 }}
+    {{- include "idv.selectorLabels" . | nindent 4 }}
+    component: "portal"

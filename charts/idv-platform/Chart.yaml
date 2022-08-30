@@ -15,10 +15,6 @@ keywords:
   - docreader
   - regulaforensics
 dependencies:
-  - name: postgresql
-    version: 11.7.2
-    repository: "https://charts.bitnami.com/bitnami"
-    condition: postgresql.enabled
   - name: keycloakx
     version: 1.6.0
     repository: "https://codecentric.github.io/helm-charts"
