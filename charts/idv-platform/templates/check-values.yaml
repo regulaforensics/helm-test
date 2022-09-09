@@ -1,1 +1,6 @@
 {{/* The purpose of this yaml file is it to check the values file is consistent for some complexe combinations. */}}
+
+{{- /* Ensure idvCoordinatorSqlUrl/idvCoordinatorSqlUrlSecret are properly set */ -}}
+{{- if and .Values.coordinator.idvCoordinatorSqlUrl .Values.coordinator.idvCoordinatorSqlUrlSecret }}
+    {{ required "You should set only one value .Values.coordinator.idvCoordinatorSqlUrl or .Values.coordinator.idvCoordinatorSqlUrlSecret at a time." nil }}
+{{- end }}

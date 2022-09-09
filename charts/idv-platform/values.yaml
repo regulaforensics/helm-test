@@ -110,7 +110,7 @@ proxy:
     #   - "10.123.0.0/16"
     # loadBalancerSourceRanges: []
 
-  configYaml:
+  configYaml: ~
 
 
 coordinator:
@@ -133,9 +133,12 @@ coordinator:
     #   - "10.123.0.0/16"
     # loadBalancerSourceRanges: []
 
-  # Read external PostgreSQL configuration from a secret.
+  # Connection String to the PostgreSQL database.
+  # (e.g. postgresql://user:pass@host:5432/database)
+  idvCoordinatorSqlUrl: ~
+  # Read Connection String to the PostgreSQL database from a secret.
   # This should point at a secret file with a single key which specifyies the connection string.
-  idvCoordinatorSecret: "idv-coordinator-db-secret"
+  idvCoordinatorSqlUrlSecret: {}
 
 identity:
   replicas: 1
@@ -147,7 +150,7 @@ identity:
 
   service:
     type: ClusterIP
-    port: 80
+    port: 8000
     annotations: {}
     # Optionally assign a known public LB IP
     # loadBalancerIP: ~
@@ -159,6 +162,8 @@ identity:
 
 keycloakx:
   enabled: true
+  http:
+    relativePath: /idp
   command:
     - "/opt/keycloak/bin/kc.sh"
     - "--verbose"
@@ -172,41 +177,15 @@ keycloakx:
     - "--spi-events-listener-jboss-logging-error-level=warn"
   extraEnv: |
     - name: KEYCLOAK_ADMIN
-      valueFrom:
-        secretKeyRef:
-          name: {{ include "keycloak.fullname" . }}-admin-creds
-          key: user
+      value: regula
     - name: KEYCLOAK_ADMIN_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: {{ include "keycloak.fullname" . }}-admin-creds
-          key: password
+      value: idv-password
     - name: JAVA_OPTS_APPEND
       value: >-
         -XX:+UseContainerSupport
         -XX:MaxRAMPercentage=50.0
         -Djava.awt.headless=true
-        -Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless
-
-  dbchecker:
-    enabled: true
-
-  database:
-    vendor: postgres
-    hostname: '{{ .Release.Name }}-postgresql'
-    port: 5432
-    username: dbusername
-    password: dbpassword
-    database: keycloak
-
-  secrets:
-    admin-creds:
-      annotations:
-        my-test-annotation: Test secret for {{ include "keycloak.fullname" . }}
-      stringData:
-        user: admin
-        password: secret
-
+        -Djgroups.dns.query={{ include "idv.keycloakx.headless" . }}
 
 env: []
 # - name: ""
@@ -216,9 +195,6 @@ env: []
 # Mount additional volumes into face-api pod.
 extraVolumes: []
 extraVolumeMounts: []
-
-
-
 
 
 livenessProbe:

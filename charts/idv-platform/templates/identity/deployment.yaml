@@ -1,14 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "idv..identity.fullname" . }}
+  name: {{ include "idv.identity.fullname" . }}
   labels:
     {{- include "idv.labels" . | nindent 4 }}
     component: "identity"
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.identity.replicas }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}
@@ -44,7 +42,7 @@ spec:
       containers:
         - name: identity
           image: "{{ .Values.images.identity.repository }}:{{ .Values.images.identity.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.images.identity.pullPolicy }}
           ports:
             - name: identity
               containerPort: 8000
@@ -76,4 +74,6 @@ spec:
           resources:
             {{- toYaml .Values.identity.resources | nindent 12 }}
           env:
-            {{- include "identity.extraEnv" . | indent 10 }}
+          {{- if .Values.identity.extraEnv }}
+            {{- toYaml .Values.identity.extraEnv | nindent 8 }}
+          {{- end }}

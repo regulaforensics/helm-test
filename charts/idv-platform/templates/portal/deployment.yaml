@@ -1,14 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "idv..portal.fullname" . }}
+  name: {{ include "idv.portal.fullname" . }}
   labels:
     {{- include "idv.labels" . | nindent 4 }}
     component: "portal"
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.portal.replicas }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}
@@ -44,7 +42,7 @@ spec:
       containers:
         - name: portal
           image: "{{ .Values.images.portal.repository }}:{{ .Values.images.portal.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.images.portal.pullPolicy }}
           ports:
             - name: portal
               containerPort: 80
@@ -76,4 +74,6 @@ spec:
           resources:
             {{- toYaml .Values.portal.resources | nindent 12 }}
           env:
-            {{- include "portal.extraEnv" . | indent 10 }}
+          {{- if .Values.portal.extraEnv }}
+            {{- toYaml .Values.portal.extraEnv | nindent 8 }}
+          {{- end }}

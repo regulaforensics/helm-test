@@ -6,9 +6,7 @@ metadata:
     {{- include "idv.labels" . | nindent 4 }}
     component: "coordinator"
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.coordinator.replicas }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}
@@ -44,7 +42,7 @@ spec:
       containers:
         - name: coordinator
           image: "{{ .Values.images.coordinator.repository }}:{{ .Values.images.coordinator.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.images.coordinator.pullPolicy }}
           ports:
             - name: coordinator
               containerPort: 8000
@@ -76,4 +74,8 @@ spec:
           resources:
             {{- toYaml .Values.coordinator.resources | nindent 12 }}
           env:
-            {{- include "coordinator.extraEnv" . | indent 10 }}
+            {{- include "idv.coordinator.sql.url" . | indent 10 }}
+            {{- include "idv.coordinator.sql.url.secret" . | indent 10 }}
+          {{- if .Values.coordinator.extraEnv }}
+            {{- toYaml .Values.coordinator.extraEnv | nindent 8 }}
+          {{- end }}

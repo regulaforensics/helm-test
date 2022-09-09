@@ -6,9 +6,7 @@ metadata:
     {{- include "idv.labels" . | nindent 4 }}
     component: "proxy"
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.proxy.replicas }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}
@@ -45,7 +43,7 @@ spec:
       containers:
         - name: proxy
           image: "{{ .Values.images.proxy.repository }}:{{ .Values.images.proxy.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.images.proxy.pullPolicy }}
           ports:
             - name: proxy
               containerPort: 10000
@@ -77,7 +75,9 @@ spec:
           resources:
             {{- toYaml .Values.proxy.resources | nindent 12 }}
           env:
-            {{- include "proxy.extraEnv" . | indent 10 }}
+          {{- if .Values.proxy.extraEnv }}
+            {{- toYaml .Values.proxy.extraEnv | nindent 8 }}
+          {{- end }}
           volumeMounts:
             - name: config
               mountPath: /etc/envoy/envoy.yaml
