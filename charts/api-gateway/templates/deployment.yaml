@@ -53,14 +53,13 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{- include "gateway.redis" . | indent 10 }}
             {{- include "gateway_envs" . | indent 10 }}
           volumeMounts:
-            {{- if .Values.settings }}
             - name: settings
               mountPath: /app/gateway/settings.py
               subPath: settings.py
               readOnly: true
-            {{- end }}
             - name: env-settings
               mountPath: /app/gateway/env_settings.py
               subPath: env_settings.py
@@ -69,11 +68,9 @@ spec:
 {{ toYaml .Values.extraVolumeMounts | indent 12 }}
 {{- end }}
       volumes:
-        {{- if .Values.settings }}
         - name: settings
           configMap:
             name: {{ template "settings" . }}
-        {{- end }}
         - name: env-settings
           configMap:
             name: {{ template "env_settings" . }}

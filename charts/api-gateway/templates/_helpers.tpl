@@ -46,6 +46,19 @@ app.kubernetes.io/name: {{ include "gateway.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/* PostgreSQL host */}}
+{{- define "gateway.postgresql" -}}
+{{ default (printf "%s-postgresql" .Release.Name) }}
+{{- end }}
+
+{{/* Redis */}}
+{{- define "gateway.redis" -}}
+{{- if .Values.redis.enabled }}
+- name: GATEWAY_REDIS
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+{{- end }}
+{{- end }}
+
 
 {{/* Config map name */}}
 {{- define "settings" -}}

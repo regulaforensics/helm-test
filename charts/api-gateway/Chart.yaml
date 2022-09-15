@@ -2,8 +2,8 @@
 ---
 apiVersion: v2
 name: api-gateway
-version: 0.1.1
-appVersion: api-gateway-2.2.5
+version: 1.2.1
+appVersion: api-gateway-2.2.4
 description: ML. Airflow API Gateway
 icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
 keywords:
@@ -15,6 +15,10 @@ dependencies:
     version: 10.16.2
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgresql.enabled
+  - name: redis
+    version: 17.0.1
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
 maintainers:
   - email: support@regulaforensics.com
     name: Regula Forensics Support

@@ -46,14 +46,6 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-settings: ~
-# settings: |
-#   import os
-
-#   from pathlib import Path
-
-#   # Build paths inside the project like this: BASE_DIR / 'subdir'.
-#   BASE_DIR = Path(__file__).resolve().parent.parent
 
 envSettings:
   sqlUser: admin
@@ -70,6 +62,16 @@ postgresql:
   postgresqlUsername: gateway
   postgresqlPassword: tvrZqzeKDoKd6w^!7QqHf7
   postgresqlDatabase: api_gateway_db
+
+redis:
+  enabled: true
+  master:
+    persistence:
+      size: 2Gi
+  replica:
+    replicaCount: 0
+  auth:
+    enabled: false
 
 
 env: []
