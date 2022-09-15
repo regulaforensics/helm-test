@@ -4,6 +4,30 @@
 {{- end }}
 
 
+{{/* Create chart name and version as used by the chart label. */}}
+{{- define "idv.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+
+{{/* Common labels */}}
+{{- define "idv.labels" -}}
+helm.sh/chart: {{ include "idv.chart" . }}
+{{ include "idv.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+
+{{/* Selector labels */}}
+{{- define "idv.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "idv.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -76,27 +100,9 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 
-{{/* Create chart name and version as used by the chart label. */}}
-{{- define "idv.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-
-{{/* Common labels */}}
-{{- define "idv.labels" -}}
-helm.sh/chart: {{ include "idv.chart" . }}
-{{ include "idv.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-
-{{/* Selector labels */}}
-{{- define "idv.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "idv.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{/* Config map name */}}
+{{- define "coordinator.config.name" -}}
+{{ printf "%s-coordinator-config" .Release.Name }}
 {{- end }}
 
 
@@ -115,4 +121,28 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     secretKeyRef:
       {{- .Values.coordinator.idvCoordinatorSqlUrlSecret | toYaml | nindent 6 }}
 {{- end }}
+{{- end }}
+
+
+{{/* Storage endpoint */}}
+{{- define "idv.coordinator.storage_endpoint" -}}
+{{ default (printf "%s-minio:9000" .Release.Name) .Values.coordinator.idvCoordinatorStorageEndpoint }}
+{{- end }}
+
+
+{{/* FaceAPI endpoint */}}
+{{- define "idv.faceapi.url" -}}
+{{ printf "%s-faceapi:80" .Values.faceapi.fullnameOverride }}
+{{- end }}
+
+
+{{/* Pulsar proxy */}}
+{{- define "idv.pulsar.proxy" -}}
+{{ printf "http://%s-proxy:80/" .Values.pulsar.fullnameOverride }}
+{{- end }}
+
+
+{{/* Pulsar URL */}}
+{{- define "idv.pulsar.url" -}}
+{{ default (printf "pulsar://%s-broker:6650" .Values.pulsar.fullnameOverride) .Values.coordinator.idvCoordinatorPulsarUrl }}
 {{- end }}

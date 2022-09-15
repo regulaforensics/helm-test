@@ -1,0 +1,43 @@
+###########################################
+## Pulsar Create Tenant / Namespcae / Topic
+###########################################
+{{- if .Values.pulsar.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "idv.fullname" . }}-init-pulsar
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: "pulsar"
+spec:
+  template:
+    metadata:
+      annotations:
+        "helm.sh/hook": post-install,post-upgrade
+        "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "idv.selectorLabels" . | nindent 8 }}
+        component: "pulsar"
+    spec:
+      {{- with .Values.coordinator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: OnFailure
+      containers:
+        - name: pulsar-init
+          image: "{{ .Values.images.pulsarInit.repository }}:{{ .Values.images.pulsarInit.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: "{{ .Values.images.pulsarInit.pullPolicy }}"
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            bin/pulsar-admin --admin-url {{ include "idv.pulsar.proxy" . }} tenants create {{ .Values.coordinator.idvCoordinatorPulsarTenant }};
+            bin/pulsar-admin --admin-url {{ include "idv.pulsar.proxy" . }} namespaces create {{ .Values.coordinator.idvCoordinatorPulsarTenant }}/{{ .Values.coordinator.idvCoordinatorPulsarNamespace }};
+            bin/pulsar-admin --admin-url {{ include "idv.pulsar.proxy" . }} topics create {{ .Values.coordinator.idvCoordinatorPulsarTenant }}/{{ .Values.coordinator.idvCoordinatorPulsarNamespace }}/{{ .Values.coordinator.idvCoordinatorPulsarActionTopic }};
+            bin/pulsar-admin --admin-url {{ include "idv.pulsar.proxy" . }} topics create-subscription {{ .Values.coordinator.idvCoordinatorPulsarTenant }}/{{ .Values.coordinator.idvCoordinatorPulsarNamespace }}/{{ .Values.coordinator.idvCoordinatorPulsarActionTopic }} -s {{ .Values.coordinator.idvCoordinatorPulsarActionSubscription }};
+{{- end }}

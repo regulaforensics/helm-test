@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "coordinator.config.name" . }}
+  labels:
+    component: "coordinator"
+data:
+  .env: |
+    {{- include "coordinator.config" . | nindent 4 }}

@@ -80,14 +80,6 @@ data:
                   routes:
                   - match: { prefix: "/api" }
                     route: { cluster: coordinator, idle_timeout: 15s }  # idle_timeout must be disabled for long-lived and streaming requests
-                - name: identity
-                  routes:
-                  - match: { prefix: "/auth" }
-                    route: { cluster: identity, idle_timeout: 15s }  # idle_timeout must be disabled for long-lived and streaming requests
-                - name: keycloak
-                  routes:
-                  - match: { prefix: "{{ .Values.keycloakx.http.relativePath }}" }
-                    route: { cluster: keycloak, idle_timeout: 15s }  # idle_timeout must be disabled for long-lived and streaming requests
       clusters:
       - name: coordinator
         per_connection_buffer_limit_bytes: 32768  # 32 KiB
@@ -100,28 +92,6 @@ data:
                   socket_address:
                     address: {{ include "idv.coordinator.fullname" . }}
                     port_value: {{ .Values.coordinator.service.port }}
-      - name: identity
-        per_connection_buffer_limit_bytes: 32768  # 32 KiB
-        load_assignment:
-          cluster_name: idv_identity
-          endpoints:
-          - lb_endpoints:
-            - endpoint:
-                address:
-                  socket_address:
-                    address: {{ include "idv.identity.fullname" . }}
-                    port_value: {{ .Values.identity.service.port }}
-      - name: keycloak
-        per_connection_buffer_limit_bytes: 32768  # 32 KiB
-        load_assignment:
-          cluster_name: idv_keycloak
-          endpoints:
-          - lb_endpoints:
-            - endpoint:
-                address:
-                  socket_address:
-                    address: {{ .Release.Name }}-keycloakx-headless
-                    port_value: 80
     layered_runtime:
       layers:
       - name: static_layer_0
