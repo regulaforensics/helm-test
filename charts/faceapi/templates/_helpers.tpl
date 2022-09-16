@@ -87,8 +87,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 
 {{/* Config map name */}}
-{{- define "config" -}}
-{{ (printf "%s-config" .Release.Name) }}
+{{- define "faceapi.config.name" -}}
+{{ (printf "%s-faceapi-config" .Release.Name) }}
 {{- end }}
 
 

@@ -109,7 +109,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "config" . }}
+            name: {{ template "faceapi.config.name" . }}
         {{- if .Values.licenseSecretName }}
         - name: license
           secret:
