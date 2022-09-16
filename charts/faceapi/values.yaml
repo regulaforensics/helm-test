@@ -157,9 +157,12 @@ externalPostgreSQLSecret: {}
 # Not recommended for production
 postgresql:
   enabled: false
-  postgresqlUsername: regula
-  postgresqlPassword: Regulapasswd#1
-  postgresqlDatabase: regula_db
+  global:
+    postgresql:
+      auth:
+        username: regula
+        password: regula
+        database: regula_db
 
 
 # Configuration for milvus subchart

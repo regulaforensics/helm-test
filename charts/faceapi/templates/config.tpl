@@ -45,7 +45,7 @@ FACEAPI_ENABLE_IDENTIFICATION="true"
 ## Please mind if externalPostgreSQLSecret value is set, it overrides any other PostgreSQL related values
 FACEAPI_SQL_URL="{{ .Values.identification.externalPostgreSQL }}"
 {{- else if .Values.postgresql.enabled }}
-FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "identification.postgresql" . }}:5432/{{ .Values.postgresql.postgresqlDatabase }}"
+FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.global.postgresql.auth.username }}:{{ .Values.postgresql.global.postgresql.auth.password }}@{{ template "identification.postgresql" . }}:5432/{{ .Values.postgresql.global.postgresql.auth.database }}"
 {{- end }}
 
 # Milvus
