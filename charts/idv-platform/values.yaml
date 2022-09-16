@@ -20,7 +20,8 @@ images:
     tag: 2.9.3
     pullPolicy: IfNotPresent
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: regcred
 
 nameOverride: ""
 fullnameOverride: ""
@@ -150,6 +151,7 @@ coordinator:
   idvCoordinatorStorageRegion: us-east-1
   idvCoordinatorFaceapiUrl: ""
   idvCoordinatorPulsarUrl: ""
+  idvCoordinatorPulsarProxy: ""
   idvCoordinatorPulsarTenant: regula
   idvCoordinatorPulsarNamespace: idv_coordinator
   idvCoordinatorPulsarActionTopic: server-actions
@@ -169,6 +171,8 @@ postgresql:
           GRANT ALL PRIVILEGES ON DATABASE idv_coordinator TO regula;
           CREATE DATABASE idv_faceapi;
           GRANT ALL PRIVILEGES ON DATABASE idv_faceapi TO regula;
+          CREATE DATABASE idv_keycloakx;
+          GRANT ALL PRIVILEGES ON DATABASE idv_keycloakx TO regula;
 
 pulsar:
   enabled: true
@@ -226,6 +230,34 @@ minio:
     policy: none
   persistence:
     size: 10Gi
+
+keycloakx:
+  enabled: true
+  fullnameOverride: "idv-platform-keycloakx"
+  http:
+    relativePath: /idp
+  command:
+    - "/opt/keycloak/bin/kc.sh"
+    - "--verbose"
+    - "start"
+    - "--auto-build"
+    - "--http-enabled=true"
+    - "--http-port=8080"
+    - "--hostname-strict=false"
+    - "--hostname-strict-https=false"
+    - "--spi-events-listener-jboss-logging-success-level=info"
+    - "--spi-events-listener-jboss-logging-error-level=warn"
+  extraEnv: |
+    - name: KEYCLOAK_ADMIN
+      value: regula
+    - name: KEYCLOAK_ADMIN_PASSWORD
+      value: regula
+    - name: JAVA_OPTS_APPEND
+      value: >-
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=50.0
+        -Djava.awt.headless=true
+        -Djgroups.dns.query=idv-platform-keycloakx-headless
 
 faceapi:
   enabled: true

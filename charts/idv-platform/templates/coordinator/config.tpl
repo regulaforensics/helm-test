@@ -18,7 +18,7 @@ IDV_COORDINATOR_STORAGE_ACCESS_KEY="{{ .Values.coordinator.idvCoordinatorStorage
 IDV_COORDINATOR_STORAGE_SECRET_KEY="{{ .Values.coordinator.idvCoordinatorStorageSecretKey }}"
 
 # FaceAPI
-IDV_COORDINATOR_FACEAPI_URL="{{ template "idv.faceapi.url" . }}"
+IDV_COORDINATOR_FACEAPI_URL="{{ template "idv.coordinator.faceapi.url" . }}"
 
 # Third Party FP service
 IDV_COORDINATOR_TODAS_FINGERPRINT_SERVICE_URL="{{ .Values.coordinator.idvCoordinatorFingerprintService }}"

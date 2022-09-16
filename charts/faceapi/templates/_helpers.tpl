@@ -64,7 +64,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Milvus host */}}
 {{- define "identification.milvus_host" -}}
-{{ default (printf "%s-milvus" .Release.Name) .Values.milvusHost }}
+{{ default (printf "idv-platform-minio" .Release.Name) .Values.milvusHost }}
 {{- end }}
 
 

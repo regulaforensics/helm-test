@@ -31,7 +31,7 @@ data:
             value: 0.98
 
     admin:
-      access_log_path: /var/log/envoy/admin_access.log
+      access_log_path: /tmp/admin_access.log
       address:
         socket_address:
           protocol: TCP
@@ -77,11 +77,13 @@ data:
               route_config:
                 virtual_hosts:
                 - name: coordinator
+                  domains: ["*"]
                   routes:
                   - match: { prefix: "/api" }
                     route: { cluster: coordinator, idle_timeout: 15s }  # idle_timeout must be disabled for long-lived and streaming requests
       clusters:
       - name: coordinator
+        type: STRICT_DNS
         per_connection_buffer_limit_bytes: 32768  # 32 KiB
         load_assignment:
           cluster_name: idv_coordinator

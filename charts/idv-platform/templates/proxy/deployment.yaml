@@ -81,6 +81,8 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
       volumes:
         - name: config
           configMap:

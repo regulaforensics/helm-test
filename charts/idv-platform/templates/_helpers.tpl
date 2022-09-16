@@ -126,19 +126,19 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{/* Storage endpoint */}}
 {{- define "idv.coordinator.storage_endpoint" -}}
-{{ default (printf "%s-minio:9000" .Release.Name) .Values.coordinator.idvCoordinatorStorageEndpoint }}
+{{ default (printf "%s:9000" .Values.minio.fullnameOverride) .Values.coordinator.idvCoordinatorStorageEndpoint }}
 {{- end }}
 
 
 {{/* FaceAPI endpoint */}}
-{{- define "idv.faceapi.url" -}}
-{{ printf "%s-faceapi:80" .Values.faceapi.fullnameOverride }}
+{{- define "idv.coordinator.faceapi.url" -}}
+{{ default (printf "%s:80" .Values.faceapi.fullnameOverride) .Values.coordinator.idvCoordinatorFaceapiUrl }}
 {{- end }}
 
 
 {{/* Pulsar proxy */}}
 {{- define "idv.pulsar.proxy" -}}
-{{ printf "http://%s-proxy:80/" .Values.pulsar.fullnameOverride }}
+{{ default (printf "http://%s-proxy:80/" .Values.pulsar.fullnameOverride) }}
 {{- end }}
 
 

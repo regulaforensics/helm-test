@@ -11,7 +11,7 @@ keywords:
   - regula
   - idv
   - idv-platform
-  - face-api
+  - faceapi
   - docreader
   - regulaforensics
 dependencies:
@@ -27,7 +27,11 @@ dependencies:
     version: 11.9.1
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgresql.enabled
-  - name: face-api
+  - name: keycloakx
+    version: 1.6.0
+    repository: "https://codecentric.github.io/helm-charts"
+    condition: keycloakx.enabled
+  - name: faceapi
     version: 0.2.4
     repository: https://regulaforensics.github.io/helm-test
     condition: face-api.enabled
