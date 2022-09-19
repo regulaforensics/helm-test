@@ -49,10 +49,16 @@ FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.global.postgresql.auth.usern
 {{- end }}
 
 # Milvus
-FACEAPI_STORAGE_ENDPOINT="http://{{ template "identification.storage_endpoint" . }}"
-FACEAPI_STORAGE_REGION="{{ .Values.identification.storageRegion }}"
-FACEAPI_STORAGE_ACCESS_KEY="{{ .Values.identification.storageAccessKey }}"
-FACEAPI_STORAGE_SECRET_KEY="{{ .Values.identification.storageSecretKey }}"
+{{- if .Values.milvus.externalS3.enabled }}
+FACEAPI_STORAGE_ENDPOINT="{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.externalS3.accessKey .Values.identification.storageAccessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.externalS3.secretKey .Values.identification.storageSecretKey }}"
+{{- else }}
+FACEAPI_STORAGE_ENDPOINT="{{ template "identification.storage_endpoint" . }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.minio.accessKey .Values.identification.storageAccessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.minio.secretKey .Values.identification.storageSecretKey }}"
+{{- end }}
+FACEAPI_STORAGE_REGION="{{ .Values.identification.storageRegion | default "us-east-1" }}"
 FACEAPI_STORAGE_PERSON_BUCKET_NAME="{{ .Values.identification.storagePersonBucketName }}"
 FACEAPI_STORAGE_SESSION_BUCKET_NAME="{{ .Values.identification.storageSessionBucketName }}"
 FACEAPI_MILVUS_HOST="{{ template "identification.milvus_host" . }}"

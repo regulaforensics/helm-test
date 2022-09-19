@@ -123,18 +123,18 @@ identification:
   # s3 compaitable storage endpoint. Possible values: https://s3.amazonaws.com or http://host:port
   storageEndpoint: ""
   # e.g. AWS Access Key ID
-  storageAccessKey: minioadmin
+  storageAccessKey: ""
   # e.g. AWS Secret Access Key
-  storageSecretKey: minioadmin
-  # e.g. AWS Default region name
-  storageRegion: us-east-1
+  storageSecretKey: ""
+  # e.g. AWS Default region name. Defaults: us-east-1
+  storageRegion: ""
   # If milvus.externalS3 values is set, please mind, bucket names must be unique across all AWS accounts (default value won't work)
   # Bucket name for storing person data
   storagePersonBucketName: faceapi-person
   # If milvus.externalS3 values is set, please mind, bucket names must be unique across all AWS accounts (default value won't work)
   # Bucket name for storing session data
   storageSessionBucketName: faceapi-session
-  # Milvus Host (IP address or DNS). Defaults: namespace-milvus
+  # Milvus Host (IP address or DNS). Defaults: {{ .Release.Name }}-milvus
   milvusHost: ~
   # Milvus Port. Defaults: 19530
   milvusPort: 19530
@@ -187,8 +187,8 @@ milvus:
     accessKey: ""
     secretKey: ""
     useSSL: false
-    bucketName: ""
-    rootPath: ""
+    bucketName: "milvus-bucket"
+    rootPath: "file"
 
 
 logs:

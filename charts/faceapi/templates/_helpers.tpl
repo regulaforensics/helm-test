@@ -10,17 +10,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "faceapi.fullname" -}}
-{{- if .Values.fullnameOverride }}
-  {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-  {{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-  {{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-  {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 
 
 {{/* Create chart name and version as used by the chart label. */}}
@@ -58,13 +58,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Storage endpoint */}}
 {{- define "identification.storage_endpoint" -}}
-{{ default (printf "%s-minio:9000" .Release.Name) .Values.storageEndpoint }}
+{{ default (printf "%s-minio:9000" (include "faceapi.fullname" .)) .Values.storageEndpoint }}
 {{- end }}
 
 
 {{/* Milvus host */}}
 {{- define "identification.milvus_host" -}}
-{{ default (printf "%s-milvus" .Release.Name) .Values.milvusHost }}
+{{ default (printf "%s-milvus" (include "faceapi.fullname" .)) .Values.milvusHost }}
 {{- end }}
 
 
@@ -76,13 +76,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* faceapi license secret name */}}
 {{- define "license_secret" -}}
-{{ default (printf "%s-license" .Release.Name) .Values.licenseSecretName }}
+{{ default (printf "%s-license" (include "faceapi.fullname" .)) .Values.licenseSecretName }}
 {{- end }}
 
 
 {{/* faceapi certificates secret name */}}
 {{- define "certificate_secret" -}}
-{{ default (printf "%s-certificates" .Release.Name) .Values.https.certificatesSecretName }}
+{{ default (printf "%s-certificates" (include "faceapi.fullname" .)) .Values.https.certificatesSecretName }}
 {{- end }}
 
 
@@ -99,12 +99,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     value: {{ $config.value | quote }}
   {{- end }}
 {{- end }}
-
-
-{{/* Create a default fully qualified postgresql name. */}}
-{{- define "faceapi.postgresql.fullname" -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 
 
 {{- define "faceapi_identification_env" -}}
