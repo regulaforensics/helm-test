@@ -16,6 +16,12 @@ jobs:
         with:
           version: v3.8.2
 
+      - name: Add dependency chart repos
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add minio https://charts.min.io/
+          helm repo add milvus https://milvus-io.github.io/milvus-helm
+
       - uses: actions/setup-python@v2
         with:
           python-version: 3.7
