@@ -3,7 +3,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "logs_volume_claim" . }}
+  name: {{ template "faceapi.logs.pvc" . }}
   labels:
     tier: faceapi
     component: logs-pvc

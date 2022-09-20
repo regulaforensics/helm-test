@@ -11,13 +11,13 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "faceapi.fullname" -}}
 {{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+  {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
+  {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+  {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+  {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -56,33 +56,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 
-{{/* Storage endpoint */}}
-{{- define "identification.storage_endpoint" -}}
-{{ default (printf "%s-minio:9000" (include "faceapi.fullname" .)) .Values.storageEndpoint }}
-{{- end }}
-
-
-{{/* Milvus host */}}
-{{- define "identification.milvus_host" -}}
-{{ default (printf "%s-milvus" (include "faceapi.fullname" .)) .Values.milvusHost }}
-{{- end }}
-
-
-{{/* PostgreSQL host */}}
-{{- define "identification.postgresql" -}}
-{{ default (printf "%s-postgresql" .Release.Name) }}
-{{- end }}
-
-
 {{/* faceapi license secret name */}}
-{{- define "license_secret" -}}
-{{ default (printf "%s-license" (include "faceapi.fullname" .)) .Values.licenseSecretName }}
+{{- define "faceapi.license.secret" -}}
+{{ default (printf "%s-license" .Release.Name) .Values.licenseSecretName }}
 {{- end }}
 
 
 {{/* faceapi certificates secret name */}}
-{{- define "certificate_secret" -}}
-{{ default (printf "%s-certificates" (include "faceapi.fullname" .)) .Values.https.certificatesSecretName }}
+{{- define "faceapi.certificate.secret" -}}
+{{ default (printf "%s-certificates" .Release.Name) .Values.https.certificatesSecretName }}
 {{- end }}
 
 
@@ -93,7 +75,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 
 {{/* User defined faceapi environment variables */}}
-{{- define "faceapi_envs" -}}
+{{- define "faceapi.envs" -}}
   {{- range $i, $config := .Values.env }}
   - name: {{ $config.name }}
     value: {{ $config.value | quote }}
@@ -101,7 +83,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
-{{- define "faceapi_identification_env" -}}
+{{/* Enable Identification */}}
+{{- define "faceapi.identification.enable" -}}
 {{- if .Values.identification.enabled }}
 - name: FACEAPI_ENABLE_IDENTIFICATION
   value: {{ .Values.identification.enabled | quote }}
@@ -109,7 +92,25 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
-{{- define "faceapi_postgre_secret_env" -}}
+{{/* Minio/S3 Storage endpoint */}}
+{{- define "faceapi.identification.storage_endpoint" -}}
+{{ default (printf "http://%s-minio:9000" .Release.Name) .Values.storageEndpoint }}
+{{- end }}
+
+
+{{/* Milvus host */}}
+{{- define "faceapi.identification.milvus_host" -}}
+{{ default (printf "%s-milvus" .Release.Name) .Values.milvusHost }}
+{{- end }}
+
+
+{{/* PostgreSQL host */}}
+{{- define "faceapi.identification.postgresql" -}}
+{{ default (printf "%s-postgresql" .Release.Name) }}
+{{- end }}
+
+
+{{- define "faceapi.postgresql.secret" -}}
 {{- if .Values.externalPostgreSQLSecret }}
 - name: FACEAPI_SQL_URL
   valueFrom:
@@ -119,8 +120,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
-{{/* Face-API logs existing volume claim */}}
-{{- define "logs_volume_claim" -}}
+{{/* Face-API logs PVC */}}
+{{- define "faceapi.logs.pvc" -}}
 {{- if .Values.logs.persistence.existingClaim -}}
   {{ .Values.logs.persistence.existingClaim }}
 {{- else -}}
