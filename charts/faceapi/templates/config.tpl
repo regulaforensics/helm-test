@@ -45,17 +45,23 @@ FACEAPI_ENABLE_IDENTIFICATION="true"
 ## Please mind if externalPostgreSQLSecret value is set, it overrides any other PostgreSQL related values
 FACEAPI_SQL_URL="{{ .Values.identification.externalPostgreSQL }}"
 {{- else if .Values.postgresql.enabled }}
-FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "identification.postgresql" . }}:5432/{{ .Values.postgresql.postgresqlDatabase }}"
+FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.global.postgresql.auth.username }}:{{ .Values.postgresql.global.postgresql.auth.password }}@{{ template "faceapi.identification.postgresql" . }}:5432/{{ .Values.postgresql.global.postgresql.auth.database }}"
 {{- end }}
 
 # Milvus
-FACEAPI_STORAGE_ENDPOINT="http://{{ template "identification.storage_endpoint" . }}"
-FACEAPI_STORAGE_REGION="{{ .Values.identification.storageRegion }}"
-FACEAPI_STORAGE_ACCESS_KEY="{{ .Values.identification.storageAccessKey }}"
-FACEAPI_STORAGE_SECRET_KEY="{{ .Values.identification.storageSecretKey }}"
-FACEAPI_STORAGE_PERSON_BUCKET_NAME="{{ .Values.identification.storagePersonBucketName }}"
-FACEAPI_STORAGE_SESSION_BUCKET_NAME="{{ .Values.identification.storageSessionBucketName }}"
-FACEAPI_MILVUS_HOST="{{ template "identification.milvus_host" . }}"
-FACEAPI_MILVUS_PORT="{{ .Values.identification.milvusPort }}"
+{{- if .Values.milvus.externalS3.enabled }}
+FACEAPI_STORAGE_ENDPOINT="{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.externalS3.accessKey .Values.identification.storageAccessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.externalS3.secretKey .Values.identification.storageSecretKey }}"
+{{- else }}
+FACEAPI_STORAGE_ENDPOINT="{{ template "faceapi.identification.storage_endpoint" . }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.minio.accessKey .Values.identification.storageAccessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.minio.secretKey .Values.identification.storageSecretKey }}"
+{{- end }}
+FACEAPI_STORAGE_REGION="{{ .Values.identification.storageRegion | default "us-east-1" }}"
+FACEAPI_STORAGE_PERSON_BUCKET_NAME="{{ default "faceapi-person" .Values.identification.storagePersonBucketName }}"
+FACEAPI_STORAGE_SESSION_BUCKET_NAME="{{ default "faceapi-session" .Values.identification.storageSessionBucketName }}"
+FACEAPI_MILVUS_HOST="{{ template "faceapi.identification.milvus_host" . }}"
+FACEAPI_MILVUS_PORT="{{ default 19530 .Values.identification.milvusPort }}"
 {{- end }}
 {{- end }}

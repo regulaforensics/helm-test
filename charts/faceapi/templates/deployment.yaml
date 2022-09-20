@@ -1,3 +1,7 @@
+{{ $scheme := "http" }}
+{{- if .Values.https.enabled }}
+{{ $scheme = "https" }}
+{{ end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,11 +58,7 @@ spec:
             httpGet:
               path: /api/ping
               port: faceapi
-              {{- if .Values.https.enabled }}
-              scheme: HTTPS
-              {{- else }}
-              scheme: HTTP
-              {{- end }}
+              scheme: {{ $scheme }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -70,11 +70,7 @@ spec:
             httpGet:
               path: /api/ping
               port: faceapi
-              {{- if .Values.https.enabled }}
-              scheme: HTTPS
-              {{- else }}
-              scheme: HTTP
-              {{- end }}
+              scheme: {{ $scheme }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -84,11 +80,11 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- include "faceapi_identification_env" . | indent 10 }}
-            {{- include "faceapi_postgre_secret_env" . | indent 10 }}
-            {{- include "faceapi_envs" . | indent 10 }}
+            {{- include "faceapi.identification.enable" . | indent 10 }}
+            {{- include "faceapi.postgresql.secret" . | indent 10 }}
+            {{- include "faceapi.envs" . | indent 10 }}
           volumeMounts:
-            - name: config
+            - name: faceapi-config
               mountPath: /app/.env
               subPath: .env
               readOnly: true
@@ -111,23 +107,23 @@ spec:
 {{ toYaml .Values.extraVolumeMounts | indent 12 }}
 {{- end }}
       volumes:
-        - name: config
+        - name: faceapi-config
           configMap:
-            name: {{ template "config" . }}
+            name: {{ template "faceapi.config.name" . }}
         {{- if .Values.licenseSecretName }}
         - name: license
           secret:
-            secretName: {{ template "license_secret" . }}
+            secretName: {{ template "faceapi.license.secret" . }}
         {{- end }}
         {{- if .Values.https.certificatesSecretName }}
         - name: certificates
           secret:
-            secretName: {{ template "certificate_secret" . }}
+            secretName: {{ template "faceapi.certificate.secret" . }}
         {{- end }}
         {{- if .Values.logs.persistence.enabled }}
         - name: logs
           persistentVolumeClaim:
-            claimName: {{ template "logs_volume_claim" . }}
+            claimName: {{ template "faceapi.logs.pvc" . }}
         {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
