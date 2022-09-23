@@ -28,6 +28,8 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add milvus https://milvus-io.github.io/milvus-helm
+          helm repo add pulsar https://pulsar.apache.org/charts
+          helm repo add codecentric https://codecentric.github.io/helm-charts
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0

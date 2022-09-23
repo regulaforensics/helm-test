@@ -1,0 +1,317 @@
+# Default values for face-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  portal:
+    repository: regulaforensics/idv-portal
+    tag: dev
+    pullPolicy: Always
+  coordinator:
+    repository: regulaforensics/idv-coordinator
+    tag: latest
+    pullPolicy: Always
+  proxy:
+    repository: envoyproxy/envoy
+    tag: v1.23.1
+    pullPolicy: IfNotPresent
+  pulsarInit:
+    repository: apachepulsar/pulsar-all
+    tag: 2.9.3
+    pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: regcred
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Global node selector
+# If set, this will apply to all milvus components
+# Individual components can be set to a different node selector
+nodeSelector: {}
+
+# Global tolerations
+# If set, this will apply to all milvus components
+# Individual components can be set to a different tolerations
+tolerations: []
+
+# Global affinity
+# If set, this will apply to all milvus components
+# Individual components can be set to a different affinity
+affinity: {}
+
+# Global labels and annotations
+# If set, this will apply to all milvus components
+labels: {}
+podAnnotations: {}
+
+
+service:
+  type: ClusterIP
+  port: 80
+  ## service annotations
+  annotations: {}
+  # Optionally assign a known public LB IP
+  # loadBalancerIP: ~
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  # loadBalancerSourceRanges:
+  #   - "10.123.0.0/16"
+  loadBalancerSourceRanges: []
+
+
+ingress:
+  # Enable ingress resource
+  enabled: false
+  # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
+  className: ""
+  # Annotations for the web Ingress
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # The hostnames or hosts configuration for the web Ingress
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  # Enable TLS termination for the web Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+portal:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+
+proxy:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    # Optionally assign a known public LB IP
+    # loadBalancerIP: ~
+    # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+    # set allowed inbound rules on the security group assigned to the master load balancer
+    # loadBalancerSourceRanges:
+    #   - "10.123.0.0/16"
+    # loadBalancerSourceRanges: []
+
+  configYaml: ~
+
+
+coordinator:
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  extraEnv: []
+
+  service:
+    type: ClusterIP
+    port: 8000
+    annotations: {}
+    # Optionally assign a known public LB IP
+    # loadBalancerIP: ~
+    # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+    # set allowed inbound rules on the security group assigned to the master load balancer
+    # loadBalancerSourceRanges:
+    #   - "10.123.0.0/16"
+    # loadBalancerSourceRanges: []
+
+  # Connection String to the PostgreSQL database.
+  # (e.g. postgresql://user:pass@host:5432/database)
+  idvCoordinatorSqlUrl: postgresql://regula:regula@idv-platform-postgresql:5432/idv_coordinator
+  # Read Connection String to the PostgreSQL database from a secret.
+  # This should point at a secret file with a single key which specifyies the connection string.
+  idvCoordinatorSqlUrlSecret: {}
+  # s3 compaitable storage endpoint. Possible values: https://s3.amazonaws.com or http://host:port
+  idvCoordinatorStorageEndpoint: ""
+  # e.g. AWS Access Key ID
+  idvCoordinatorStorageAccessKey: minioadmin
+  # e.g. AWS Secret Access Key
+  idvCoordinatorStorageSecretKey: minioadmin
+  # e.g. AWS Default region name
+  idvCoordinatorStorageRegion: us-east-1
+  idvCoordinatorFaceapiUrl: ""
+  idvCoordinatorPulsarUrl: ""
+  idvCoordinatorPulsarProxy: ""
+  idvCoordinatorPulsarTenant: regula
+  idvCoordinatorPulsarNamespace: idv_coordinator
+  idvCoordinatorPulsarActionTopic: server-actions
+  idvCoordinatorPulsarActionSubscription: subscription
+  idvCoordinatorPulsarActionResultsBucket: server-action-results
+  idvCoordinatorFingerprintService: "http://3.71.107.249"
+
+postgresql:
+  enabled: true
+  fullnameOverride: "idv-platform-postgresql"
+  primary:
+    initdb:
+      scripts:
+        init_dbs.sql: |
+          CREATE DATABASE idv_coordinator;
+          CREATE USER regula WITH PASSWORD 'regula';
+          GRANT ALL PRIVILEGES ON DATABASE idv_coordinator TO regula;
+          CREATE DATABASE idv_faceapi;
+          GRANT ALL PRIVILEGES ON DATABASE idv_faceapi TO regula;
+          CREATE DATABASE idv_keycloakx;
+          GRANT ALL PRIVILEGES ON DATABASE idv_keycloakx TO regula;
+
+pulsar:
+  enabled: true
+  fullnameOverride: "idv-platform-pulsar"
+  affinity:
+  anti_affinity: false
+
+  # disable auto recovery
+  components:
+    autorecovery: false
+
+  zookeeper:
+    replicaCount: 1
+
+  bookkeeper:
+    replicaCount: 1
+
+  broker:
+    replicaCount: 1
+    configData:
+      ## Enable `autoSkipNonRecoverableData` since bookkeeper is running
+      ## without persistence
+      autoSkipNonRecoverableData: "true"
+      # storage settings
+      managedLedgerDefaultEnsembleSize: "1"
+      managedLedgerDefaultWriteQuorum: "1"
+      managedLedgerDefaultAckQuorum: "1"
+
+  proxy:
+    replicaCount: 1
+
+  monitoring:
+    prometheus: false
+    grafana: false
+    node_exporter: false
+    alert_manager: false
+
+
+minio:
+  enabled: true
+  fullnameOverride: "idv-platform-minio"
+  mode: standalone
+  rootUser: minioadmin
+  rootPassword: minioadmin
+  buckets:
+  - name: server-action-results
+    policy: none
+  - name: faceapi-person
+    policy: none
+  - name: faceapi-session
+    policy: none
+  - name: chip-verification-data
+    policy: none
+  - name: milvus-bucket
+    policy: none
+  persistence:
+    size: 10Gi
+
+keycloakx:
+  enabled: true
+  fullnameOverride: "idv-platform-keycloakx"
+  http:
+    relativePath: /idp
+  command:
+    - "/opt/keycloak/bin/kc.sh"
+    - "--verbose"
+    - "start"
+    - "--auto-build"
+    - "--http-enabled=true"
+    - "--http-port=8080"
+    - "--hostname-strict=false"
+    - "--hostname-strict-https=false"
+    - "--spi-events-listener-jboss-logging-success-level=info"
+    - "--spi-events-listener-jboss-logging-error-level=warn"
+  extraEnv: |
+    - name: KEYCLOAK_ADMIN
+      value: regula
+    - name: KEYCLOAK_ADMIN_PASSWORD
+      value: regula
+    - name: JAVA_OPTS_APPEND
+      value: >-
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=50.0
+        -Djava.awt.headless=true
+        -Djgroups.dns.query=idv-platform-keycloakx-headless
+
+faceapi:
+  enabled: true
+  fullnameOverride: "idv-platform-faceapi"
+  identification:
+    enabled: true
+    externalPostgreSQL: postgresql://regula:regula@idv-platform-postgresql:5432/idv_faceapi
+  milvus:
+    enabled: true
+    standalone:
+      persistence:
+        enabled: false
+    minio:
+      enabled: false
+    externalS3:
+      enabled: true
+      host: idv-platform-minio
+      port: "9000"
+      accessKey: "minioadmin"
+      secretKey: "minioadmin"
+      useSSL: false
+      bucketName: "milvus-bucket"
+      rootPath: ""
+    etcd:
+      replicaCount: 1
+      persistence:
+        enabled: false
+    externalPulsar:
+      enabled: true
+      host: idv-platform-pulsar-broker
+      port: 6650
+
+env: []
+# - name: ""
+#   value: ""
+
+
+# Mount additional volumes into face-api pod.
+extraVolumes: []
+extraVolumeMounts: []
+
+
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 5
+  periodSeconds: 20
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5

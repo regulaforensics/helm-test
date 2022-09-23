@@ -92,14 +92,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
-{{/* Minio/S3 Storage endpoint */}}
+{{/* Minio/S3 */}}
 {{- define "faceapi.identification.storage_endpoint" -}}
 {{ default (printf "http://%s-minio:9000" .Release.Name) .Values.storageEndpoint }}
 {{- end }}
 
 
 {{/* Milvus host */}}
-{{- define "faceapi.identification.milvus_host" -}}
+{{- define "faceapi.identification." -}}
 {{ default (printf "%s-milvus" .Release.Name) .Values.milvusHost }}
 {{- end }}
 

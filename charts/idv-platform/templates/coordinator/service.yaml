@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "idv.coordinator.fullname" . }}
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: "coordinator"
+  {{- with .Values.coordinator.service.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.coordinator.service.type }}
+  ports:
+    - port: {{ .Values.coordinator.service.port }}
+      targetPort: coordinator
+      protocol: TCP
+      name: coordinator
+  {{- if .Values.coordinator.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.coordinator.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.coordinator.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- toYaml .Values.coordinator.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  selector:
+    {{- include "idv.selectorLabels" . | nindent 4 }}
+    component: "coordinator"

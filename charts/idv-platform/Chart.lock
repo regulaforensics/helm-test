@@ -1,0 +1,18 @@
+dependencies:
+- name: pulsar
+  repository: https://pulsar.apache.org/charts
+  version: 2.9.4
+- name: minio
+  repository: https://charts.min.io/
+  version: 4.0.14
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.9.1
+- name: keycloakx
+  repository: https://codecentric.github.io/helm-charts
+  version: 1.6.0
+- name: faceapi
+  repository: https://regulaforensics.github.io/helm-test
+  version: 0.2.4
+digest: sha256:f5fbe5d34d50c0f18f9a48ab2bbda3e17127555e904fb91c9ec06be048ded961
+generated: "2022-09-15T18:12:40.9810606+03:00"
