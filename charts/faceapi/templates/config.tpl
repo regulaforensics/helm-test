@@ -50,7 +50,11 @@ FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.global.postgresql.auth.usern
 
 # Milvus
 {{- if .Values.milvus.externalS3.enabled }}
-FACEAPI_STORAGE_ENDPOINT="{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
+{{- if .Values.milvus.externalS3.useSSL }}
+FACEAPI_STORAGE_ENDPOINT="https://{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
+{{- else }}
+FACEAPI_STORAGE_ENDPOINT="http://{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
+{{- end }}
 FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.externalS3.accessKey .Values.identification.storageAccessKey }}"
 FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.externalS3.secretKey .Values.identification.storageSecretKey }}"
 {{- else }}
