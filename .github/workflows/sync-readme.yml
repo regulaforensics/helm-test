@@ -3,9 +3,11 @@ name: Sync README.md
 on:
   push:
     branches:
-      - 'main'
+      - main
     paths:
       - 'README.md'
+  workflow_dispatch:
+
 jobs:
   sync-readme:
     runs-on: ubuntu-latest
