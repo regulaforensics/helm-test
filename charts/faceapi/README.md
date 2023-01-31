@@ -60,17 +60,19 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cors.methods`                            | Methods, allowed to invoke on the API         | `"GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE"` |
 | `cors.headers`                            | Headers, allowed to read from the API         | `*` Specify comma-separated values as a single string (ex. "content-type,date")   |
 | `identification.enabled`                  | Whether to enable Identification mode         | `false`                                                   |
-| `identification.storageEndpoint`          | Enpoint to the S3 comaitable storage          | `autopopulated`                                           |
-| `identification.storageAccessKey`         | S3 Access Key                                 | `minioadmin`                                              |
-| `identification.storageSecretKey`         | S3 Secret Key                                 | `minioadmin`                                              |
-| `identification.storageRegion`            | Storage Region in case of Amazon S3 usage     | `us-east-1`                                               |
-| `identification.storagePersonBucketName`  | Bucket name where persons images are stored   | `faceapi-person`                                          |
-| `identification.storageSessionBucketName` | Bucket name where session is stored           | `faceapi-session`                                         |
 | `identification.milvusHost`               | Milvus Host Name                              | `autopopulated`                                           |
 | `identification.milvusPort`               | Milvus Port                                   | `19530`                                                   |
-| `externalPostgreSQL`                      | Connection String to the Postgres database    | `none` Option 1. Required by Identification module        |
-| `externalPostgreSQLSecret`                | Secret name of the Connection String          | `none` Option 2. Required by Identification module. ex. `postgresql://user:pass@host:5432/database`   |
-| `postgresql.enabled`                      | Whether to enable postgresql subchart         | `false` Option 3. Required by Identification module       |
+| `liveness.enabled`                        | Whether to enable Liveness mode               | `false`                                                   |
+| `liveness.hideMetadata`                   | Whether to hide processing data's metadata    | `false`                                                   |
+| `storage.endpoint`                        | Enpoint to the S3 comaitable storage          | `autopopulated`                                           |
+| `storage.accessKey`                       | S3 Access Key                                 | `minioadmin`                                              |
+| `storage.secretKey`                       | S3 Secret Key                                 | `minioadmin`                                              |
+| `storage.region`                          | Storage Region in case of Amazon S3 usage     | `us-east-1`                                               |
+| `storage.personBucketName`                | Bucket name where persons images are stored   | `faceapi-person`                                          |
+| `storage.sessionBucketName`               | Bucket name where session is stored           | `faceapi-session`                                         |
+| `externalPostgreSQL`                      | Connection String to the Postgres database    | `none` Option 1. Required by Identification/Liveness      |
+| `externalPostgreSQLSecret`                | Secret name of the Connection String          | `none` Option 2. Required by Identification/Liveness module. ex. `postgresql://user:pass@host:5432/database`  |
+| `postgresql.enabled`                      | Whether to enable postgresql subchart         | `false` Option 3. Required by Identification/Liveness module  |
 | `postgresql.postgresqlUsername`           | postgresql Username                           | `regula`                                                  |
 | `postgresql.postgresqlPassword`           | postgresql Password                           | `Regulapasswd#1`                                          |
 | `postgresql.postgresqlDatabase`           | postgresql Database                           | `regula_db`                                               |
