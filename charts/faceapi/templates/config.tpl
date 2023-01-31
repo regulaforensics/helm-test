@@ -39,33 +39,58 @@ FACEAPI_LOGS_FORMATTER="{{ .Values.logs.format }}"
 {{- if .Values.identification.enabled }}
 # Identification
 FACEAPI_ENABLE_IDENTIFICATION="true"
+{{- if .Values.liveness.enabled }}
 
-# PostgreSQL
-{{- if and .Values.identification.externalPostgreSQL (not .Values.postgresql.enabled) }}
-## Please mind if externalPostgreSQLSecret value is set, it overrides any other PostgreSQL related values
-FACEAPI_SQL_URL="{{ .Values.identification.externalPostgreSQL }}"
-{{- else if .Values.postgresql.enabled }}
-FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.global.postgresql.auth.username }}:{{ .Values.postgresql.global.postgresql.auth.password }}@{{ template "faceapi.identification.postgresql" . }}:5432/{{ .Values.postgresql.global.postgresql.auth.database }}"
+# Liveness
+FACEAPI_LIVENESS_GEN_2="true"
+FACEAPI_LIVENESS_HIDE_METADATA="{{ .Values.liveness.hideMetadata }}"
 {{- end }}
 
 # Milvus
+FACEAPI_MILVUS_HOST="{{ template "faceapi.identification.milvus_host" . }}"
+FACEAPI_MILVUS_PORT="{{ default 19530 .Values.identification.milvusPort }}"
+
 {{- if .Values.milvus.externalS3.enabled }}
+# Milvus. External Storage
 {{- if .Values.milvus.externalS3.useSSL }}
 FACEAPI_STORAGE_ENDPOINT="https://{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
 {{- else }}
 FACEAPI_STORAGE_ENDPOINT="http://{{ .Values.milvus.externalS3.host }}:{{ .Values.milvus.externalS3.port }}"
 {{- end }}
-FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.externalS3.accessKey .Values.identification.storageAccessKey }}"
-FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.externalS3.secretKey .Values.identification.storageSecretKey }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.externalS3.accessKey .Values.storage.accessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.externalS3.secretKey .Values.storage.secretKey }}"
 {{- else }}
-FACEAPI_STORAGE_ENDPOINT="{{ template "faceapi.identification.storage_endpoint" . }}"
-FACEAPI_STORAGE_ACCESS_KEY="{{ default .Values.milvus.minio.accessKey .Values.identification.storageAccessKey }}"
-FACEAPI_STORAGE_SECRET_KEY="{{ default .Values.milvus.minio.secretKey .Values.identification.storageSecretKey }}"
+
+# Storage
+FACEAPI_STORAGE_ENDPOINT="{{ template "faceapi.storage.endpoint" . }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default "minioadmin" .Values.storage.accessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default "minioadmin" .Values.storage.secretKey }}"
 {{- end }}
-FACEAPI_STORAGE_REGION="{{ .Values.identification.storageRegion | default "us-east-1" }}"
-FACEAPI_STORAGE_PERSON_BUCKET_NAME="{{ default "faceapi-person" .Values.identification.storagePersonBucketName }}"
-FACEAPI_STORAGE_SESSION_BUCKET_NAME="{{ default "faceapi-session" .Values.identification.storageSessionBucketName }}"
-FACEAPI_MILVUS_HOST="{{ template "faceapi.identification.milvus_host" . }}"
-FACEAPI_MILVUS_PORT="{{ default 19530 .Values.identification.milvusPort }}"
+FACEAPI_STORAGE_REGION="{{ default "us-east-1" .Values.storage.region }}"
+FACEAPI_STORAGE_PERSON_BUCKET_NAME="{{ default "faceapi-person" .Values.storage.personBucketName }}"
+FACEAPI_STORAGE_SESSION_BUCKET_NAME="{{ default "faceapi-session" .Values.storage.sessionBucketName }}"
 {{- end }}
+
+{{- if and .Values.liveness.enabled (not .Values.identification.enabled) }}
+# Liveness
+FACEAPI_LIVENESS_GEN_2="true"
+FACEAPI_LIVENESS_HIDE_METADATA="{{ .Values.liveness.hideMetadata }}"
+
+# Storage
+FACEAPI_STORAGE_ENDPOINT="{{ template "faceapi.storage.endpoint" . }}"
+FACEAPI_STORAGE_ACCESS_KEY="{{ default "minioadmin" .Values.storage.accessKey }}"
+FACEAPI_STORAGE_SECRET_KEY="{{ default "minioadmin" .Values.storage.secretKey }}"
+FACEAPI_STORAGE_REGION="{{ default "us-east-1" .Values.storage.region }}"
+FACEAPI_STORAGE_PERSON_BUCKET_NAME="{{ default "faceapi-person" .Values.storage.personBucketName }}"
+FACEAPI_STORAGE_SESSION_BUCKET_NAME="{{ default "faceapi-session" .Values.storage.sessionBucketName }}"
+{{- end }}
+
+# PostgreSQL
+{{- if and .Values.externalPostgreSQL (not .Values.postgresql.enabled) }}
+## Please mind if externalPostgreSQLSecret value is set, it overrides any other PostgreSQL related values
+FACEAPI_SQL_URL="{{ .Values.externalPostgreSQL }}"
+{{- else if .Values.postgresql.enabled }}
+FACEAPI_SQL_URL="postgresql://{{ .Values.postgresql.global.postgresql.auth.username }}:{{ .Values.postgresql.global.postgresql.auth.password }}@{{ template "faceapi.postgresql" . }}:5432/{{ .Values.postgresql.global.postgresql.auth.database }}"
+{{- end }}
+
 {{- end }}

@@ -83,29 +83,20 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
-{{/* Enable Identification */}}
-{{- define "faceapi.identification.enable" -}}
-{{- if .Values.identification.enabled }}
-- name: FACEAPI_ENABLE_IDENTIFICATION
-  value: {{ .Values.identification.enabled | quote }}
-{{- end }}
-{{- end }}
-
-
 {{/* Minio/S3 Storage endpoint */}}
-{{- define "faceapi.identification.storage_endpoint" -}}
-{{ default (printf "http://%s-minio:9000" .Release.Name) .Values.storageEndpoint }}
+{{- define "faceapi.storage.endpoint" -}}
+{{ default (printf "http://%s-minio:9000" .Release.Name) .Values.storage.endpoint }}
 {{- end }}
 
 
 {{/* Milvus host */}}
 {{- define "faceapi.identification.milvus_host" -}}
-{{ default (printf "%s-milvus" .Release.Name) .Values.milvusHost }}
+{{ default (printf "%s-milvus" .Release.Name) .Values.identification.milvusHost }}
 {{- end }}
 
 
 {{/* PostgreSQL host */}}
-{{- define "faceapi.identification.postgresql" -}}
+{{- define "faceapi.postgresql" -}}
 {{ default (printf "%s-postgresql" .Release.Name) }}
 {{- end }}
 
