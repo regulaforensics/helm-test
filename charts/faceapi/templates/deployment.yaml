@@ -80,7 +80,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- include "faceapi.identification.enable" . | indent 10 }}
             {{- include "faceapi.postgresql.secret" . | indent 10 }}
             {{- include "faceapi.envs" . | indent 10 }}
           volumeMounts:
