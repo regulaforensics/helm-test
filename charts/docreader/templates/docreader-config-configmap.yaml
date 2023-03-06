@@ -5,5 +5,5 @@ metadata:
   name: {{ template "docreader-config" . }}
 data:
   config.yaml: |
-    {{ tpl .Values.general.config . | nindent 4 }}
+    {{- tpl .Values.general.config . | nindent 4 }}
 {{- end }}
