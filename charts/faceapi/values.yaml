@@ -52,6 +52,14 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# FaceAPI pod disruption budget
+podDisruptionBudget:
+  enabled: false
+
+  # PDB configuration
+  config:
+    maxUnavailable: 1
+
 
 general:
   bind: "0.0.0.0:41101"
