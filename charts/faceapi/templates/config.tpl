@@ -13,6 +13,9 @@ FACEAPI_LIC_URL="{{ .Values.general.licenseUrl }}"
 {{- if .Values.general.httpsProxy }}
 FACEAPI_HTTPS_PROXY="{{ .Values.general.httpsProxy }}"
 {{- end }}
+{{- if .Values.general.returnSystemInfo }}
+REGULA_RETURN_SYSTEMINFO="{{ .Values.general.returnSystemInfo }}"
+{{- end }}
 
 # HTTPS
 FACEAPI_HTTPS="{{ .Values.https.enabled }}"

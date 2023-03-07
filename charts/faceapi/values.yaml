@@ -49,8 +49,18 @@ securityContext: {}
   # runAsUser: 1001
 
 nodeSelector: {}
-tolerations: []
+priorityClassName: ~
 affinity: {}
+tolerations: []
+topologySpreadConstraints: []
+
+# FaceAPI pod disruption budget
+podDisruptionBudget:
+  enabled: false
+
+  # PDB configuration
+  config:
+    maxUnavailable: 1
 
 
 general:
@@ -67,6 +77,8 @@ general:
   # Use host:port without protocol specification
   # If you use your own TLS certs, place them in /etc/ssl/certs folder
   httpsProxy: ~
+  # Return system information in the /api/ping response and in the /api/process response.
+  returnSystemInfo: true
 
 # Supply the name of existing secret with regula.license file.
 # You can load it to a k8s generic secret via the following options:
@@ -152,9 +164,11 @@ storage:
   # e.g. AWS Default region name. Defaults: us-east-1
   region: ~
   # If milvus.externalS3 values is set, please mind, bucket names must be unique across all AWS accounts (default value won't work)
+  # Required by `identification` module
   # Bucket name for storing person data
   personBucketName: ~
   # If milvus.externalS3 values is set, please mind, bucket names must be unique across all AWS accounts (default value won't work)
+  # Required by `liveness` module
   # Bucket name for storing session data
   sessionBucketName: ~
 

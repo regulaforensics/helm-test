@@ -53,6 +53,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `general.demoSite`                        | Serve a demo web app                          | `true`                                                    |
 | `general.licenseUrl`                      | URL to regula.license file for further download   | ``                                                    |
 | `general.httpsProxy`                      | HTTP proxy, used to connect to the license service    | ``                                                |
+| `general.returnSystemInfo`                | Return system information in the /api/* response  | `true`                                                |
 | `licenseSecretName`                       | The name of an existing secret containing the regula.license file | ``                                    |
 | `https.enabled`                           | Enables https server mode                     | `[]`                                                      |
 | `https.certificatesSecretName`            | The name of an existing secret containing the cert/key files reuired for https | `` mandatory if **https.enabled**  is set    |
