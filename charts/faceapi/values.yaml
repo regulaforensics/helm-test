@@ -49,8 +49,10 @@ securityContext: {}
   # runAsUser: 1001
 
 nodeSelector: {}
-tolerations: []
+priorityClassName: ~
 affinity: {}
+tolerations: []
+topologySpreadConstraints: []
 
 # FaceAPI pod disruption budget
 podDisruptionBudget:
