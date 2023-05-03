@@ -2,8 +2,8 @@
 ---
 apiVersion: v2
 name: api-gateway
-version: 1.2.1
-appVersion: api-gateway-2.2.4
+version: 1.2.2
+appVersion: api-gateway-2.4.2
 description: ML. Airflow API Gateway
 icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
 keywords:
