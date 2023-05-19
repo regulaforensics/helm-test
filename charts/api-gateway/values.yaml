@@ -12,7 +12,7 @@ image:
   pullPolicy: Always
 imagePullSecrets: []
 
-resources: {}
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -20,11 +20,12 @@ resources: {}
   # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
   # Thus setting more workers would require to multiply resources respectively
   # Also, the resources (both requests and limits) section is mandatory for autoscaling
-  # requests:
-  #   memory: "3Gi"
-  #   cpu: "1"
-  # limits:
-  #   memory: "3Gi"
+  requests:
+    memory: "3Gi"
+    cpu: "1"
+  limits:
+    memory: "3Gi"
+    cpu: "4"
 
 podAnnotations: {}
 podSecurityContext:
