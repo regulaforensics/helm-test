@@ -75,7 +75,7 @@ spec:
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: /api/ping
+              path: /api/readiness
               port: faceapi
               scheme: {{ $scheme }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
