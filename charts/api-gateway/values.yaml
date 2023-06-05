@@ -22,7 +22,7 @@ resources:
   # Also, the resources (both requests and limits) section is mandatory for autoscaling
   requests:
     memory: "3Gi"
-    cpu: "2"
+    cpu: "1"
 
 podAnnotations: {}
 podSecurityContext:
