@@ -12,7 +12,7 @@ image:
   pullPolicy: Always
 imagePullSecrets: []
 
-resources:
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -20,12 +20,9 @@ resources:
   # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
   # Thus setting more workers would require to multiply resources respectively
   # Also, the resources (both requests and limits) section is mandatory for autoscaling
-  requests:
-    memory: "3Gi"
-    cpu: "1"
-  limits:
-    memory: "3Gi"
-    cpu: "4"
+  # requests:
+  #   memory: "3Gi"
+  #   cpu: "1"
 
 podAnnotations: {}
 podSecurityContext:
@@ -53,26 +50,6 @@ envSettings:
   sqlHost: localhost
   sqlPort: 5432
   sqlDatabase: tagger
-
-
-# Configuration for postgresql subchart
-# Not recommended for production
-postgresql:
-  enabled: true
-  postgresqlUsername: gateway
-  postgresqlPassword: tvrZqzeKDoKd6w^!7QqHf7
-  postgresqlDatabase: api_gateway_db
-
-redis:
-  enabled: true
-  master:
-    persistence:
-      size: 2Gi
-  replica:
-    replicaCount: 0
-  auth:
-    enabled: false
-
 
 env: []
 # - name: ""
@@ -126,3 +103,27 @@ autoscaling:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: ~
+
+
+# Configuration for postgresql subchart
+# Not recommended for production
+postgresql:
+  enabled: true
+  global:
+    postgresql:
+      auth:
+        postgresPassword: regula
+        username: regula
+        password: regula
+        database: regula_db
+
+
+redis:
+  enabled: false
+  master:
+    persistence:
+      size: 2Gi
+  replica:
+    replicaCount: 0
+  auth:
+    enabled: false

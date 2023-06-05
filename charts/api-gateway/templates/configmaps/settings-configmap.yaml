@@ -72,9 +72,9 @@ data:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': '{{ .Values.postgresql.postgresqlDatabase }}',
-            'USER': '{{ .Values.postgresql.postgresqlUsername }}',
-            'PASSWORD': '{{ .Values.postgresql.postgresqlPassword }}',
+            'NAME': '{{ .Values.postgresql.global.postgresql.auth.database }}',
+            'USER': '{{ .Values.postgresql.global.postgresql.auth.username }}',
+            'PASSWORD': '{{ .Values.postgresql.global.postgresql.auth.password }}',
             'HOST': '{{ include "gateway.postgresql" . }}',
             'PORT': '5432',
         }
