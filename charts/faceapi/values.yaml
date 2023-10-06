@@ -131,6 +131,7 @@ metrics:
   serviceMonitor:
     # Set this to `true` to create ServiceMonitor for Prometheus operator
     enabled: false
+    # Namespace in which Prometheus is running
     namespace: ""
     interval: "30s"
     scrapeTimeout: "10s"

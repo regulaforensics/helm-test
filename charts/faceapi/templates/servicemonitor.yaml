@@ -16,14 +16,15 @@ spec:
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
       path: /metrics
       port: faceapi
+      {{- if .Values.https.enabled }}
+      scheme: HTTPS
+      {{- else }}
+      scheme: HTTP
+      {{- end }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
 {{ include "faceapi.matchLabels" . | indent 6 }}
-      component: faceapi
-  targetLabels:
-    - app.kubernetes.io/name
-    - app.kubernetes.io/instance
 {{- end }}
