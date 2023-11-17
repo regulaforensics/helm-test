@@ -48,7 +48,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* PostgreSQL host */}}
 {{- define "gateway.postgresql" -}}
-{{ default (printf "%s-postgresql" .Release.Name) }}
+{{ default (printf "%s-postgresql-ha-pgpool" .Release.Name) }}
 {{- end }}
 
 {{/* Redis */}}

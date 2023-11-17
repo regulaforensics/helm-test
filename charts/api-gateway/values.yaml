@@ -111,11 +111,12 @@ postgresql:
   enabled: true
   global:
     postgresql:
-      auth:
-        postgresPassword: regula
-        username: regula
-        password: regula
-        database: regula_db
+      username: "regula"
+      password: "regula"
+      database: "regula_db"
+      repmgrPassword: "regularep"
+    pgpool:
+      adminPassword: "regularep"
 
 
 redis:
