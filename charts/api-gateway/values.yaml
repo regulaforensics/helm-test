@@ -112,11 +112,13 @@ postgresql-ha:
   global:
     postgresql:
       username: "regula"
-      password: "regula"
+      password: "regulapasswd"
       database: "regula_db"
-      repmgrPassword: "regularep"
+      repmgrUsername: "regularepmgr"
+      repmgrPassword: "regularepmgrpasswd"
     pgpool:
-      adminPassword: "regularep"
+      adminUsername: "regulapgpool"
+      adminPassword: "regulapgpoolpasswd"
 
 
 redis:
