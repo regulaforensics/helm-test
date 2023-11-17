@@ -107,7 +107,7 @@ autoscaling:
 
 # Configuration for postgresql subchart
 # Not recommended for production
-postgresql:
+postgresql-ha:
   enabled: true
   global:
     postgresql:
