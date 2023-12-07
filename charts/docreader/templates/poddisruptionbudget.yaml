@@ -1,0 +1,12 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+kind: PodDisruptionBudget
+apiVersion: policy/v1
+metadata:
+  name: {{ include "docreader.fullname" . }}
+  labels: {{- include "docreader.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "docreader.selectorLabels" . | nindent 6 }}
+  {{- toYaml .Values.podDisruptionBudget.config | nindent 2 }}
+{{- end }}

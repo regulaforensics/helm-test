@@ -1,26 +1,29 @@
 {{/* The purpose of this yaml file is it to check the values file is consistent for some complexe combinations. */}}
 
-{{- /* HTTPS checks */ -}}
-{{- if .Values.https.enabled }}
-    {{- if not .Values.https.certificatesSecretName }}
-        {{ required "When 'HTTPS' mode is enabled, https.certificatesSecretName value should be set." nil }}
+{{- /* SSL checks */ -}}
+{{- if .Values.ssl.enabled }}
+    {{- if not .Values.ssl.certificatesSecretName }}
+        {{ required "When 'SSL' mode is enabled, ssl.certificatesSecretName value should be set." nil }}
     {{- end }}
 {{- end }}
 
 {{- /* RFID PKD PA checks */ -}}
-{{- if .Values.rfidpkd.enabled }}
-    {{- if not .Values.rfidpkd.existingClaim }}
-        {{ required "When 'rfidpkd' mode is enabled, https.existingClaim value should be set." nil }}
+{{- if .Values.sdk.rfid.enabled }}
+    {{- if not .Values.sdk.rfid.existingClaim }}
+        {{ required "When 'rfid' mode is enabled, sdk.rfid.existingClaim value should be set." nil }}
     {{- end }}
 {{- end }}
 
 {{- /* Chip Verification checks */ -}}
-{{- if .Values.chipVerification.enabled }}
-    {{- if not .Values.minio.enabled }}
-        {{ required "When 'chipVerification' mode is enabled, minio.enabled value should be set." nil }}
+{{- if .Values.sdk.chipVerification.enabled }}
+    {{- if not (or .Values.database.connectionString .Values.database.connectionStringSecretName .Values.postgresql.enabled ) }}
+        {{ required "When 'chipVerification' mode is enabled, `database.connectionString` or `database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
     {{- end }}
-{{- else -}}
-    {{- if .Values.minio.enabled }}
-        {{ required "When 'chipVerification' mode is not enabled, minio.enabled value should not be set." nil }}
+{{- end }}
+
+{{- /* API v2 Verification checks */ -}}
+{{- if .Values.apiV2.enabled }}
+    {{- if not (or .Values.database.connectionString .Values.database.connectionStringSecretName .Values.postgresql.enabled ) }}
+        {{ required "When 'API v2' mode is enabled, `database.connectionString` or `database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
     {{- end }}
 {{- end }}
