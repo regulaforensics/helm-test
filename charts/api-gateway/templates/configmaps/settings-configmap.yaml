@@ -125,7 +125,7 @@ data:
             'file': {
                 'level': 'INFO',
                 'class': 'logging.FileHandler',
-                'filename': f'/mnt/face_data_store/api_logs/api_logs_{datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S")}.log',
+                'filename': f'/mnt/facestore/face_data_store/api_logs/api_logs_{datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S")}.log',
                 "formatter": "verbose",
             },
         },
