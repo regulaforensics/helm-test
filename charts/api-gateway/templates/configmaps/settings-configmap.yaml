@@ -16,7 +16,7 @@ data:
 
     SECRET_KEY = 'django-insecure-wx(s(m$3-n5)@ciqgo*ar%k3u-%jv#(2p=g9)d1cy@o@6u+a&='
 
-    DEBUG = False
+    DEBUG = True
 
     ALLOWED_HOSTS = ['api-gateway', '*']
 
