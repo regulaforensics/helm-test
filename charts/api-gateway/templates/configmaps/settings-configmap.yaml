@@ -9,13 +9,22 @@ data:
     from pathlib import Path
 
     BASE_DIR = Path(__file__).resolve().parent.parent
+    print("BASE DIR :: ", BASE_DIR)
+
+    TEMPLATES_DIR = Path(BASE_DIR, "views")
+    print("TEMPLATES :: ", TEMPLATES_DIR)
 
     SECRET_KEY = 'django-insecure-wx(s(m$3-n5)@ciqgo*ar%k3u-%jv#(2p=g9)d1cy@o@6u+a&='
 
-    DEBUG = True
+    DEBUG = False
 
     ALLOWED_HOSTS = ['api-gateway', '*']
 
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
     # Application definition
 
@@ -26,13 +35,11 @@ data:
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
-
         'drf_yasg',
         'rest_framework',
         'rest_framework.authtoken',
         'rest_auth',
         'rest_framework_swagger',
-
         'trainmodels'
     ]
 
@@ -51,7 +58,7 @@ data:
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
+            'DIRS': [TEMPLATES_DIR],
             'APP_DIRS': True,
             'OPTIONS': {
                 'context_processors': [
@@ -68,6 +75,9 @@ data:
     ]
 
     WSGI_APPLICATION = 'gateway.wsgi.application'
+
+    DJANGO_DB_HOST = os.getenv("DJANGO_DB_HOST", default="127.0.0.1")
+    DJANGO_SETTINGS_MODULE = 'gateway.settings'
 
     DATABASES = {
         'default': {
@@ -95,24 +105,62 @@ data:
         },
     ]
 
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework.authentication.BasicAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
+        ]
+    }
+
     LANGUAGE_CODE = 'en-us'
     TIME_ZONE = 'UTC'
-    USE_I18N = True
-    USE_L10N = True
-    USE_TZ = True
 
     SETTINGS_DIR = os.path.dirname(__file__)
-    PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
-    PROJECT_PATH = os.path.abspath(PROJECT_PATH)
 
-    MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
-    MEDIA_URL = '/media/'
-    STATIC_URL = '/static/'
-
-
-    DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+    import datetime
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.FileHandler',
+                'filename': f'/mnt/face_data_store/api_logs/api_logs_{datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S")}.log',
+                "formatter": "verbose",
+            },
+        },
+        'loggers': {
+            'api.views': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True,
+            },
+            'tagging.tagger.views': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True,
+            },
+            'tagging.tagger_video.views': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True,
+            },
+            'samples.views': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True,
+            }
+        },
+        "formatters": {
+            "verbose": {
+                "format": "[{levelname}] {message}",
+                "style": "{",
+            }
+        },
+    }
 
     try:
-        from .env_settings import *
-    except:
-        print('The env_settings.py file is not found.')
+        from gateway.env_settings import *
+        print(f'The env_settings.py file is found.')
+    except Exception as e:
+        print(f'The env_settings.py file is not found. {e}')
