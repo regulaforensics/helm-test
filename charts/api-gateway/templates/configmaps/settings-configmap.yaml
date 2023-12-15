@@ -87,6 +87,10 @@ data:
             'PASSWORD': '{{ index .Values "postgresql-ha" "global" "postgresql" "password" }}',
             'HOST': '{{ include "gateway.postgresql" . }}',
             'PORT': '5432',
+            'AUTOCOMMIT': True,
+            'CONN_MAX_AGE': 0,
+            'ATOMIC_REQUESTS': False,
+            'OPTIONS': {},
         }
     }
 
