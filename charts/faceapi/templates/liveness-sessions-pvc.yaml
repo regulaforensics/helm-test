@@ -1,0 +1,20 @@
+{{- if and (eq .Values.storage.type "fs") .Values.liveness.enabled .Values.liveness.sessions.persistence.enabled (not .Values.liveness.sessions.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "faceapi.liveness.sessions.pvc" . }}
+  labels: {{- include "faceapi.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.liveness.sessions.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.liveness.sessions.persistence.size | quote }}
+  {{- if .Values.liveness.sessions.persistence.storageClassName }}
+  {{- if (eq "-" .Values.liveness.sessions.persistence.storageClassName) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.liveness.sessions.persistence.storageClassName }}"
+  {{- end }}
+  {{- end }}
+{{- end }}
