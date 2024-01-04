@@ -3,11 +3,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "faceapi.fullname" . }}
-  namespace: {{ default .Release.Namespace .Values.metrics.serviceMonitor.namespace | quote }}
-  labels:
-{{ include "faceapi.labels" . | indent 4 }}
+  {{- if .Values.metrics.serviceMonitor.namespace }}
+  namespace: {{ .Values.metrics.serviceMonitor.namespace }}
+  {{- end }}
+  labels: {{- include "faceapi.labels" . | nindent  4 }}
     {{- if .Values.metrics.serviceMonitor.additionalLabels }}
-{{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
+    {{- toYaml .Values.metrics.serviceMonitor.additionalLabels | nindent  4 }}
     {{- end }}
 spec:
   endpoints:
@@ -16,15 +17,18 @@ spec:
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
       path: /metrics
       port: faceapi
-      {{- if .Values.https.enabled }}
+      {{- if .Values.ssl.enabled }}
       scheme: HTTPS
       {{- else }}
       scheme: HTTP
       {{- end }}
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - {{ .Release.Namespace | quote }}
   selector:
     matchLabels:
-{{ include "faceapi.matchLabels" . | indent 6 }}
+      {{- include "faceapi.selectorLabels" . | nindent 6 }}
+  targetLabels:
+    - app.kubernetes.io/name
+    - app.kubernetes.io/instance
 {{- end }}

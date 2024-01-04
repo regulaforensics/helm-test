@@ -3,3 +3,4 @@
 charts/**/test-**.yaml
 charts/**/gcs_key.json
 charts/**/regula.license
+charts/**/test-*.yaml

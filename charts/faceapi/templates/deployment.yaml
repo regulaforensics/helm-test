@@ -2,15 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "faceapi.fullname" . }}
-  labels:
-    {{- include "faceapi.labels" . | nindent 4 }}
+  labels: {{- include "faceapi.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicas }}
   {{- end }}
   selector:
-    matchLabels:
-      {{- include "faceapi.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "faceapi.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -18,38 +16,30 @@ spec:
         {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
-      labels:
-        {{- include "faceapi.selectorLabels" . | nindent 8 }}
+      labels: {{- include "faceapi.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
+      affinity: {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
+      tolerations: {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.topologySpreadConstraints }}
-      topologySpreadConstraints:
-        {{- toYaml . | nindent 8 }}
+      topologySpreadConstraints: {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}-{{ template "version" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -61,7 +51,7 @@ spec:
             httpGet:
               path: /api/ping
               port: faceapi
-              {{- if .Values.https.enabled }}
+              {{- if .Values.ssl.enabled }}
               scheme: HTTPS
               {{- else }}
               scheme: HTTP
@@ -77,7 +67,7 @@ spec:
             httpGet:
               path: /api/readiness
               port: faceapi
-              {{- if .Values.https.enabled }}
+              {{- if .Values.ssl.enabled }}
               scheme: HTTPS
               {{- else }}
               scheme: HTTP
@@ -88,15 +78,39 @@ spec:
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- include "faceapi.postgresql.secret" . | indent 10 }}
             {{- include "faceapi.envs" . | indent 10 }}
+            {{- if and (eq .Values.storage.type "s3") .Values.storage.s3.awsCredentialsSecretName }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "faceapi.aws.credentials.secret" . }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "faceapi.aws.credentials.secret" . }}
+                  key: AWS_SECRET_ACCESS_KEY
+            {{- end }}
+            {{- if and (eq .Values.storage.type "az") .Values.storage.az.connectionStringSecretName }}
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "faceapi.az.credentials.secret" . }}
+                  key: AZURE_STORAGE_CONNECTION_STRING
+            {{- end }}
+            {{- if and (not .Values.postgresql.enabled) .Values.database.connectionStringSecretName }}
+            - name: SQL_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "faceapi.db.credentials.secret" . }}
+                  key: SQL_CONNECTION_STRING
+            {{- end }}
           volumeMounts:
             - name: faceapi-config
-              mountPath: /app/.env
-              subPath: .env
+              mountPath: /app/config.yaml
+              subPath: config.yaml
               readOnly: true
             {{- if .Values.licenseSecretName }}
             - name: license
@@ -104,14 +118,28 @@ spec:
               subPath: regula.license
               readOnly: true
             {{- end }}
-            {{- if .Values.https.certificatesSecretName }}
+            {{- if .Values.ssl.certificatesSecretName }}
             - name: certificates
               mountPath: /app/certs
               readOnly: true
             {{- end }}
-            {{- if .Values.logs.persistence.enabled }}
-            - name: logs
-              mountPath: /app/logs
+            {{- if and (eq .Values.storage.type "fs") .Values.detectMatch.enabled .Values.detectMatch.results.persistence.enabled }}
+            - name: detectmatch-results
+              mountPath: {{ quote .Values.detectMatch.results.location.folder }}
+            {{- end }}
+            {{- if and (eq .Values.storage.type "fs") .Values.liveness.enabled .Values.liveness.sessions.persistence.enabled }}
+            - name: liveness-sessions
+              mountPath: {{ quote .Values.liveness.sessions.location.folder }}
+            {{- end }}
+            {{- if and (eq .Values.storage.type "fs") .Values.search.enabled .Values.search.persons.persistence.enabled }}
+            - name: search-persons
+              mountPath: {{ quote .Values.search.persons.location.folder }}
+            {{- end }}
+            {{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName }}
+            - name: gcs-credentials
+              mountPath: /etc/credentials/gcs_key.json
+              subPath: gcs_key.json
+              readOnly: true
             {{- end }}
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 12 }}
@@ -119,21 +147,36 @@ spec:
       volumes:
         - name: faceapi-config
           configMap:
-            name: {{ template "faceapi.config.name" . }}
+            name: {{ include "faceapi.config.name" . }}
         {{- if .Values.licenseSecretName }}
         - name: license
           secret:
             secretName: {{ template "faceapi.license.secret" . }}
         {{- end }}
-        {{- if .Values.https.certificatesSecretName }}
+        {{- if .Values.ssl.certificatesSecretName }}
         - name: certificates
           secret:
-            secretName: {{ template "faceapi.certificate.secret" . }}
+            secretName: {{ template "faceapi.certificates.secret" . }}
         {{- end }}
-        {{- if .Values.logs.persistence.enabled }}
-        - name: logs
+        {{- if and (eq .Values.storage.type "fs") .Values.detectMatch.enabled .Values.detectMatch.results.persistence.enabled }}
+        - name: detectmatch-results
           persistentVolumeClaim:
-            claimName: {{ template "faceapi.logs.pvc" . }}
+            claimName: {{ template "faceapi.detectmatch.results.pvc" . }}
+        {{- end }}
+        {{- if and (eq .Values.storage.type "fs") .Values.liveness.enabled .Values.liveness.sessions.persistence.enabled }}
+        - name: liveness-sessions
+          persistentVolumeClaim:
+            claimName: {{ template "faceapi.liveness.sessions.pvc" . }}
+        {{- end }}
+        {{- if and (eq .Values.storage.type "fs") .Values.search.enabled .Values.search.persons.persistence.enabled }}
+        - name: search-persons
+          persistentVolumeClaim:
+            claimName: {{ template "faceapi.search.persons.pvc" . }}
+        {{- end }}
+        {{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName }}
+        - name: gcs-credentials
+          secret:
+            secretName: {{ template "faceapi.gcs.credentials.secret" . }}
         {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}

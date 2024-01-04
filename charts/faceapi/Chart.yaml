@@ -3,7 +3,7 @@
 apiVersion: v2
 name: faceapi
 home: https://faceapi.regulaforensics.com/
-version: 0.7.3
+version: 1.0.2
 appVersion: nightly
 description: Face Recognition Service. On-premise and cloud integration
 icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
@@ -14,11 +14,11 @@ keywords:
   - regulaforensics
 dependencies:
   - name: postgresql
-    version: 11.9.13
+    version: 13.2.27
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgresql.enabled
   - name: milvus
-    version: 4.1.9
+    version: 4.1.11
     repository: "https://zilliztech.github.io/milvus-helm/"
     condition: milvus.enabled
 maintainers:
