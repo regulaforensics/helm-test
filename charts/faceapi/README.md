@@ -141,6 +141,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `storage.type`                            | Global storage type. Possible values: `fs`, `s3`, `gcs`, `az`                     | `fs`                                                      |
 | `storage.s3.accessKey`                    | S3 Access Key                                                                     | `""`                                                      |
 | `storage.s3.accessSecret`                 | S3 Secret Access Key                                                              | `""`                                                      |
+| `storage.s3.endpoint`                     | S3 endpoint                                                                       | `"https://s3.amazonaws.com"`                              |
 | `storage.s3.region`                       | S3 region                                                                         | `"eu-central-1"`                                          |
 | `storage.s3.secure`                       | Secure connection                                                                 | `"true"`                                                  |
 | `storage.s3.endpoint`                     | Enpoint to the S3 compatible storage                                              | `""`                                                      |

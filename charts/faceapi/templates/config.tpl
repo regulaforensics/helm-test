@@ -57,6 +57,7 @@ service:
       accessKey: {{ .Values.storage.s3.accessKey }}
       accessSecret: {{ .Values.storage.s3.accessSecret }}
       {{- end }}
+      endpoint: {{ default "https://s3.amazonaws.com" .Values.storage.s3.endpoint }}
       region: {{ default "eu-central-1" .Values.storage.s3.region }}
       secure: {{ default "true" .Values.storage.s3.secure }}
     {{- end }}
