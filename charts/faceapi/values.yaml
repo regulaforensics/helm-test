@@ -158,9 +158,9 @@ storage:
   # s3:
   #   accessKey: <AWS_ACCESS_KEY_ID>
   #   accessSecret: <AWS_SECRET_ACCESS_KEY>
-  #   endpoint: "https://s3.amazonaws.com"
-  #   region: "eu-central-1"
+  #   region: "us-east-1"
   #   secure: true
+  #   endpointUrl: "https://s3.amazonaws.com"
   #   #  awsCredentialsSecretName overrides storage.s3.accessKey/s3.accessSecret values
   #   #  Supply the name of existing secret with AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY keys.
   #   #  You can load it to a k8s generic secret via the following command:

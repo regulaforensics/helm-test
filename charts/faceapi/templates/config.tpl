@@ -57,9 +57,9 @@ service:
       accessKey: {{ .Values.storage.s3.accessKey }}
       accessSecret: {{ .Values.storage.s3.accessSecret }}
       {{- end }}
-      endpoint: {{ default "https://s3.amazonaws.com" .Values.storage.s3.endpoint }}
-      region: {{ default "eu-central-1" .Values.storage.s3.region }}
-      secure: {{ default "true" .Values.storage.s3.secure }}
+      region: {{ default "us-east-1" .Values.storage.s3.region | quote }}
+      secure: {{ ne .Values.storage.s3.secure false }}
+      endpointUrl: {{ default "https://s3.amazonaws.com" .Values.storage.s3.endpointUrl | quote }}
     {{- end }}
     {{- if eq .Values.storage.type "gcs" }}
     type: gcs
