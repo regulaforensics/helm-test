@@ -1,0 +1,20 @@
+{{- if and (eq .Values.storage.type "fs") .Values.detectMatch.enabled .Values.detectMatch.results.persistence.enabled (not .Values.detectMatch.results.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "faceapi.detectmatch.results.pvc" . }}
+  labels: {{- include "faceapi.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.detectMatch.results.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.detectMatch.results.persistence.size | quote }}
+  {{- if .Values.detectMatch.results.persistence.storageClassName }}
+  {{- if (eq "-" .Values.detectMatch.results.persistence.storageClassName) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.detectMatch.results.persistence.storageClassName }}"
+  {{- end }}
+  {{- end }}
+{{- end }}
