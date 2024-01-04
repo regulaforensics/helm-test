@@ -187,11 +187,11 @@ database:
   # #  `kubectl create secret generic database-credentials -n <namespace> --from-literal=SQL_CONNECTION_STRING=<SQL_CONNECTION_STRING>`
   # connectionStringSecretName: ~
   # connectionString examples:
-  #connectionString: postgresql://<username>:<password>@127.0.0.1:5432/regula_faceapi_db
-  #connectionString: mysql://username>:<password>@127.0.0.1:5432/regula_faceapi_db
-  #connectionString: mariadb+pymysql:/username>:<password>@127.0.0.1:3306/regula_faceapi_db
-  #connectionString: mysql+pymysql://username>:<password>@127.0.0.1:3306/regula_faceapi_db
-  #connectionString: sqlite:///opt/regula/faceapi/regula_faceapi.db
+  # connectionString: postgresql://<username>:<password>@127.0.0.1:5432/regula_faceapi_db
+  # connectionString: mysql://username>:<password>@127.0.0.1:5432/regula_faceapi_db
+  # connectionString: mariadb+pymysql:/username>:<password>@127.0.0.1:3306/regula_faceapi_db
+  # connectionString: mysql+pymysql://username>:<password>@127.0.0.1:3306/regula_faceapi_db
+  # connectionString: sqlite:///opt/regula/faceapi/regula_faceapi.db
 
 detectMatch:
   enabled: true
