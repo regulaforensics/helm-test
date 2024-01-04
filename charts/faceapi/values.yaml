@@ -158,6 +158,7 @@ storage:
   # s3:
   #   accessKey: <AWS_ACCESS_KEY_ID>
   #   accessSecret: <AWS_SECRET_ACCESS_KEY>
+  #   endpoint: "https://s3.amazonaws.com"
   #   region: "eu-central-1"
   #   secure: true
   #   #  awsCredentialsSecretName overrides storage.s3.accessKey/s3.accessSecret values
