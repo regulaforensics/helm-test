@@ -1,4 +1,4 @@
-{{- if and (eq .Values.storage.type "fs") .Values.detectMatch.enabled .Values.detectMatch.results.persistence.enabled (not .Values.detectMatch.results.persistence.existingClaim) }}
+{{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.detectMatch.enabled .Values.config.service.detectMatch.results.persistence.enabled (not .Values.config.service.detectMatch.results.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -6,15 +6,15 @@ metadata:
   labels: {{- include "faceapi.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - {{ .Values.detectMatch.results.persistence.accessMode }}
+    - {{ .Values.config.service.detectMatch.results.persistence.accessMode }}
   resources:
     requests:
-      storage: {{ .Values.detectMatch.results.persistence.size | quote }}
-  {{- if .Values.detectMatch.results.persistence.storageClassName }}
-  {{- if (eq "-" .Values.detectMatch.results.persistence.storageClassName) }}
+      storage: {{ .Values.config.service.detectMatch.results.persistence.size | quote }}
+  {{- if .Values.config.service.detectMatch.results.persistence.storageClassName }}
+  {{- if (eq "-" .Values.config.service.detectMatch.results.persistence.storageClassName) }}
   storageClassName: ""
   {{- else }}
-  storageClassName: "{{ .Values.detectMatch.results.persistence.storageClassName }}"
+  storageClassName: "{{ .Values.config.service.detectMatch.results.persistence.storageClassName }}"
   {{- end }}
   {{- end }}
 {{- end }}

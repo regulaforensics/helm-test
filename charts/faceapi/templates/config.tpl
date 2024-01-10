@@ -1,178 +1,178 @@
 {{- define "faceapi.config" -}}
 sdk:
   compare:
-    limitPerImageTypes: {{ .Values.sdk.compare.limitPerImageTypes }}
+    limitPerImageTypes: {{ .Values.config.sdk.compare.limitPerImageTypes }}
   logging:
-    level: {{ quote .Values.sdk.logging.level }}
+    level: {{ quote .Values.config.sdk.logging.level }}
 
-  {{- if .Values.sdk.detect }}
-  detect: {{- toYaml .Values.sdk.detect | nindent 4 }}
+  {{- if .Values.config.sdk.detect }}
+  detect: {{- toYaml .Values.config.sdk.detect | nindent 4 }}
   {{- end }}
 
-  {{- if and .Values.liveness.enabled .Values.sdk.liveness  }}
-  liveness: {{- toYaml .Values.sdk.liveness | nindent 4 }}
+  {{- if and .Values.config.service.liveness.enabled .Values.config.sdk.liveness  }}
+  liveness: {{- toYaml .Values.config.sdk.liveness | nindent 4 }}
   {{- end }}
 
 service:
   webServer:
-    port: {{ .Values.webServer.port }}
-    workers: {{ .Values.webServer.workers }}
-    timeout: {{ .Values.webServer.timeout }}
+    port: {{ .Values.config.service.webServer.port }}
+    workers: {{ .Values.config.service.webServer.workers }}
+    timeout: {{ .Values.config.service.webServer.timeout }}
     demoApp:
-      enabled: {{ .Values.webServer.demoApp.enabled }}
+      enabled: {{ .Values.config.service.webServer.demoApp.enabled }}
     cors:
-      origins: {{ quote .Values.webServer.cors.origins }}
-      headers: {{ quote .Values.webServer.cors.headers }}
-      methods: {{ quote .Values.webServer.cors.methods }}
+      origins: {{ quote .Values.config.service.webServer.cors.origins }}
+      headers: {{ quote .Values.config.service.webServer.cors.headers }}
+      methods: {{ quote .Values.config.service.webServer.cors.methods }}
     ssl:
-      enabled: {{ .Values.ssl.enabled }}
-      {{- if .Values.ssl.enabled }}
+      enabled: {{ .Values.config.service.webServer.ssl.enabled }}
+      {{- if .Values.config.service.webServer.ssl.enabled }}
       cert: "certs/tls.crt"
       key: "certs/tls.key"
-      tlsVersion: {{ .Values.ssl.tlsVersion }}
+      tlsVersion: {{ .Values.config.service.webServer.ssl.tlsVersion }}
       {{- else }}
       {{- end }}
     logging:
-      level: {{ quote .Values.webServer.logging.level }}
-      formatter: {{ quote .Values.webServer.logging.formatter }}
+      level: {{ quote .Values.config.service.webServer.logging.level }}
+      formatter: {{ quote .Values.config.service.webServer.logging.formatter }}
       access:
-        console: {{ .Values.webServer.logging.access.console }}
-        path: {{ quote .Values.webServer.logging.access.path }}
+        console: {{ .Values.config.service.webServer.logging.access.console }}
+        path: {{ quote .Values.config.service.webServer.logging.access.path }}
       app:
-        console: {{ .Values.webServer.logging.app.console }}
-        path: {{ quote .Values.webServer.logging.app.path }}
+        console: {{ .Values.config.service.webServer.logging.app.console }}
+        path: {{ quote .Values.config.service.webServer.logging.app.path }}
     metrics:
-      enabled: {{ .Values.metrics.enabled }}
+      enabled: {{ .Values.config.service.webServer.metrics.enabled }}
 
   storage:
-    {{- if eq .Values.storage.type "fs" }}
+    {{- if eq .Values.config.service.storage.type "fs" }}
     type: fs
     {{- end }}
-    {{- if eq .Values.storage.type "s3" }}
+    {{- if eq .Values.config.service.storage.type "s3" }}
     type: s3
     s3:
-      {{- if .Values.storage.s3.awsCredentialsSecretName }}
-      ## `storage.s3.accessKey/storage.s3.accessSecret` values have been overridden by `storage.s3.awsCredentialsSecretName` value
+      {{- if .Values.config.service.storage.s3.awsCredentialsSecretName }}
+      ## `config.service.storage.s3.accessKey/config.service.storage.s3.accessSecret` values have been overridden by `config.service.storage.s3.awsCredentialsSecretName` value
       {{- else }}
-      accessKey: {{ .Values.storage.s3.accessKey }}
-      accessSecret: {{ .Values.storage.s3.accessSecret }}
+      accessKey: {{ .Values.config.service.storage.s3.accessKey }}
+      accessSecret: {{ .Values.config.service.storage.s3.accessSecret }}
       {{- end }}
-      region: {{ default "us-east-1" .Values.storage.s3.region | quote }}
-      secure: {{ ne .Values.storage.s3.secure false }}
-      endpointUrl: {{ default "https://s3.amazonaws.com" .Values.storage.s3.endpointUrl | quote }}
+      region: {{ default "us-east-1" .Values.config.service.storage.s3.region | quote }}
+      secure: {{ ne .Values.config.service.storage.s3.secure false }}
+      endpointUrl: {{ default "https://s3.amazonaws.com" .Values.config.service.storage.s3.endpointUrl | quote }}
     {{- end }}
-    {{- if eq .Values.storage.type "gcs" }}
+    {{- if eq .Values.config.service.storage.type "gcs" }}
     type: gcs
     gcs:
       gcsKeyJson: "/etc/credentials/gcs_key.json"
     {{- end }}
-    {{- if eq .Values.storage.type "az" }}
+    {{- if eq .Values.config.service.storage.type "az" }}
     type: az
-    {{- if .Values.storage.az.connectionStringSecretName }}
-    ## `storage.az.connectionString` value has been overridden by `storage.az.connectionStringSecretName` value
+    {{- if .Values.config.service.storage.az.connectionStringSecretName }}
+    ## `config.service.storage.az.connectionString` value has been overridden by `config.service.storage.az.connectionStringSecretName` value
     {{- else }}
     az:
-      connectionString: {{ quote .Values.storage.az.connectionString }}
+      connectionString: {{ quote .Values.config.service.storage.az.connectionString }}
     {{- end }}
     {{- end }}
-  {{- if or .Values.liveness.enabled .Values.search.enabled }}
+  {{- if or .Values.config.service.liveness.enabled .Values.config.service.search.enabled }}
   {{ if .Values.postgresql.enabled }}
   ## `database` configuration has been overridden by `postgresql.enabled=true` value
   database:
     connectionString: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ template "faceapi.postgresql" . }}:5432/{{ .Values.postgresql.auth.database }}"
   {{- else }}
-  {{- if .Values.database.connectionStringSecretName }}
+  {{- if .Values.config.service.database.connectionStringSecretName }}
   ## `database` configuration has been overridden by `database.connectionStringSecretName` value
   {{- else }}
   database:
-    connectionString: {{ quote .Values.database.connectionString }}
+    connectionString: {{ quote .Values.config.service.database.connectionString }}
   {{- end }}
   {{- end }}
   {{- end }}
 
   detectMatch:
-    enabled: {{ .Values.detectMatch.enabled }}
-    {{- if .Values.detectMatch.enabled }}
+    enabled: {{ .Values.config.service.detectMatch.enabled }}
+    {{- if .Values.config.service.detectMatch.enabled }}
     results:
       location:
-        {{- if or (eq .Values.storage.type "s3") (eq .Values.storage.type "gcs") }}
-        bucket: {{ quote .Values.detectMatch.results.location.bucket }}
-        prefix: {{ quote .Values.detectMatch.results.location.prefix }}
+        {{- if or (eq .Values.config.service.storage.type "s3") (eq .Values.config.service.storage.type "gcs") }}
+        bucket: {{ quote .Values.config.service.detectMatch.results.location.bucket }}
+        prefix: {{ quote .Values.config.service.detectMatch.results.location.prefix }}
         {{- end }}
-        {{- if eq .Values.storage.type "az" }}
-        container: {{ quote .Values.detectMatch.results.location.container }}
-        prefix: {{ quote .Values.detectMatch.results.location.prefix }}
+        {{- if eq .Values.config.service.storage.type "az" }}
+        container: {{ quote .Values.config.service.detectMatch.results.location.container }}
+        prefix: {{ quote .Values.config.service.detectMatch.results.location.prefix }}
         {{- end }}
-        {{- if eq .Values.storage.type "fs" }}
-        folder: {{ quote .Values.detectMatch.results.location.folder }}
+        {{- if eq .Values.config.service.storage.type "fs" }}
+        folder: {{ quote .Values.config.service.detectMatch.results.location.folder }}
         {{- end }}
     {{- else }}
     {{- end }}
 
   liveness:
-    enabled: {{ .Values.liveness.enabled }}
-    {{- if .Values.liveness.enabled }}
-    ecdhSchema: {{ quote .Values.liveness.ecdhSchema }}
-    hideMetadata: {{ .Values.liveness.hideMetadata }}
-    protectPersonalInfo: {{ .Values.liveness.protectPersonalInfo }}
+    enabled: {{ .Values.config.service.liveness.enabled }}
+    {{- if .Values.config.service.liveness.enabled }}
+    ecdhSchema: {{ quote .Values.config.service.liveness.ecdhSchema }}
+    hideMetadata: {{ .Values.config.service.liveness.hideMetadata }}
+    protectPersonalInfo: {{ .Values.config.service.liveness.protectPersonalInfo }}
     sessions:
       location:
-        {{- if or (eq .Values.storage.type "s3") (eq .Values.storage.type "gcs") }}
-        bucket: {{ quote .Values.liveness.sessions.location.bucket }}
-        prefix: {{ quote .Values.liveness.sessions.location.prefix }}
+        {{- if or (eq .Values.config.service.storage.type "s3") (eq .Values.config.service.storage.type "gcs") }}
+        bucket: {{ quote .Values.config.service.liveness.sessions.location.bucket }}
+        prefix: {{ quote .Values.config.service.liveness.sessions.location.prefix }}
         {{- end }}
-        {{- if eq .Values.storage.type "az" }}
-        container: {{ quote .Values.liveness.sessions.location.container }}
-        prefix: {{ quote .Values.liveness.sessions.location.prefix }}
+        {{- if eq .Values.config.service.storage.type "az" }}
+        container: {{ quote .Values.config.service.liveness.sessions.location.container }}
+        prefix: {{ quote .Values.config.service.liveness.sessions.location.prefix }}
         {{- end }}
-        {{- if eq .Values.storage.type "fs" }}
-        folder: {{ quote .Values.liveness.sessions.location.folder }}
+        {{- if eq .Values.config.service.storage.type "fs" }}
+        folder: {{ quote .Values.config.service.liveness.sessions.location.folder }}
         {{- end }}
     {{- else }}
     {{- end }}
 
   search:
-    enabled: {{ .Values.search.enabled }}
-    {{- if .Values.search.enabled }}
+    enabled: {{ .Values.config.service.search.enabled }}
+    {{- if .Values.config.service.search.enabled }}
     persons:
       location:
-        {{- if or (eq .Values.storage.type "s3") (eq .Values.storage.type "gcs") }}
-        bucket: {{ quote .Values.search.persons.location.bucket }}
-        prefix: {{ quote .Values.search.persons.location.prefix }}
+        {{- if or (eq .Values.config.service.storage.type "s3") (eq .Values.config.service.storage.type "gcs") }}
+        bucket: {{ quote .Values.config.service.search.persons.location.bucket }}
+        prefix: {{ quote .Values.config.service.search.persons.location.prefix }}
         {{- end }}
-        {{- if eq .Values.storage.type "az" }}
-        container: {{ quote .Values.search.persons.location.container }}
-        prefix: {{ quote .Values.search.persons.location.prefix }}
+        {{- if eq .Values.config.service.storage.type "az" }}
+        container: {{ quote .Values.config.service.search.persons.location.container }}
+        prefix: {{ quote .Values.config.service.search.persons.location.prefix }}
         {{- end }}
-        {{- if eq .Values.storage.type "fs" }}
-        folder: {{ quote .Values.search.persons.location.folder }}
+        {{- if eq .Values.config.service.storage.type "fs" }}
+        folder: {{ quote .Values.config.service.search.persons.location.folder }}
         {{- end }}
 
-    threshold: {{ .Values.search.threshold }}
+    threshold: {{ .Values.config.service.search.threshold }}
 
     vectorDatabase:
-      type: {{ quote .Values.search.vectorDatabase.type }}
-      {{- if eq .Values.search.vectorDatabase.type "milvus" }}
+      type: {{ quote .Values.config.service.search.vectorDatabase.type }}
+      {{- if eq .Values.config.service.search.vectorDatabase.type "milvus" }}
       milvus:
-        user: {{ quote .Values.search.vectorDatabase.milvus.user }}
-        password: {{ quote .Values.search.vectorDatabase.milvus.password }}
-        token: {{ quote .Values.search.vectorDatabase.milvus.token }}
+        user: {{ quote .Values.config.service.search.vectorDatabase.milvus.user }}
+        password: {{ quote .Values.config.service.search.vectorDatabase.milvus.password }}
+        token: {{ quote .Values.config.service.search.vectorDatabase.milvus.token }}
         {{- if .Values.milvus.enabled }}
-        ## `vectorDatabase.milvus.endpoint` value has been overridden by `milvus.enabled=true` value
+        ## `config.service.search.vectorDatabase.milvus.endpoint` value has been overridden by `milvus.enabled=true` value
         endpoint: "http://{{ template "faceapi.milvus" . }}"
         {{- else }}
-        endpoint: {{ quote .Values.search.vectorDatabase.milvus.endpoint }}
+        endpoint: {{ quote .Values.config.service.search.vectorDatabase.milvus.endpoint }}
         {{- end }}
-        consistency: {{ quote .Values.search.vectorDatabase.milvus.consistency }}
-        reload: {{ .Values.search.vectorDatabase.milvus.reload }}
+        consistency: {{ quote .Values.config.service.search.vectorDatabase.milvus.consistency }}
+        reload: {{ .Values.config.service.search.vectorDatabase.milvus.reload }}
         index:
-          type: {{ quote .Values.search.vectorDatabase.milvus.index.type }}
+          type: {{ quote .Values.config.service.search.vectorDatabase.milvus.index.type }}
           params:
-            nlist: {{ .Values.search.vectorDatabase.milvus.index.params.nlist }}
+            nlist: {{ .Values.config.service.search.vectorDatabase.milvus.index.params.nlist }}
         search:
-          type: {{ quote .Values.search.vectorDatabase.milvus.search.type }}
+          type: {{ quote .Values.config.service.search.vectorDatabase.milvus.search.type }}
           params:
-            nprobe: {{ .Values.search.vectorDatabase.milvus.search.params.nprobe }}
+            nprobe: {{ .Values.config.service.search.vectorDatabase.milvus.search.params.nprobe }}
       {{- else }}
       {{- end }}
     {{- else }}
