@@ -1,29 +1,22 @@
 {{/* The purpose of this yaml file is it to check the values file is consistent for some complexe combinations. */}}
 
 {{- /* SSL checks */ -}}
-{{- if .Values.ssl.enabled }}
-    {{- if not .Values.ssl.certificatesSecretName }}
-        {{ required "When 'SSL' mode is enabled, ssl.certificatesSecretName value should be set." nil }}
-    {{- end }}
-{{- end }}
-
-{{- /* RFID PKD PA checks */ -}}
-{{- if .Values.sdk.rfid.enabled }}
-    {{- if not .Values.sdk.rfid.existingClaim }}
-        {{ required "When 'rfid' mode is enabled, sdk.rfid.existingClaim value should be set." nil }}
+{{- if .Values.config.service.webServer.ssl.enabled }}
+    {{- if not .Values.config.service.webServer.ssl.certificatesSecretName }}
+        {{ required "When 'SSL' mode is enabled, config.service.webServer.ssl.certificatesSecretName value should be set." nil }}
     {{- end }}
 {{- end }}
 
 {{- /* Chip Verification checks */ -}}
-{{- if .Values.sdk.chipVerification.enabled }}
-    {{- if not (or .Values.database.connectionString .Values.database.connectionStringSecretName .Values.postgresql.enabled ) }}
-        {{ required "When 'chipVerification' mode is enabled, `database.connectionString` or `database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
+{{- if .Values.config.sdk.systemInfo.chipVerification.enabled }}
+    {{- if not (or .Values.config.service.database.connectionString .Values.config.service.database.connectionStringSecretName .Values.postgresql.enabled ) }}
+        {{ required "When 'Chip Verification' mode is enabled, `config.service.database.connectionString` or `config.service.database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
     {{- end }}
 {{- end }}
 
 {{- /* API v2 Verification checks */ -}}
-{{- if .Values.apiV2.enabled }}
-    {{- if not (or .Values.database.connectionString .Values.database.connectionStringSecretName .Values.postgresql.enabled ) }}
-        {{ required "When 'API v2' mode is enabled, `database.connectionString` or `database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
+{{- if .Values.config.service.sessionApi.enabled }}
+    {{- if not (or .Values.config.service.database.connectionString .Values.config.service.database.connectionStringSecretName .Values.postgresql.enabled ) }}
+        {{ required "When 'Session API' mode is enabled, `config.service.database.connectionString` or `config.service.database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
     {{- end }}
 {{- end }}

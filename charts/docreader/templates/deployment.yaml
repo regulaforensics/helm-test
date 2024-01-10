@@ -51,7 +51,7 @@ spec:
             httpGet:
               path: /api/ping
               port: docreader
-              {{- if .Values.ssl.enabled }}
+              {{- if .Values.config.service.webServer.ssl.enabled }}
               scheme: HTTPS
               {{- else }}
               scheme: HTTP
@@ -67,7 +67,7 @@ spec:
             httpGet:
               path: /api/readiness
               port: docreader
-              {{- if .Values.ssl.enabled }}
+              {{- if .Values.config.service.webServer.ssl.enabled }}
               scheme: HTTPS
               {{- else }}
               scheme: HTTP
@@ -81,7 +81,7 @@ spec:
           resources: {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- include "docreader.envs" . | indent 10 }}
-            {{- if and (eq .Values.storage.type "s3") .Values.storage.s3.awsCredentialsSecretName }}
+            {{- if and (eq .Values.config.service.storage.type "s3") .Values.config.service.storage.s3.awsCredentialsSecretName }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
@@ -93,14 +93,14 @@ spec:
                   name: {{ template "docreader.aws.credentials.secret" . }}
                   key: AWS_SECRET_ACCESS_KEY
             {{- end }}
-            {{- if and (eq .Values.storage.type "az") .Values.storage.az.connectionStringSecretName }}
+            {{- if and (eq .Values.config.service.storage.type "az") .Values.config.service.storage.az.connectionStringSecretName }}
             - name: AZURE_STORAGE_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   name: {{ template "docreader.az.credentials.secret" . }}
                   key: AZURE_STORAGE_CONNECTION_STRING
             {{- end }}
-            {{- if and (not .Values.postgresql.enabled) .Values.database.connectionStringSecretName }}
+            {{- if and (not .Values.postgresql.enabled) .Values.config.service.database.connectionStringSecretName }}
             - name: SQL_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
@@ -118,24 +118,28 @@ spec:
               subPath: regula.license
               readOnly: true
             {{- end }}
-            {{- if .Values.ssl.certificatesSecretName }}
+            {{- if .Values.config.service.webServer.ssl.certificatesSecretName }}
             - name: certificates
               mountPath: /app/certs
               readOnly: true
             {{- end }}
-            {{- if and (eq .Values.storage.type "fs") .Values.processing.results.enabled .Values.processing.results.persistence.enabled }}
-            - name: results
-              mountPath: /app/output
+            {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.processing.results.enabled .Values.config.service.processing.results.persistence.enabled }}
+            - name: processing-results
+              mountPath: {{ quote .Values.config.service.processing.results.location.folder }}
             {{- end }}
-            {{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName }}
+            {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.sessionApi.enabled .Values.config.service.sessionApi.transactions.persistence.enabled }}
+            - name: session-api-transactions
+              mountPath: {{ quote .Values.config.service.sessionApi.transactions.location.folder }}
+            {{- end }}
+            {{- if and .Values.config.sdk.rfid.enabled .Values.config.sdk.rfid.pkdPaExistingClaim }}
+            - name: rfid-pkd
+              mountPath: {{ quote .Values.config.sdk.rfid.pkdPaPath }}
+            {{- end }}
+            {{- if and (eq .Values.config.service.storage.type "gcs") .Values.config.service.storage.gcs.gcsKeyJsonSecretName }}
             - name: gcs-credentials
               mountPath: /etc/credentials/gcs_key.json
               subPath: gcs_key.json
               readOnly: true
-            {{- end }}
-            {{- if and .Values.sdk.rfid.rfidPkdPa .Values.sdk.rfid.existingClaim }}
-            - name: rfidpkd
-              mountPath: /app/rfid_pkd
             {{- end }}
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 12 }}
@@ -149,25 +153,30 @@ spec:
           secret:
             secretName: {{ template "docreader.license.secret" . }}
         {{- end }}
-        {{- if .Values.ssl.certificatesSecretName }}
+        {{- if .Values.config.service.webServer.ssl.certificatesSecretName }}
         - name: certificates
           secret:
             secretName: {{ template "docreader.certificates.secret" . }}
         {{- end }}
-        {{- if and (eq .Values.storage.type "fs") .Values.processing.results.enabled .Values.processing.results.persistence.enabled }}
-        - name: results
+        {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.processing.results.enabled .Values.config.service.processing.results.persistence.enabled }}
+        - name: processing-results
           persistentVolumeClaim:
-            claimName: {{ template "results_volume_claim" . }}
+            claimName: {{ template "docreader.processing.results.pvc" . }}
         {{- end }}
-        {{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName }}
+        {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.sessionApi.enabled .Values.config.service.sessionApi.transactions.persistence.enabled }}
+        - name: session-api-transactions
+          persistentVolumeClaim:
+            claimName: {{ template "docreader.sessionApi.transactions.pvc" . }}
+        {{- end }}
+        {{- if and .Values.config.sdk.rfid.enabled .Values.config.sdk.rfid.pkdPaExistingClaim }}
+        - name: rfid-pkd
+          persistentVolumeClaim:
+            claimName: {{ template "docreader.rfid.pkd.pvc" . }}
+        {{- end }}
+        {{- if and (eq .Values.config.service.storage.type "gcs") .Values.config.service.storage.gcs.gcsKeyJsonSecretName }}
         - name: gcs-credentials
           secret:
             secretName: {{ template "docreader.gcs.credentials.secret" . }}
-        {{- end }}
-        {{- if and .Values.sdk.rfid.rfidPkdPa .Values.sdk.rfid.existingClaim }}
-        - name: rfidpkd
-          persistentVolumeClaim:
-            claimName: {{ template "rfidpkd_volume_claim" . }}
         {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}

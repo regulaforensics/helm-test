@@ -202,7 +202,7 @@ detectMatch:
       # bucket: "faceapi-detect-match" # storage type s3/gcs
       # container: "faceapi-detect-match" # storage type az
       prefix: "results"
-    # Persistece is only applicable for the fs storage type
+    # Persistence is only applicable for the fs storage type
     persistence:
       # Enable persistent volume for storing processing results
       enabled: false
@@ -226,6 +226,7 @@ liveness:
       # bucket: "faceapi-liveness" # storage type s3/gcs
       # container: "faceapi-liveness" # storage type az
       prefix: "sessions"
+    # Persistence is only applicable for the fs storage type
     persistence:
       # Enable persistent volume for storing processing results
       enabled: false
@@ -246,6 +247,7 @@ search:
       # bucket: "faceapi-search" # storage type s3/gcs
       # container: "faceapi-search" # storage type az
       prefix: "persons"
+    # Persistence is only applicable for the fs storage type
     persistence:
       # Enable persistent volume for storing processing results
       enabled: false
