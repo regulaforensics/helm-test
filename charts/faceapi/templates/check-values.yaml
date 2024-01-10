@@ -1,15 +1,15 @@
 {{/* The purpose of this yaml file is it to check the values file is consistent for some complexe combinations. */}}
 
 {{- /* SSL checks */ -}}
-{{- if .Values.ssl.enabled }}
-    {{- if not .Values.ssl.certificatesSecretName }}
+{{- if .Values.config.service.webServer.ssl.enabled }}
+    {{- if not .Values.config.service.webServer.ssl.certificatesSecretName }}
         {{ required "When 'SSL' mode is enabled, ssl.certificatesSecretName value should be set." nil }}
     {{- end }}
 {{- end }}
 
 {{- /* Liveness / Search modules checks */ -}}
-{{- if or .Values.liveness.enabled .Values.search.enabled }}
-    {{- if not (or .Values.database.connectionString .Values.database.connectionStringSecretName .Values.postgresql.enabled ) }}
+{{- if or .Values.config.service.liveness.enabled .Values.config.service.search.enabled }}
+    {{- if not (or .Values.config.service.database.connectionString .Values.config.service.database.connectionStringSecretName .Values.postgresql.enabled ) }}
         {{ required "When 'Liveness or/and Search' mode(-s) is/are enabled, `database.connectionString` or `database.connectionStringSecretName` or `postgresql.enabled` value should be set." nil }}
     {{- end }}
 {{- end }}

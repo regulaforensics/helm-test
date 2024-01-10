@@ -63,34 +63,34 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Faceapi certificates secret name */}}
 {{- define "faceapi.certificates.secret" -}}
-{{ default (printf "%s-certificates" .Release.Name) .Values.ssl.certificatesSecretName }}
+{{ default (printf "%s-certificates" .Release.Name) .Values.config.service.webServer.ssl.certificatesSecretName }}
 {{- end }}
 
 {{/* Faceapi AWS Credentials secret name */}}
 {{- define "faceapi.aws.credentials.secret" -}}
-{{- if and (eq .Values.storage.type "s3") .Values.storage.s3.awsCredentialsSecretName -}}
-{{ default (printf "%s-aws-credentials" .Release.Name) .Values.storage.s3.awsCredentialsSecretName }}
+{{- if and (eq .Values.config.service.storage.type "s3") .Values.config.service.storage.s3.awsCredentialsSecretName -}}
+{{ default (printf "%s-aws-credentials" .Release.Name) .Values.config.service.storage.s3.awsCredentialsSecretName }}
 {{- end }}
 {{- end }}
 
 {{/* Faceapi GCS Credentials secret name */}}
 {{- define "faceapi.gcs.credentials.secret" -}}
-{{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName -}}
-{{ default (printf "%s-gcs-credentials" .Release.Name) .Values.storage.gcs.gcsKeyJsonSecretName }}
+{{- if and (eq .Values.config.service.storage.type "gcs") .Values.config.service.storage.gcs.gcsKeyJsonSecretName -}}
+{{ default (printf "%s-gcs-credentials" .Release.Name) .Values.config.service.storage.gcs.gcsKeyJsonSecretName }}
 {{- end }}
 {{- end }}
 
 {{/* Faceapi Azure Storage Connection String secret name */}}
 {{- define "faceapi.az.credentials.secret" -}}
-{{- if and (eq .Values.storage.type "az") .Values.storage.az.connectionStringSecretName -}}
-{{ default (printf "%s-az-credentials" .Release.Name) .Values.storage.az.connectionStringSecretName }}
+{{- if and (eq .Values.config.service.storage.type "az") .Values.config.service.storage.az.connectionStringSecretName -}}
+{{ default (printf "%s-az-credentials" .Release.Name) .Values.config.service.storage.az.connectionStringSecretName }}
 {{- end }}
 {{- end }}
 
 {{/* Faceapi Database Connection String secret name */}}
 {{- define "faceapi.db.credentials.secret" -}}
-{{- if .Values.database.connectionStringSecretName -}}
-{{ default (printf "%s-db-credentials" .Release.Name) .Values.database.connectionStringSecretName }}
+{{- if .Values.config.service.database.connectionStringSecretName -}}
+{{ default (printf "%s-db-credentials" .Release.Name) .Values.config.service.database.connectionStringSecretName }}
 {{- end }}
 {{- end }}
 
@@ -114,8 +114,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Faceapi detect-match/results existing volume claim */}}
 {{- define "faceapi.detectmatch.results.pvc" -}}
-{{- if .Values.detectMatch.results.persistence.existingClaim -}}
-{{ .Values.detectMatch.results.persistence.existingClaim }}
+{{- if .Values.config.service.detectMatch.results.persistence.existingClaim -}}
+{{ .Values.config.service.detectMatch.results.persistence.existingClaim }}
 {{- else -}}
 {{ .Release.Name }}-detectmatch-results
 {{- end -}}
@@ -123,8 +123,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Faceapi liveness/sessions existing volume claim */}}
 {{- define "faceapi.liveness.sessions.pvc" -}}
-{{- if .Values.liveness.sessions.persistence.existingClaim -}}
-{{ .Values.liveness.sessions.persistence.existingClaim }}
+{{- if .Values.config.service.liveness.sessions.persistence.existingClaim -}}
+{{ .Values.config.service.liveness.sessions.persistence.existingClaim }}
 {{- else -}}
 {{ .Release.Name }}-liveness-sessions
 {{- end -}}
@@ -132,8 +132,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Faceapi search/persons existing volume claim */}}
 {{- define "faceapi.search.persons.pvc" -}}
-{{- if .Values.search.persons.persistence.existingClaim -}}
-{{ .Values.search.persons.persistence.existingClaim }}
+{{- if .Values.config.service.search.persons.persistence.existingClaim -}}
+{{ .Values.config.service.search.persons.persistence.existingClaim }}
 {{- else -}}
 {{ .Release.Name }}-search-persons
 {{- end -}}

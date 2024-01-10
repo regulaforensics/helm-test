@@ -74,209 +74,214 @@ podDisruptionBudget:
 #
 # licenseSecretName: faceapi-license
 licenseSecretName: ~
+config:
+  sdk:
+    compare:
+      limitPerImageTypes: 2
+    logging:
+      level: "INFO"
 
-sdk:
-  compare:
-    limitPerImageTypes: 2
-  logging:
-    level: "INFO"
+    detect:
+      # scenarios:
+      #   - scenario: AA
+      #     quality:
+      #       config:
+      #         - name: Yaw
+      #           range:
+      #             - -5.0
+      #             - 5.0
+      #         - name: Pitch
+      #           range:
+      #             - -5.0
+      #             - 5.0
+      #         - name: Roll
+      #           range:
+      #             - -5.0
+      #             - 5.0
+      #     onlyCentralFace: true
+      #   - scenario: BB
+      #     attributes:
+      #       config:
+      #         - name: Age
 
-  detect:
-    # scenarios:
-    #   - scenario: AA
-    #     quality:
-    #       config:
-    #         - name: Yaw
-    #           range:
-    #             - -5.0
-    #             - 5.0
-    #         - name: Pitch
-    #           range:
-    #             - -5.0
-    #             - 5.0
-    #         - name: Roll
-    #           range:
-    #             - -5.0
-    #             - 5.0
-    #     onlyCentralFace: true
-    #   - scenario: BB
-    #     attributes:
-    #       config:
-    #         - name: Age
+    liveness:
+      # checkFilters:
+      #   config:
+      #     - excludeChecks:
+      #         - texture
+      #         - electronicDevice
+      #         - EyesClosed
+      #       filter:
+      #         platform:
+      #         - ios
 
-  liveness:
-    # checkFilters:
-    #   config:
-    #     - excludeChecks:
-    #         - texture
-    #         - electronicDevice
-    #         - EyesClosed
-    #       filter:
-    #         platform:
-    #         - ios
+  service:
+    webServer:
+      port: 41101
+      workers: 1
+      timeout: 30
 
-webServer:
-  port: 41101
-  workers: 1
-  timeout: 30
+      demoApp:
+        enabled: true
 
-  demoApp:
-    enabled: true
+      cors:
+        origins: "*"
+        headers: "*"
+        methods: "POST,PUT,GET,DELETE,PATCH,HEAD,OPTIONS"
 
-  cors:
-    origins: "*"
-    headers: "*"
-    methods: "POST,PUT,GET,DELETE,PATCH,HEAD,OPTIONS"
+      logging:
+        level: "INFO"
+        formatter: text
 
-  logging:
-    level: "INFO"
-    formatter: text
+        access:
+          console: true
+          path: "logs/access/facesdk-reader-access.log"
 
-    access:
-      console: true
-      path: "logs/access/facesdk-reader-access.log"
+        app:
+          console: true
+          path: "logs/app/facesdk-reader-app.log"
 
-    app:
-      console: true
-      path: "logs/app/facesdk-reader-app.log"
+      metrics:
+        enabled: false
 
-# SSL mode
-# We recommend to expose service to public via Ingress
-ssl:
-  enabled: false
-  # If enabled, supply the name of existing secret with key/cert files.
-  # You can load it to a k8s tls secret via the following command:
-  # `kubectl create secret tls certificates --key="tls.key" --cert="tls.crt"`
-  # certificatesSecretName: certificates
-  certificatesSecretName: ~
-  # Specifies the version of the TLS (Transport Layer Security) protocol to use for secure connections within the application.
-  # String type, accepts the following available versions of TLS: 1.0, 1.1, 1.2, 1.3
-  tlsVersion: 1.2
+      # We recommend to expose service to public via Ingress
+      ssl:
+        enabled: false
+        # If enabled, supply the name of existing secret with key/cert files.
+        # You can load it to a k8s tls secret via the following command:
+        # `kubectl create secret tls certificates --key="tls.key" --cert="tls.crt"`
+        # certificatesSecretName: certificates
+        certificatesSecretName: ~
+        # Specifies the version of the TLS (Transport Layer Security) protocol to use for secure connections within the application.
+        # String type, accepts the following available versions of TLS: 1.0, 1.1, 1.2, 1.3
+        tlsVersion: 1.2
 
-storage:
-  type: fs
-  # s3:
-  #   accessKey: <AWS_ACCESS_KEY_ID>
-  #   accessSecret: <AWS_SECRET_ACCESS_KEY>
-  #   region: "us-east-1"
-  #   secure: true
-  #   endpointUrl: "https://s3.amazonaws.com"
-  #   #  awsCredentialsSecretName overrides storage.s3.accessKey/s3.accessSecret values
-  #   #  Supply the name of existing secret with AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY keys.
-  #   #  You can load it to a k8s generic secret via the following command:
-  #   #  `kubectl create secret generic aws-credentials -n <namespace> --from-literal=AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> --from-literal=AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>`
-  #   awsCredentialsSecretName: ~
-  # gcs:
-  #   #  Supply the name of existing secret with service account key gcs.json file.
-  #   # You can load it to a k8s generic secret via the following command:
-  #   #  `kubectl create secret generic gcs-credentials -n <namespace> --from-file=gcs_key.json=<path_to_key>`
-  #   gcsKeyJsonSecretName: ~
-  # az:
-  #   connectionString: "<AZURE_STORAGE_CONNECTION_STRING>"
-  #   #  connectionStringSecretName overrides storage.az.connectionString value
-  #   #  Supply the name of existing secret with AZURE_STORAGE_CONNECTION_STRING key.
-  #   #  You can load it to a k8s generic secret via the following command:
-  #   #  `kubectl create secret generic az-credentials -n <namespace> --from-literal=AZURE_STORAGE_CONNECTION_STRING="<AZURE_STORAGE_CONNECTION_STRING>"`
-  #   connectionStringSecretName: ~
+    storage:
+      type: fs
+      # s3:
+      #   accessKey: <AWS_ACCESS_KEY_ID>
+      #   accessSecret: <AWS_SECRET_ACCESS_KEY>
+      #   region: "us-east-1"
+      #   secure: true
+      #   endpointUrl: "https://s3.amazonaws.com"
+      #   #  awsCredentialsSecretName overrides storage.s3.accessKey/s3.accessSecret values
+      #   #  Supply the name of existing secret with AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY keys.
+      #   #  You can load it to a k8s generic secret via the following command:
+      #   #  `kubectl create secret generic aws-credentials -n <namespace> --from-literal=AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> --from-literal=AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>`
+      #   awsCredentialsSecretName: ~
+      # gcs:
+      #   #  Supply the name of existing secret with service account key gcs.json file.
+      #   # You can load it to a k8s generic secret via the following command:
+      #   #  `kubectl create secret generic gcs-credentials -n <namespace> --from-file=gcs_key.json=<path_to_key>`
+      #   gcsKeyJsonSecretName: ~
+      # az:
+      #   connectionString: "<AZURE_STORAGE_CONNECTION_STRING>"
+      #   #  connectionStringSecretName overrides storage.az.connectionString value
+      #   #  Supply the name of existing secret with AZURE_STORAGE_CONNECTION_STRING key.
+      #   #  You can load it to a k8s generic secret via the following command:
+      #   #  `kubectl create secret generic az-credentials -n <namespace> --from-literal=AZURE_STORAGE_CONNECTION_STRING="<AZURE_STORAGE_CONNECTION_STRING>"`
+      #   connectionStringSecretName: ~
 
-# Database section is required for liveness and/or search modules
-database:
-  connectionString: ~
-  # #  connectionStringSecretName overrides database.connectionString value
-  # #  Supply the name of existing secret with SQL_CONNECTION_STRING key.
-  # #  You can load it to a k8s generic secret via the following command:
-  # #  `kubectl create secret generic database-credentials -n <namespace> --from-literal=SQL_CONNECTION_STRING=<SQL_CONNECTION_STRING>`
-  # connectionStringSecretName: ~
-  # connectionString examples:
-  # connectionString: postgresql://<username>:<password>@127.0.0.1:5432/regula_faceapi_db
-  # connectionString: mysql://username>:<password>@127.0.0.1:5432/regula_faceapi_db
-  # connectionString: mariadb+pymysql:/username>:<password>@127.0.0.1:3306/regula_faceapi_db
-  # connectionString: mysql+pymysql://username>:<password>@127.0.0.1:3306/regula_faceapi_db
-  # connectionString: sqlite:///opt/regula/faceapi/regula_faceapi.db
+    # Database section is required for liveness and/or search modules
+    database:
+      connectionString: ~
+      # #  connectionStringSecretName overrides database.connectionString value
+      # #  Supply the name of existing secret with SQL_CONNECTION_STRING key.
+      # #  You can load it to a k8s generic secret via the following command:
+      # #  `kubectl create secret generic database-credentials -n <namespace> --from-literal=SQL_CONNECTION_STRING=<SQL_CONNECTION_STRING>`
+      # connectionStringSecretName: ~
+      # connectionString examples:
+      # connectionString: postgresql://<username>:<password>@127.0.0.1:5432/regula_faceapi_db
+      # connectionString: mysql://username>:<password>@127.0.0.1:5432/regula_faceapi_db
+      # connectionString: mariadb+pymysql:/username>:<password>@127.0.0.1:3306/regula_faceapi_db
+      # connectionString: mysql+pymysql://username>:<password>@127.0.0.1:3306/regula_faceapi_db
+      # connectionString: sqlite:///opt/regula/faceapi/regula_faceapi.db
 
-detectMatch:
-  enabled: true
-  results:
-    location:
-      folder: "/app/faceapi-detect-match/results"
-      # bucket: "faceapi-detect-match" # storage type s3/gcs
-      # container: "faceapi-detect-match" # storage type az
-      prefix: "results"
-    # Persistece is only applicable for the fs storage type
-    persistence:
-      # Enable persistent volume for storing processing results
+    detectMatch:
+      enabled: true
+      results:
+        location:
+          folder: "/app/faceapi-detect-match/results"
+          # bucket: "faceapi-detect-match" # storage type s3/gcs
+          # container: "faceapi-detect-match" # storage type az
+          prefix: "results"
+        # Persistence is only applicable for the fs storage type
+        persistence:
+          # Enable persistent volume for storing processing results
+          enabled: false
+          # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+          accessMode: ReadWriteMany
+          # Volume size for logs
+          size: 10Gi
+          # If using a custom storageClass, pass name here
+          storageClassName: ~
+          # If defined, PVC must be created manually before volume will be bound
+          existingClaim: ~
+
+    liveness:
       enabled: false
-      # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
-      accessMode: ReadWriteMany
-      # Volume size for logs
-      size: 10Gi
-      # If using a custom storageClass, pass name here
-      storageClassName: ~
-      # If defined, PVC must be created manually before volume will be bound
-      existingClaim: ~
+      ecdhSchema: "default"
+      hideMetadata: false
+      protectPersonalInfo: false
+      sessions:
+        location:
+          folder: "/app/faceapi-liveness/sessions"
+          # bucket: "faceapi-liveness" # storage type s3/gcs
+          # container: "faceapi-liveness" # storage type az
+          prefix: "sessions"
+        # Persistence is only applicable for the fs storage type
+        persistence:
+          # Enable persistent volume for storing processing results
+          enabled: false
+          # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+          accessMode: ReadWriteMany
+          # Volume size for logs
+          size: 10Gi
+          # If using a custom storageClass, pass name here
+          storageClassName: ~
+          # If defined, PVC must be created manually before volume will be bound
+          existingClaim: ~
 
-liveness:
-  enabled: false
-  ecdhSchema: "default"
-  hideMetadata: false
-  protectPersonalInfo: false
-  sessions:
-    location:
-      folder: "/app/faceapi-liveness/sessions"
-      # bucket: "faceapi-liveness" # storage type s3/gcs
-      # container: "faceapi-liveness" # storage type az
-      prefix: "sessions"
-    persistence:
-      # Enable persistent volume for storing processing results
+    search:
       enabled: false
-      # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
-      accessMode: ReadWriteMany
-      # Volume size for logs
-      size: 10Gi
-      # If using a custom storageClass, pass name here
-      storageClassName: ~
-      # If defined, PVC must be created manually before volume will be bound
-      existingClaim: ~
+      persons:
+        location:
+          folder: "/app/faceapi-search/persons"
+          # bucket: "faceapi-search" # storage type s3/gcs
+          # container: "faceapi-search" # storage type az
+          prefix: "persons"
+        # Persistence is only applicable for the fs storage type
+        persistence:
+          # Enable persistent volume for storing processing results
+          enabled: false
+          # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+          accessMode: ReadWriteMany
+          # Volume size for logs
+          size: 10Gi
+          # If using a custom storageClass, pass name here
+          storageClassName: ~
+          # If defined, PVC must be created manually before volume will be bound
+          existingClaim: ~
 
-search:
-  enabled: false
-  persons:
-    location:
-      folder: "/app/faceapi-search/persons"
-      # bucket: "faceapi-search" # storage type s3/gcs
-      # container: "faceapi-search" # storage type az
-      prefix: "persons"
-    persistence:
-      # Enable persistent volume for storing processing results
-      enabled: false
-      # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
-      accessMode: ReadWriteMany
-      # Volume size for logs
-      size: 10Gi
-      # If using a custom storageClass, pass name here
-      storageClassName: ~
-      # If defined, PVC must be created manually before volume will be bound
-      existingClaim: ~
+      threshold: 1.0
 
-  threshold: 1.0
-
-  vectorDatabase:
-    type: milvus
-    milvus:
-      user: ""
-      password: ""
-      token: ""
-      endpoint: "http://localhost:19530"
-      consistency: "Bounded"
-      reload: false
-      index:
-        type: "IVF_FLAT"
-        params:
-          nlist: 128
-      search:
-        type: "L2"
-        params:
-          nprobe: 5
+      vectorDatabase:
+        type: milvus
+        milvus:
+          user: ""
+          password: ""
+          token: ""
+          endpoint: "http://localhost:19530"
+          consistency: "Bounded"
+          reload: false
+          index:
+            type: "IVF_FLAT"
+            params:
+              nlist: 128
+          search:
+            type: "L2"
+            params:
+              nprobe: 5
 
 env: []
 # - name: ""
@@ -328,17 +333,14 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
 
-metrics:
+serviceMonitor:
+  # Set this to `true` to create ServiceMonitor for Prometheus operator
   enabled: false
-
-  serviceMonitor:
-    # Set this to `true` to create ServiceMonitor for Prometheus operator
-    enabled: false
-    namespace: ~
-    interval: "30s"
-    scrapeTimeout: "10s"
-    # Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
-    additionalLabels: {}
+  namespace: ~
+  interval: "30s"
+  scrapeTimeout: "10s"
+  # Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
+  additionalLabels: {}
 
 livenessProbe:
   enabled: true
