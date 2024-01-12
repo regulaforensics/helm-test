@@ -2,13 +2,14 @@
 sdk:
   systemInfo:
     returnSystemInfo: {{ .Values.config.sdk.systemInfo.returnSystemInfo }}
-    chipVerification:
-      enabled: {{ .Values.config.sdk.systemInfo.chipVerification.enabled }}
+
   rfid:
     enabled: {{ .Values.config.sdk.rfid.enabled }}
     {{- if .Values.config.sdk.rfid.enabled }}
     PKD_PA: {{ quote .Values.config.sdk.rfid.pkdPaPath }}
     {{- if .Values.config.sdk.rfid.paSensitiveCodes }}
+    chipVerification:
+      enabled: {{ .Values.config.sdk.rfid.chipVerification.enabled }}
     paSensitiveCodes: {{- toYaml .Values.config.sdk.rfid.paSensitiveCodes | nindent 4 }}
     {{- end }}
     {{- else }}
@@ -76,7 +77,7 @@ service:
       connectionString: {{ quote .Values.config.service.storage.az.connectionString }}
     {{- end }}
     {{- end }}
-  {{- if or .Values.config.service.sessionApi.enabled .Values.config.sdk.systemInfo.chipVerification.enabled }}
+  {{- if or .Values.config.service.sessionApi.enabled .Values.config.sdk.rfid.chipVerification.enabled }}
   {{ if .Values.postgresql.enabled }}
   ## `database` configuration has been overridden by `postgresql.enabled=true` value
   database:

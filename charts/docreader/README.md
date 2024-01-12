@@ -40,7 +40,10 @@ helm install my-release regulaforensics/docreader --set licenseSecretName=docrea
 To install the chart with the release name `my-release` and Session API capabilities:
 
 ```console
-helm install my-release regulaforensics/docreader --set licenseSecretName=docreader-license --set config.service.sessionApi.enabled=true --set postgresql.enabled=true
+helm install my-release regulaforensics/docreader \
+    --set licenseSecretName=docreader-license \
+    --set config.service.sessionApi.enabled=true \
+    --set postgresql.enabled=true
 ```
 
 ### Chip Verification
@@ -48,7 +51,11 @@ helm install my-release regulaforensics/docreader --set licenseSecretName=docrea
 To install the chart with the release name `my-release` and Chip Verification capabilities:
 
 ```console
-helm install my-release regulaforensics/docreader --set licenseSecretName=docreader-license --set config.sdk.systemInfo.chipVerification.enabled=true --set postgresql.enabled=true
+helm install my-release regulaforensics/docreader \
+    --set licenseSecretName=docreader-license \
+    --set config.sdk.rfid.enabled=true \
+    --set config.sdk.rfid.chipVerification.enabled=true \
+    --set postgresql.enabled=true
 ```
 
 ## Uninstalling the Chart
@@ -117,10 +124,10 @@ The command removes all the Kubernetes components associated with the chart and 
 |-------------------------------------------------------|-----------------------------------------------------------------------------------|-------------------------------------------|
 | `licenseSecretName`                                   | The name of an existing secret containing the regula.license file                 | `""`                                      |
 | `config.sdk.systemInfo.returnSystemInfo`              | Whether to hide system info (/api/ping response)                                  | `true`                                    |
-| `config.sdk.systemInfo.chipVerification.enabled`      | Whether to enable Chip Verification mode                                          | `false`                                   |
 | `config.sdk.rfid.enabled`                             | Whether to enable RFID PKD PA mode                                                | `false`                                   |
 | `config.sdk.rfid.pkdPaPath`                           | RFID PKD PA certificates path                                                     | `"/app/pkdPa"`                            |
 | `config.sdk.rfid.pkdPaExistingClaim`                  | Name of the existing Persistent Volume Claim containing RFID PKD PA certificates  | `""`                                      |
+| `config.sdk.rfid.chipVerification.enabled`            | Whether to enable Chip Verification mode                                          | `false`                                   |
 | `config.sdk.rfid.paSensitiveCodes`                    | RFID PKD PA Sensitive Codes to use                                                | `[]`                                      |
 |                                                                                                                                                                                       |
 | `config.service.webServer.port`                       | Port server binding                                                               | `8080`                                    |

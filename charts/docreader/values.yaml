@@ -74,15 +74,16 @@ config:
     systemInfo:
       # Returns system information in the /api/ping response and in the /api/process response.
       returnSystemInfo: true
-      chipVerification:
-        enabled: false
 
     rfid:
       enabled: false
       pkdPaPath: "/app/pkdPa"
       # If enabled, Supply the name of an existing PVC with prepopulated PKD masterlists files or use extraVolumeMounts
       pkdPaExistingClaim: ~
+      chipVerification:
+        enabled: false
       paSensitiveCodes: []
+
 
   service:
     webServer:
