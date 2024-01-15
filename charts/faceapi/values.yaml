@@ -371,7 +371,7 @@ autoscaling:
 ###################################
 
 # NOTE
-# The subcharts are used for the demonstration and Dev/Test purposes related to the `liveness` or the `search` capabilities.
+# The subcharts are used for the demonstration and Dev/Test purposes related to the `liveness` and `search` capabilities.
 # We strongly recommend to deploy separate installations of the VectorDatabase (search) and DB (liveness/search) in Production.
 
 # Configuration for milvus subchart
