@@ -1,4 +1,4 @@
-{{- if and .Values.config.sdk.rfid.enabled (not .Values.config.sdk.rfid.pkdPaexistingClaim) }}
+{{- if and .Values.config.sdk.rfid.enabled (not .Values.config.sdk.rfid.pkdPaExistingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -6,15 +6,9 @@ metadata:
   labels: {{- include "docreader.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - {{ .Values.config.service.processing.results.persistence.accessMode }}
+    - ReadOnlyMany
   resources:
     requests:
-      storage: {{ .Values.config.service.processing.results.persistence.size | quote }}
-  {{- if .Values.config.service.processing.results.persistence.storageClassName }}
-  {{- if (eq "-" .Values.config.service.processing.results.persistence.storageClassName) }}
+      storage: 1Gi
   storageClassName: ""
-  {{- else }}
-  storageClassName: "{{ .Values.config.service.processing.results.persistence.storageClassName }}"
-  {{- end }}
-  {{- end }}
 {{- end }}

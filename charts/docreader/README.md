@@ -46,6 +46,20 @@ helm install my-release regulaforensics/docreader \
     --set postgresql.enabled=true
 ```
 
+### RFID PKD PA support
+
+To install the chart with the release name `my-release` and RFID PKD PA capabilities:
+
+```console
+helm install my-release regulaforensics/docreader \
+    --set licenseSecretName=docreader-license \
+    --set config.sdk.rfid.enabled=true
+
+export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=docreader,app.kubernetes.io/instance=my-release" -o jsonpath="{.items[0].metadata.name}")
+
+kubectl cp <PKD_PA_CERTIFICATES_PATH> ${POD_NAME}:/app/pkdPa/
+```
+
 ### Chip Verification
 
 To install the chart with the release name `my-release` and Chip Verification capabilities:
@@ -56,6 +70,10 @@ helm install my-release regulaforensics/docreader \
     --set config.sdk.rfid.enabled=true \
     --set config.sdk.rfid.chipVerification.enabled=true \
     --set postgresql.enabled=true
+
+export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=docreader,app.kubernetes.io/instance=my-release" -o jsonpath="{.items[0].metadata.name}")
+
+kubectl cp <PKD_PA_CERTIFICATES_PATH> ${POD_NAME}:/app/pkdPa/
 ```
 
 ## Uninstalling the Chart

@@ -120,5 +120,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "docreader.rfid.pkd.pvc" -}}
 {{- if .Values.config.sdk.rfid.pkdPaExistingClaim -}}
 {{ .Values.config.sdk.rfid.pkdPaExistingClaim }}
+{{- else -}}
+{{ .Release.Name }}-rfid-pkd-pa
 {{- end -}}
 {{- end -}}
