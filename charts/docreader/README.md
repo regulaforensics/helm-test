@@ -1,6 +1,6 @@
 # Docreader Helm Chart
 
-* Fast and accurate data extraction from identity documents. On-premise and cloud integration
+* Fast and accurate data extraction from identity documents. On-premise and cloud integration.
 
 ## Get Repo Info
 
@@ -21,7 +21,7 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 
 ### Licensing
 
-To install the chart you need to obtain the `regula.license` file e.g. at the [Client Portal](https://client.regulaforensics.com/) and then create kubernetes secret form that license file:
+To install the chart you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create kubernetes secret form that license file:
 
 ```console
 kubectl create secret generic docreader-license --from-file=regula.license
@@ -78,7 +78,7 @@ kubectl cp <PKD_PA_CERTIFICATES_PATH> ${POD_NAME}:/app/pkdPa/
 
 ## Uninstalling the Chart
 
-To uninstall/delete the my-release deployment:
+To uninstall/delete the `my-release` deployment:
 
 ```console
 helm delete my-release
@@ -93,11 +93,11 @@ The command removes all the Kubernetes components associated with the chart and 
 |-------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------|
 | `replicas`                                | Number of nodes                                                                               | `1`                           |
 | `image.repository`                        | Image repository                                                                              | `regulaforensics/docreader`   |
-| `image.tag`                               | Overrides the Docreader image tag whose defaultis the chart appVersion                        | `""`                          |
+| `image.tag`                               | Overrides the Docreader image tag, whose default is the chart appVersion                      | `""`                          |
 | `image.pullPolicy`                        | Image pull policy                                                                             | `IfNotPresent`                |
 | `imagePullSecrets`                        | Image pull secrets                                                                            | `[]`                          |
 | `nameOverride`                            | String to partially override common.names.fullname template (will maintain the release name)  | `""`                          |
-| `fullnameOverride`                        | String to fully override common.names.fullname templated                                      | `""`                          |
+| `fullnameOverride`                        | String to fully override common.names.fullname template                                       | `""`                          |
 | `resources`                               | CPU/Memory resource requests/limits                                                           | `{}`                          |
 | `securityContext`                         | Enable security context                                                                       | `{}`                          |
 | `podSecurityContext`                      | Enable pod security context                                                                   | `{}`                          |
@@ -162,8 +162,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.webServer.logging.app.console`        | Whether to print application logs to a console                                    | `true`                                    |
 | `config.service.webServer.logging.app.path`           | Application logs file path                                                        | `logs/app/docreader-app.log`              |
 | `config.service.webServer.metrics.enabled`            | Whether to enable prometheus metrics endpoint                                     | `false`                                   |
-| `config.service.webServer.ssl.enabled`                | Whether to enable ssl mode                                                        | `false`                                   |
-| `config.service.webServer.ssl.certificatesSecretName` | The name of an existing secret containing the cert/key files reuired for https    | `""`                                      |
+| `config.service.webServer.ssl.enabled`                | Whether to enable SSL mode                                                        | `false`                                   |
+| `config.service.webServer.ssl.certificatesSecretName` | The name of an existing secret containing the cert/key files reuired for HTTPS    | `""`                                      |
 | `config.service.webServer.ssl.tlsVersion`             | Specifies the version of the TLS protocol. Possible values: `1.1`, `1.2`, `1.3`   | `1.2`                                     |
 |                                                                                                                                                                                       |
 | `config.service.storage.type`                         | Global storage type. Possible values: `fs`, `s3`, `gcs`, `az`                     | `fs`                                      |
@@ -187,7 +187,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|---------------------------------------|
 | `config.service.processing.ecdhSchema`                            | ECDH schema to use                                                                            | `default`                             |
 | `config.service.processing.results.enabled`                       | Whether to enable processing                                                                  | `false`                               |
-| `config.service.processing.results.location.bucket`               | The processing results bucket name in case of `s3/gcs` storage type                           | `""`                                  |
+| `config.service.processing.results.location.bucket`               | The processing results bucket name in case of `s3`/`gcs` storage type                         | `""`                                  |
 | `config.service.processing.results.location.container`            | The processing results storage container name in case of `az` storage type                    | `""`                                  |
 | `config.service.processing.results.location.folder`               | The processing results folder name in case of `fs` storage type                               | `"/app/docreader-processing/results"` |
 | `config.service.processing.results.location.prefix`               | The processing results prefix path in the `bucket/container`                                  | `"results"`                           |
@@ -203,7 +203,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                                             | Description                                                                                        | Default                                      |
 |-----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|----------------------------------------------|
 | `config.service.sessionApi.enabled`                                   | Whether to enable Session API mode (default)                                                       | `false`                                      |
-| `config.service.sessionApi.transactions.location.bucket`              | The Session API result logs bucket name in case of `s3/gcs` storage type                           | `""`                                         |
+| `config.service.sessionApi.transactions.location.bucket`              | The Session API result logs bucket name in case of `s3`/`gcs` storage type                         | `""`                                         |
 | `config.service.sessionApi.transactions.location.container`           | The Session API result logs storage container name in case of `az` storage type                    | `""`                                         |
 | `config.service.sessionApi.transactions.location.folder`              | The Session API result logs folder name in case of `fs` storage type                               | `"/app/docreader-session-api/transactions"`  |
 | `config.service.sessionApi.transactions.location.prefix`              | The Session API result logs prefix path in the `bucket/container`                                  | `"data"`                                     |
@@ -220,7 +220,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > [!TIP]
 > Configuration for postgresql subchart
-> For the advanced PostgreSQL configuration please referer to the official documentation
+> For the advanced PostgreSQL configuration please referer to the official documentation.
 > ref: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
 
 ## Subchart parameters

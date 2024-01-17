@@ -5,7 +5,7 @@
 replicas: 1
 
 image:
-  # Image is also available at registry.connect.redhat.com/regulaforensics/docreader repository
+  # Image is also available at the registry.connect.redhat.com/regulaforensics/docreader repository
   repository: regulaforensics/docreader
   # Overrides the image tag whose default is the chart appVersion.
   tag: ~
@@ -20,8 +20,8 @@ resources: {}
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board
-  # Thus setting more workers would require to multiply resources respectively
+  # Note, the "requests" section specifies the minimum resources required to run 1 pod with 1 worker on board.
+  # Thus setting more workers would require to multiply resources respectively.
   # Also, the resources (both requests and limits) section is mandatory for autoscaling
   # limits:
   #   cpu: 2000m
@@ -62,7 +62,7 @@ podDisruptionBudget:
     maxUnavailable: 1
     minAvailable: ~
 
-# Supply the name of existing secret with regula.license file.
+# Supply the name of existing secret with the regula.license file.
 # You can load it to a k8s generic secret via the following command:
 # `kubectl create secret generic docreader-license -n <namespace> --from-file=regula.license`
 #
@@ -300,7 +300,7 @@ autoscaling:
 # We strongly recommend to deploy separate installations of the DB in Production.
 
 # Configuration for postgresql subchart
-# For the advanced PostgreSQL configuration please referer to the official documentation
+# For the advanced PostgreSQL configuration please referer to the official documentation.
 # ref: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
 postgresql:
   enabled: false
