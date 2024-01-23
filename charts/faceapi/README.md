@@ -33,7 +33,7 @@ Note that the `regula.license` file should be located in the same folder where t
 
 ### Detect/Match
 
-To install the chart with the release name `my-release` and Detect/ Match capabilities (default):
+To install the chart with the release name `my-release` and Detect/Match capabilities (default):
 
 ```console
 helm install my-release regulaforensics/faceapi --set licenseSecretName=face-api-license
