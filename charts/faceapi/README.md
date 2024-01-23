@@ -1,15 +1,17 @@
 # Face-API Helm Chart
 
-* Fast and accurate data extraction from identity documents. On-premise and cloud integration.
+Regula Face SDK API is a powerful solution for digital identity verification. The available features are Face Detection, Face Comparison (aka Match), Face Identification (aka Search), and Liveness Assessment. On-premise and cloud integration available.
 
-## Get Repo Info
+## Add Chart
+
+First of all, you need to add the `regulaforensics` chart:
 
 ```console
 helm repo add regulaforensics https://regulaforensics.github.io/helm-test
 helm repo update
 ```
 
-_See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation._
+See the [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation.
 
 ## Prerequisites
 
@@ -21,18 +23,20 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 
 ### Licensing
 
-To install the chart you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create kubernetes secret form that license file:
+To install the chart, you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create a Kubernetes Secret from that license file:
 
 ```console
-kubectl create secret generic faceapi-license --from-file=regula.license
+kubectl create secret generic face-api-license --from-file=regula.license
 ```
+
+Note that the `regula.license` file should be located in the same folder where the `kubectl create secret` command is executed.
 
 ### Detect/Match
 
-To install the chart with the release name `my-release` and Detect/Match capabilities (default):
+To install the chart with the release name `my-release` and Detect/ Match capabilities (default):
 
 ```console
-helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-license
+helm install my-release regulaforensics/faceapi --set licenseSecretName=face-api-license
 ```
 
 ### Liveness
@@ -40,7 +44,7 @@ helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-
 To install the chart with the release name `my-release` and Liveness capabilities:
 
 ```console
-helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-license --set config.service.liveness.enabled=true --set postgresql.enabled=true
+helm install my-release regulaforensics/faceapi --set licenseSecretName=face-api-license --set config.service.liveness.enabled=true --set postgresql.enabled=true
 ```
 
 ### Search
@@ -48,7 +52,7 @@ helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-
 To install the chart with the release name `my-release` and Search capabilities:
 
 ```console
-helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-license --set config.service.search.enabled=true --set milvus.enabled=true --set postgresql.enabled=true
+helm install my-release regulaforensics/faceapi --set licenseSecretName=face-api-license --set config.service.search.enabled=true --set milvus.enabled=true --set postgresql.enabled=true
 ```
 
 ## Uninstalling the Chart
@@ -145,7 +149,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.storage.s3.accessSecret`                  | S3 Secret Access Key                                                              | `""`                                                      |
 | `config.service.storage.s3.region`                        | S3 region                                                                         | `"us-east-1"`                                             |
 | `config.service.storage.s3.secure`                        | Secure connection                                                                 | `"true"`                                                  |
-| `config.service.storage.s3.endpointUrl`                   | Enpoint URL to the S3 compatible storage                                          | `"https://s3.amazonaws.com"`                              |
+| `config.service.storage.s3.endpointUrl`                   | Endpoint URL to the S3 compatible storage                                          | `"https://s3.amazonaws.com"`                              |
 | `config.service.storage.s3.awsCredentialsSecretName`      | Secret name containing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY credentials        | `""`                                                      |
 | `config.service.storage.gcs.gcsKeyJsonSecretName`         | Secret name containing Google Service Account key (json file)                     | `""`                                                      |
 | `config.service.storage.az.connectionString`              | Azure Storage Account connection string                                           | `""`                                                      |
@@ -220,16 +224,16 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > [!NOTE]
 > The subcharts are used for the demonstration and Dev/Test purposes related to the `liveness` and `search` capabilities.
-> We strongly recommend to deploy separate installations of the VectorDatabase (search) and DB (liveness/search) in Production.
+> We strongly recommend deploying separate installations of the VectorDatabase (search) and DB (liveness/search) in Production.
 
 > [!TIP]
 > Configuration for milvus subchart
-> For the advanced Milvus configuration, please referer to the official documentation.
+> For the advanced Milvus configuration, refer to the official documentation.
 > ref: https://github.com/zilliztech/milvus-helm/tree/master/charts/milvus
 
 > [!TIP]
 > Configuration for postgresql subchart
->For the advanced PostgreSQL configuration, please referer to the official documentation.
+>For the advanced PostgreSQL configuration, refer to the official documentation.
 > ref: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
 
 ## Subchart parameters
