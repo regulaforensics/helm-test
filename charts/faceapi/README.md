@@ -40,7 +40,10 @@ helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-
 To install the chart with the release name `my-release` and Liveness capabilities:
 
 ```console
-helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-license --set config.service.liveness.enabled=true --set postgresql.enabled=true
+helm install my-release regulaforensics/faceapi \
+    --set licenseSecretName=faceapi-license \
+    --set config.service.liveness.enabled=true \
+    --set postgresql.enabled=true
 ```
 
 ### Search
@@ -48,7 +51,24 @@ helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-
 To install the chart with the release name `my-release` and Search capabilities:
 
 ```console
-helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-license --set config.service.search.enabled=true --set milvus.enabled=true --set postgresql.enabled=true
+helm install my-release regulaforensics/faceapi \
+    --set licenseSecretName=faceapi-license \
+    --set config.service.search.enabled=true \
+    --set milvus.enabled=true \
+    --set postgresql.enabled=true
+```
+
+### Liveness and Search
+
+To install the chart with the release name `my-release` and Search capabilities:
+
+```console
+helm install my-release regulaforensics/faceapi \
+    --set licenseSecretName=faceapi-license \
+    --set config.service.liveness.enabled=true \
+    --set config.service.search.enabled=true \
+    --set milvus.enabled=true \
+    --set postgresql.enabled=true
 ```
 
 ## Uninstalling the Chart
