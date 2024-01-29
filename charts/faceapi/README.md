@@ -1,15 +1,17 @@
 # Face-API Helm Chart
 
-* Fast and accurate data extraction from identity documents. On-premise and cloud integration.
+Regula Face SDK API is a powerful solution for digital identity verification. The available features are Face Detection, Face Comparison (aka Match), Face Identification (aka Search), and Liveness Assessment. On-premise and cloud integration available.
 
-## Get Repo Info
+## Add Chart
+
+First of all, you need to add the `regulaforensics` chart:
 
 ```console
 helm repo add regulaforensics https://regulaforensics.github.io/helm-test
 helm repo update
 ```
 
-_See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation._
+See the [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation.
 
 ## Prerequisites
 
@@ -21,18 +23,20 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 
 ### Licensing
 
-To install the chart you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create kubernetes secret form that license file:
+To install the chart, you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create a Kubernetes Secret from that license file:
 
 ```console
-kubectl create secret generic faceapi-license --from-file=regula.license
+kubectl create secret generic face-api-license --from-file=regula.license
 ```
+
+Note that the `regula.license` file should be located in the same folder where the `kubectl create secret` command is executed.
 
 ### Detect/Match
 
 To install the chart with the release name `my-release` and Detect/Match capabilities (default):
 
 ```console
-helm install my-release regulaforensics/faceapi --set licenseSecretName=faceapi-license
+helm install my-release regulaforensics/faceapi --set licenseSecretName=face-api-license
 ```
 
 ### Liveness
@@ -89,11 +93,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | `replicas`                            | Number of nodes                                                                               | `1`                           |
 | `version`                             | Face-API engine version. Possible values: `cpu`, `gpu`                                        | `cpu`                         |
 | `image.repository`                    | Image repository                                                                              | `regulaforensics/face-api`    |
-| `image.tag`                           | Overrides the Face-API image tag, whose default is the chart appVersion                         | `""`                          |
+| `image.tag`                           | Overrides the Face-API image tag, whose default is the chart appVersion                       | `""`                          |
 | `image.pullPolicy`                    | Image pull policy                                                                             | `IfNotPresent`                |
 | `imagePullSecrets`                    | Image pull secrets                                                                            | `[]`                          |
 | `nameOverride`                        | String to partially override common.names.fullname template (will maintain the release name)  | `""`                          |
-| `fullnameOverride`                    | String to fully override common.names.fullname template                                      | `""`                          |
+| `fullnameOverride`                    | String to fully override common.names.fullname template                                       | `""`                          |
 | `resources`                           | CPU/Memory resource requests/limits                                                           | `{}`                          |
 | `securityContext`                     | Enable security context                                                                       | `{}`                          |
 | `podSecurityContext`                  | Enable pod security context                                                                   | `{}`                          |
@@ -157,7 +161,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.webServer.logging.app.path`               | Application logs file path                                                        | `logs/app/facesdk-reader-app.log`                         |
 | `config.service.webServer.metrics.enabled`                | Whether to enable Prometheus metrics endpoint                                     | `false`                                                   |
 | `config.service.webServer.ssl.enabled`                    | Whether to enable SSL mode                                                        | `false`                                                   |
-| `config.service.webServer.ssl.certificatesSecretName`     | The name of an existing secret containing the cert/key files required for HTTPS    | `""`                                                      |
+| `config.service.webServer.ssl.certificatesSecretName`     | The name of an existing secret containing the cert/key files required for HTTPS   | `""`                                                      |
 | `config.service.webServer.ssl.tlsVersion`                 | Specifies the version of the TLS protocol. Possible values: `1.1`, `1.2`, `1.3`   | `1.2`                                                     |
 |                                                                                                                                                                                                           |
 | `config.service.storage.type`                             | Global storage type. Possible values: `fs`, `s3`, `gcs`, `az`                     | `fs`                                                      |
@@ -165,7 +169,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.storage.s3.accessSecret`                  | S3 Secret Access Key                                                              | `""`                                                      |
 | `config.service.storage.s3.region`                        | S3 region                                                                         | `"us-east-1"`                                             |
 | `config.service.storage.s3.secure`                        | Secure connection                                                                 | `"true"`                                                  |
-| `config.service.storage.s3.endpointUrl`                   | Enpoint URL to the S3 compatible storage                                          | `"https://s3.amazonaws.com"`                              |
+| `config.service.storage.s3.endpointUrl`                   | Endpoint URL to the S3 compatible storage                                         | `"https://s3.amazonaws.com"`                              |
 | `config.service.storage.s3.awsCredentialsSecretName`      | Secret name containing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY credentials        | `""`                                                      |
 | `config.service.storage.gcs.gcsKeyJsonSecretName`         | Secret name containing Google Service Account key (json file)                     | `""`                                                      |
 | `config.service.storage.az.connectionString`              | Azure Storage Account connection string                                           | `""`                                                      |
@@ -180,7 +184,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                                         | Description                                                                                           | Default                               |
 |-------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|---------------------------------------|
 | `config.service.detectMatch.enabled`                              | Whether to enable Detect/Match mode (default)                                                         | Always `true`                         |
-| `config.service.detectMatch.results.location.bucket`              | The Detect/Match result logs bucket name in case of `s3`/`gcs` storage type                             | `""`                                  |
+| `config.service.detectMatch.results.location.bucket`              | The Detect/Match result logs bucket name in case of `s3`/`gcs` storage type                           | `""`                                  |
 | `config.service.detectMatch.results.location.container`           | The Detect/Match result logs storage container name in case of `az` storage type                      | `""`                                  |
 | `config.service.detectMatch.results.location.folder`              | The Detect/Match result logs folder name in case of `fs` storage type                                 | `"/app/faceapi-detect-match/results"` |
 | `config.service.detectMatch.results.location.prefix`              | The Detect/Match result logs prefix path in the `bucket/container`                                    | `"results"`                           |
@@ -199,7 +203,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.liveness.ecdhSchema`                               | ECDH schema to use                                                                            | `default`                             |
 | `config.service.liveness.hideMetadata`                             | Whether to hide processing data's metadata                                                    | `false`                               |
 | `config.service.liveness.protectPersonalInfo`                      | Whether to hide Personal information metadata                                                 | `false`                               |
-| `config.service.liveness.sessions.location.bucket`                 | The Liveness sessions bucket name in case of `s3`/`gcs` storage type                            | `""`                                  |
+| `config.service.liveness.sessions.location.bucket`                 | The Liveness sessions bucket name in case of `s3`/`gcs` storage type                          | `""`                                  |
 | `config.service.liveness.sessions.location.container`              | The Liveness sessions storage container name in case of `az` storage type                     | `""`                                  |
 | `config.service.liveness.sessions.location.folder`                 | The Liveness sessions folder name in case of `fs` storage type                                | `"/app/faceapi-liveness/sessions"`    |
 | `config.service.liveness.sessions.location.prefix`                 | The Liveness sessions prefix path in the `bucket/container`                                   | `"sessions"`                          |
@@ -215,7 +219,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                                             | Description                                                                               | Default                            |
 |-----------------------------------------------------------------------|-------------------------------------------------------------------------------------------|------------------------------------|
 | `config.service.search.enabled`                                       | Whether to enable Identification 1:N (aka Search) mode                                    | `false`                            |
-| `config.service.search.persons.location.bucket`                       | The Search persons bucket name in case of `s3`/`gcs` storage type                           | `""`                               |
+| `config.service.search.persons.location.bucket`                       | The Search persons bucket name in case of `s3`/`gcs` storage type                         | `""`                               |
 | `config.service.search.persons.location.container`                    | The Search persons storage container name in case of `az` storage type                    | `""`                               |
 | `config.service.search.persons.location.folder`                       | The Search persons folder name in case of `fs` storage type                               | `"/app/faceapi-search/persons"`    |
 | `config.service.search.persons.location.prefix`                       | The Search persons prefix path in the `bucket/container`                                  | `"persons"`                        |
@@ -240,16 +244,16 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > [!NOTE]
 > The subcharts are used for the demonstration and Dev/Test purposes related to the `liveness` and `search` capabilities.
-> We strongly recommend to deploy separate installations of the VectorDatabase (search) and DB (liveness/search) in Production.
+> We strongly recommend deploying separate installations of the VectorDatabase (search) and DB (liveness/search) in Production.
 
 > [!TIP]
 > Configuration for milvus subchart
-> For the advanced Milvus configuration, please referer to the official documentation.
+> For the advanced Milvus configuration, refer to the official documentation.
 > ref: https://github.com/zilliztech/milvus-helm/tree/master/charts/milvus
 
 > [!TIP]
 > Configuration for postgresql subchart
->For the advanced PostgreSQL configuration, please referer to the official documentation.
+>For the advanced PostgreSQL configuration, refer to the official documentation.
 > ref: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
 
 ## Subchart parameters
