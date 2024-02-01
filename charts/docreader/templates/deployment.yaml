@@ -114,7 +114,7 @@ spec:
               readOnly: true
             {{- if .Values.licenseSecretName }}
             - name: license
-              mountPath: /app/extBin/unix_x64/regula.license
+              mountPath: /app/extBin/unix/regula.license
               subPath: regula.license
               readOnly: true
             {{- end }}
