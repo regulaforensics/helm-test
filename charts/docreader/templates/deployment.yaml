@@ -100,13 +100,13 @@ spec:
               readOnly: true
             {{- if .Values.general.config }}
             - name: docreader-config
-              mountPath: /app/extBin/unix_x64/config.yaml
+              mountPath: /app/extBin/unix/config.yaml
               subPath: config.yaml
               readOnly: true
             {{- end }}
             {{- if .Values.licenseSecretName }}
             - name: license
-              mountPath: /app/extBin/unix_x64/regula.license
+              mountPath: /app/extBin/unix/regula.license
               subPath: regula.license
               readOnly: true
             {{- end }}
