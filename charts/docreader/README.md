@@ -1,15 +1,17 @@
 # Docreader Helm Chart
 
-* Fast and accurate data extraction from identity documents. On-premise and cloud integration.
+Fast and accurate data extraction from identity documents. On-premise and cloud integration.
 
-## Get Repo Info
+## Add Chart
+
+First of all, you need to add the `regulaforensics` chart:
 
 ```console
 helm repo add regulaforensics https://regulaforensics.github.io/helm-test
 helm repo update
 ```
 
-_See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation._
+See the [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation.
 
 ## Prerequisites
 
@@ -21,11 +23,13 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 
 ### Licensing
 
-To install the chart you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create kubernetes secret form that license file:
+To install the chart, you need to obtain the `regula.license` file (at the [Client Portal](https://client.regulaforensics.com/), for example) and then create a Kubernetes Secret from that license file:
 
 ```console
 kubectl create secret generic docreader-license --from-file=regula.license
 ```
+
+Note that the `regula.license` file should be located in the same folder where the `kubectl create secret` command is executed.
 
 ### API v1
 
@@ -171,7 +175,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.storage.s3.accessSecret`              | S3 Secret Access Key                                                              | `""`                                      |
 | `config.service.storage.s3.region`                    | S3 region                                                                         | `"us-east-1"`                             |
 | `config.service.storage.s3.secure`                    | Secure connection                                                                 | `"true"`                                  |
-| `config.service.storage.s3.endpointUrl`               | Enpoint URL to the S3 compatible storage                                          | `"https://s3.amazonaws.com"`              |
+| `config.service.storage.s3.endpointUrl`               | Endpoint URL to the S3 compatible storage                                         | `"https://s3.amazonaws.com"`              |
 | `config.service.storage.s3.awsCredentialsSecretName`  | Secret name containing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY credentials        | `""`                                      |
 | `config.service.storage.gcs.gcsKeyJsonSecretName`     | Secret name containing Google Service Account key (json file)                     | `""`                                      |
 | `config.service.storage.az.connectionString`          | Azure storage Account connection string                                           | `""`                                      |
@@ -216,11 +220,11 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > [!NOTE]
 > The subcharts are used for the demonstration and Dev/Test purposes.
-> We strongly recommend to deploy separate installations of the DB in Production.
+> We strongly recommend to deploying separate installations of the DB in Production.
 
 > [!TIP]
 > Configuration for postgresql subchart
-> For the advanced PostgreSQL configuration please referer to the official documentation.
+> For the advanced PostgreSQL configuration please refer to the official documentation.
 > ref: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
 
 ## Subchart parameters
