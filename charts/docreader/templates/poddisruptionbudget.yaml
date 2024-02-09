@@ -15,7 +15,6 @@ metadata:
   {{- end }}
 spec:
   selector:
-    matchLabels:
-      {{- include "docreader.selectorLabels" . | nindent 6 }}
-{{ toYaml .Values.podDisruptionBudget.config | indent 2 }}
+    matchLabels: {{- include "docreader.selectorLabels" . | nindent 6 }}
+  {{- toYaml .Values.podDisruptionBudget.config | nindent 2 }}
 {{- end }}
