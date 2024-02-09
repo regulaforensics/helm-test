@@ -74,7 +74,6 @@ podDisruptionBudget:
 #
 # licenseSecretName: faceapi-license
 licenseSecretName: ~
-
 config:
   sdk:
     compare:
