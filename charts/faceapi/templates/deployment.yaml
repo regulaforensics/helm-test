@@ -51,7 +51,7 @@ spec:
             httpGet:
               path: /api/ping
               port: faceapi
-              {{- if .Values.ssl.enabled }}
+              {{- if .Values.config.service.webServer.ssl.enabled }}
               scheme: HTTPS
               {{- else }}
               scheme: HTTP
@@ -67,7 +67,7 @@ spec:
             httpGet:
               path: /api/readiness
               port: faceapi
-              {{- if .Values.ssl.enabled }}
+              {{- if .Values.config.service.webServer.ssl.enabled }}
               scheme: HTTPS
               {{- else }}
               scheme: HTTP
@@ -81,7 +81,7 @@ spec:
           resources: {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- include "faceapi.envs" . | indent 10 }}
-            {{- if and (eq .Values.storage.type "s3") .Values.storage.s3.awsCredentialsSecretName }}
+            {{- if and (eq .Values.config.service.storage.type "s3") .Values.config.service.storage.s3.awsCredentialsSecretName }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
@@ -93,14 +93,14 @@ spec:
                   name: {{ template "faceapi.aws.credentials.secret" . }}
                   key: AWS_SECRET_ACCESS_KEY
             {{- end }}
-            {{- if and (eq .Values.storage.type "az") .Values.storage.az.connectionStringSecretName }}
+            {{- if and (eq .Values.config.service.storage.type "az") .Values.config.service.storage.az.connectionStringSecretName }}
             - name: AZURE_STORAGE_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   name: {{ template "faceapi.az.credentials.secret" . }}
                   key: AZURE_STORAGE_CONNECTION_STRING
             {{- end }}
-            {{- if and (not .Values.postgresql.enabled) .Values.database.connectionStringSecretName }}
+            {{- if and (not .Values.postgresql.enabled) .Values.config.service.database.connectionStringSecretName }}
             - name: SQL_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
@@ -118,24 +118,24 @@ spec:
               subPath: regula.license
               readOnly: true
             {{- end }}
-            {{- if .Values.ssl.certificatesSecretName }}
+            {{- if .Values.config.service.webServer.ssl.certificatesSecretName }}
             - name: certificates
               mountPath: /app/certs
               readOnly: true
             {{- end }}
-            {{- if and (eq .Values.storage.type "fs") .Values.detectMatch.enabled .Values.detectMatch.results.persistence.enabled }}
+            {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.detectMatch.enabled .Values.config.service.detectMatch.results.persistence.enabled }}
             - name: detectmatch-results
-              mountPath: {{ quote .Values.detectMatch.results.location.folder }}
+              mountPath: {{ quote .Values.config.service.detectMatch.results.location.folder }}
             {{- end }}
-            {{- if and (eq .Values.storage.type "fs") .Values.liveness.enabled .Values.liveness.sessions.persistence.enabled }}
+            {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.liveness.enabled .Values.config.service.liveness.sessions.persistence.enabled }}
             - name: liveness-sessions
-              mountPath: {{ quote .Values.liveness.sessions.location.folder }}
+              mountPath: {{ quote .Values.config.service.liveness.sessions.location.folder }}
             {{- end }}
-            {{- if and (eq .Values.storage.type "fs") .Values.search.enabled .Values.search.persons.persistence.enabled }}
+            {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.search.enabled .Values.config.service.search.persons.persistence.enabled }}
             - name: search-persons
-              mountPath: {{ quote .Values.search.persons.location.folder }}
+              mountPath: {{ quote .Values.config.service.search.persons.location.folder }}
             {{- end }}
-            {{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName }}
+            {{- if and (eq .Values.config.service.storage.type "gcs") .Values.config.service.storage.gcs.gcsKeyJsonSecretName }}
             - name: gcs-credentials
               mountPath: /etc/credentials/gcs_key.json
               subPath: gcs_key.json
@@ -153,27 +153,27 @@ spec:
           secret:
             secretName: {{ template "faceapi.license.secret" . }}
         {{- end }}
-        {{- if .Values.ssl.certificatesSecretName }}
+        {{- if .Values.config.service.webServer.ssl.certificatesSecretName }}
         - name: certificates
           secret:
             secretName: {{ template "faceapi.certificates.secret" . }}
         {{- end }}
-        {{- if and (eq .Values.storage.type "fs") .Values.detectMatch.enabled .Values.detectMatch.results.persistence.enabled }}
+        {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.detectMatch.enabled .Values.config.service.detectMatch.results.persistence.enabled }}
         - name: detectmatch-results
           persistentVolumeClaim:
             claimName: {{ template "faceapi.detectmatch.results.pvc" . }}
         {{- end }}
-        {{- if and (eq .Values.storage.type "fs") .Values.liveness.enabled .Values.liveness.sessions.persistence.enabled }}
+        {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.liveness.enabled .Values.config.service.liveness.sessions.persistence.enabled }}
         - name: liveness-sessions
           persistentVolumeClaim:
             claimName: {{ template "faceapi.liveness.sessions.pvc" . }}
         {{- end }}
-        {{- if and (eq .Values.storage.type "fs") .Values.search.enabled .Values.search.persons.persistence.enabled }}
+        {{- if and (eq .Values.config.service.storage.type "fs") .Values.config.service.search.enabled .Values.config.service.search.persons.persistence.enabled }}
         - name: search-persons
           persistentVolumeClaim:
             claimName: {{ template "faceapi.search.persons.pvc" . }}
         {{- end }}
-        {{- if and (eq .Values.storage.type "gcs") .Values.storage.gcs.gcsKeyJsonSecretName }}
+        {{- if and (eq .Values.config.service.storage.type "gcs") .Values.config.service.storage.gcs.gcsKeyJsonSecretName }}
         - name: gcs-credentials
           secret:
             secretName: {{ template "faceapi.gcs.credentials.secret" . }}

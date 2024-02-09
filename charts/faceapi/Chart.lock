@@ -1,9 +1,9 @@
 dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 13.2.27
+  version: 13.4.4
 - name: milvus
   repository: https://zilliztech.github.io/milvus-helm/
-  version: 4.1.11
-digest: sha256:c955b7092dfccdfbfe123e676ec89cfb13f9de0517255c6fab96c65632389269
-generated: "2024-01-03T16:15:15.981736242+03:00"
+  version: 4.1.17
+digest: sha256:bb30e08c6d0a6cc1b517d1eb0b6d0255cf671531ed99b9daf0ec34ea8c05c8c6
+generated: "2024-02-08T11:17:23.497317496+03:00"
