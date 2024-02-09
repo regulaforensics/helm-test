@@ -77,12 +77,16 @@ config:
 
     rfid:
       enabled: false
-      pkdPaPath: "/app/pkdPa"
-      # If enabled, Supply the name of an existing PVC with prepopulated PKD masterlists files or use extraVolumeMounts
-      pkdPaExistingClaim: ~
       chipVerification:
         enabled: false
+      pkdPaPath: "/app/pkdPa"
       paSensitiveCodes: []
+      persistence:
+        # Enable persistent volume for storing PKD masterlists files
+        enabled: false
+        accessMode: ReadWriteMany
+        storageClassName: ~
+        existingClaim: ~
 
 
   service:
@@ -179,13 +183,9 @@ config:
         persistence:
           # Enable persistent volume for storing processing results
           enabled: false
-          # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
           accessMode: ReadWriteMany
-          # Volume size for logs
           size: 10Gi
-          # If using a custom storageClass, pass name here
           storageClassName: ~
-          # If defined, PVC must be created manually before volume will be bound
           existingClaim: ~
 
     sessionApi:
@@ -200,13 +200,9 @@ config:
         persistence:
           # Enable persistent volume for storing transactions data
           enabled: false
-          # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
           accessMode: ReadWriteMany
-          # Volume size for logs
           size: 10Gi
-          # If using a custom storageClass, pass name here
           storageClassName: ~
-          # If defined, PVC must be created manually before volume will be bound
           existingClaim: ~
 
 env: []

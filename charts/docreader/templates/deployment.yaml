@@ -131,7 +131,7 @@ spec:
             - name: session-api-transactions
               mountPath: {{ quote .Values.config.service.sessionApi.transactions.location.folder }}
             {{- end }}
-            {{- if and .Values.config.sdk.rfid.enabled }}
+            {{- if and .Values.config.sdk.rfid.enabled .Values.config.sdk.rfid.persistence.enabled }}
             - name: rfid-pkd
               mountPath: {{ quote .Values.config.sdk.rfid.pkdPaPath }}
             {{- end }}
@@ -168,7 +168,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "docreader.sessionApi.transactions.pvc" . }}
         {{- end }}
-        {{- if and .Values.config.sdk.rfid.enabled }}
+        {{- if and .Values.config.sdk.rfid.enabled .Values.config.sdk.rfid.persistence.enabled }}
         - name: rfid-pkd
           persistentVolumeClaim:
             claimName: {{ template "docreader.rfid.pkd.pvc" . }}

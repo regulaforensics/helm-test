@@ -13,7 +13,7 @@ keywords:
   - regulaforensics
 dependencies:
   - name: postgresql
-    version: 13.2.27
+    version: 13.4.4
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgresql.enabled
 maintainers:

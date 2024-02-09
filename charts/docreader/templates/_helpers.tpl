@@ -116,10 +116,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}
 
-{{/* Docreader RFID PKD PA existing volume claim */}}
+{{/* Docreader RFID PKD PA volume claim */}}
 {{- define "docreader.rfid.pkd.pvc" -}}
-{{- if .Values.config.sdk.rfid.pkdPaExistingClaim -}}
-{{ .Values.config.sdk.rfid.pkdPaExistingClaim }}
+{{- if .Values.config.sdk.rfid.persistence.existingClaim -}}
+{{ .Values.config.sdk.rfid.persistence.existingClaim }}
 {{- else -}}
 {{ .Release.Name }}-rfid-pkd-pa
 {{- end -}}
