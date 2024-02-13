@@ -18,9 +18,9 @@ spec:
       path: /metrics
       port: faceapi
       {{- if .Values.config.service.webServer.ssl.enabled }}
-      scheme: HTTPS
+      scheme: https
       {{- else }}
-      scheme: HTTP
+      scheme: http
       {{- end }}
   namespaceSelector:
     matchNames:
