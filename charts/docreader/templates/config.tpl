@@ -8,10 +8,10 @@ sdk:
     {{- if .Values.config.sdk.rfid.enabled }}
     PKD_PA: {{ quote .Values.config.sdk.rfid.pkdPaPath }}
     {{- if .Values.config.sdk.rfid.paSensitiveCodes }}
-    chipVerification:
-      enabled: {{ .Values.config.sdk.rfid.chipVerification.enabled }}
     paSensitiveCodes: {{- toYaml .Values.config.sdk.rfid.paSensitiveCodes | nindent 4 }}
     {{- end }}
+    chipVerification:
+      enabled: {{ .Values.config.sdk.rfid.chipVerification.enabled }}
     {{- else }}
     {{- end }}
 
