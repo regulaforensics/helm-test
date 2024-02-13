@@ -42,6 +42,15 @@ app.kubernetes.io/name: {{ include "faceapi.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/* Create the name of the service account to use */}}
+{{- define "faceapi.serviceAccount" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default "faceapi" .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
 {{/* Version name */}}
 {{- define "version" -}}
 {{- if .Values.version | default "cpu" | lower | regexMatch "^(cpu|gpu)$" -}}
