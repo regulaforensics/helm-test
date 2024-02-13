@@ -42,6 +42,15 @@ app.kubernetes.io/name: {{ include "docreader.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/* Create the name of the service account to use */}}
+{{- define "docreader.serviceAccount" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default "docreader" .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
 {{/* Config map name */}}
 {{- define "docreader.config.name" -}}
 {{ (printf "%s-docreader-config" .Release.Name) }}
