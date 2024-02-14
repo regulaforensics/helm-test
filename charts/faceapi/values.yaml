@@ -305,21 +305,20 @@ service:
   loadBalancerSourceRanges: []
 
 ingress:
-  # Enable ingress resource
   enabled: false
   # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
-  className: ""
-  # Annotations for the web Ingress
+  #className: ""
+
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+
   # The hostnames or hosts configuration for the web Ingress
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  # Enable TLS termination for the web Ingress
+  hosts: []
+    # - faceapi.domain.com
+  paths: []
+    # - /
+  pathType: Prefix
+
+  # TLS configuration for the FaceAPI Ingress
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
