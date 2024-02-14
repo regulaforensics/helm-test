@@ -51,15 +51,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}
 
-{{/* Version name */}}
-{{- define "version" -}}
-{{- if .Values.version | default "cpu" | lower | regexMatch "^(cpu|gpu)$" -}}
-  {{ .Values.version | default "cpu" | lower }}
-{{- else }}
-  {{ required (printf "Incorrect 'version': %s. Possible value: cpu or gpu" .Values.version) nil }}
-{{- end }}
-{{- end }}
-
 {{/* Config map name */}}
 {{- define "faceapi.config.name" -}}
 {{ (printf "%s-faceapi-config" .Release.Name) }}
