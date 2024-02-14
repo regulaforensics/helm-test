@@ -307,7 +307,7 @@ service:
 ingress:
   enabled: false
   # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
-  #className: ""
+  # className: ""
 
   annotations: {}
 
