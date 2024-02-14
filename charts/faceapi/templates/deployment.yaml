@@ -41,7 +41,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}-{{ template "version" . }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: faceapi
@@ -115,7 +115,7 @@ spec:
               readOnly: true
             {{- if .Values.licenseSecretName }}
             - name: license
-              mountPath: /app/extBin/unix_x64/{{ template "version" . }}/regula.license
+              mountPath: /app/extBin/unix/regula.license
               subPath: regula.license
               readOnly: true
             {{- end }}

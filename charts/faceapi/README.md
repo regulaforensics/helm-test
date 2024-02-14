@@ -91,7 +91,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                             | Description                                                                                   | Default                       |
 |---------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------|
 | `replicas`                            | Number of nodes                                                                               | `1`                           |
-| `version`                             | Face-API engine version. Possible values: `cpu`, `gpu`                                        | `cpu`                         |
 | `image.repository`                    | Image repository                                                                              | `regulaforensics/face-api`    |
 | `image.tag`                           | Overrides the Face-API image tag, whose default is the chart appVersion                       | `""`                          |
 | `image.pullPolicy`                    | Image pull policy                                                                             | `IfNotPresent`                |
