@@ -410,6 +410,32 @@ entries:
   docreader:
   - apiVersion: v2
     appVersion: nightly
+    created: "2024-02-20T08:35:15.283697332Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: f0d8d5c9f8b81be0b99ec805b4093105c7f94f972a76c1e8d2b1c302f59c9434
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/docreader-1.0.5/docreader-1.0.5.tgz
+    version: 1.0.5
+  - apiVersion: v2
+    appVersion: nightly
     created: "2024-02-14T11:29:54.195831497Z"
     dependencies:
     - condition: postgresql.enabled
@@ -832,6 +858,36 @@ entries:
     - https://github.com/regulaforensics/helm-test/releases/download/docreader-0.1.1/docreader-0.1.1.tgz
     version: 0.1.1
   faceapi:
+  - apiVersion: v2
+    appVersion: nightly-cpu
+    created: "2024-02-20T08:35:15.43308211Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    - condition: milvus.enabled
+      name: milvus
+      repository: https://zilliztech.github.io/milvus-helm/
+      version: 4.1.17
+    description: Face Recognition Service. On-premise and cloud integration
+    digest: 6e6294803f10b08fabecb0b522814c5cdca4a3846a4f2a8af5e50144c79066c6
+    home: https://faceapi.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - faceapi
+    - face-api
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: faceapi
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/faceapi-1.1.1/faceapi-1.1.1.tgz
+    version: 1.1.1
   - apiVersion: v2
     appVersion: nightly-cpu
     created: "2024-02-14T21:35:16.203671657Z"
@@ -1822,4 +1878,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/faceapi-0.2.4/faceapi-0.2.4.tgz
     version: 0.2.4
-generated: "2024-02-14T21:35:16.20402077Z"
+generated: "2024-02-20T08:35:15.433514703Z"
