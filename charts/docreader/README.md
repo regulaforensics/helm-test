@@ -108,6 +108,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `podSecurityContext.fsGroup`              | Group ID for the pod                                                                          | `0`                           |
 | `podAnnotations`                          | Map of annotations to add to the pods                                                         | `{}`                          |
 | `priorityClassName`                       | Priority Class to use for each pod                                                            | `""`                          |
+| `terminationGracePeriodSeconds`           | Termination grace period to use for each pod                                                  | `nil`                         |
+| `lifecycle`                               | `preStop` lifecycle hook to control the termination order                                     | `{}`                          |
 | `nodeSelector`                            | Node labels for pods assignment                                                               | `{}`                          |
 | `affinity`                                | Affinity for pods assignment                                                                  | `{}`                          |
 | `tolerations`                             | Tolerations for pods assignment                                                               | `[]`                          |

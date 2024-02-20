@@ -43,6 +43,13 @@ podSecurityContext:
 
 priorityClassName: ~
 
+terminationGracePeriodSeconds: ~
+
+lifecycle: {}
+  # preStop:
+  #   exec:
+  #     command: ["/bin/sh", "-c", "sleep 45"]
+
 nodeSelector: {}
 
 affinity: {}
@@ -266,7 +273,7 @@ serviceMonitor:
 livenessProbe:
   enabled: true
   initialDelaySeconds: 30
-  periodSeconds: 30
+  periodSeconds: 20
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 5
@@ -274,7 +281,7 @@ livenessProbe:
 readinessProbe:
   enabled: true
   initialDelaySeconds: 30
-  periodSeconds: 20
+  periodSeconds: 10
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 5

@@ -48,6 +48,13 @@ podAnnotations: {}
 
 priorityClassName: ~
 
+terminationGracePeriodSeconds: ~
+
+lifecycle: {}
+  # preStop:
+  #   exec:
+  #     command: ["/bin/sh", "-c", "sleep 45"]
+
 nodeSelector: {}
 
 affinity: {}
