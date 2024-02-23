@@ -7,7 +7,7 @@ Regula Face SDK API is a powerful solution for digital identity verification. Th
 First of all, you need to add the `regulaforensics` chart:
 
 ```console
-helm repo add regulaforensics https://regulaforensics.github.io/helm-test
+helm repo add regulaforensics https://regulaforensics.github.io/helm-charts
 helm repo update
 ```
 
@@ -18,6 +18,7 @@ See the [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentat
 - At least 3 GB of RAM available on your cluster per pod's worker
 - Helm 3
 - PV provisioner support in the underlying infrastructure (essential for storing logs)
+- - Kubernetes version >=1.23-0
 
 ## Installing the Chart
 
