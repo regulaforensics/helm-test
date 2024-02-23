@@ -7,7 +7,7 @@ Fast and accurate data extraction from identity documents. On-premise and cloud 
 First of all, you need to add the `regulaforensics` chart:
 
 ```console
-helm repo add regulaforensics https://regulaforensics.github.io/helm-test
+helm repo add regulaforensics https://regulaforensics.github.io/helm-charts
 helm repo update
 ```
 
@@ -18,6 +18,7 @@ See the [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentat
 - At least 2 GB of RAM available on your cluster per pod's worker
 - Helm 3
 - PV provisioner support in the underlying infrastructure (essential for storing logs)
+- Kubernetes version >=1.23-0
 
 ## Installing the Chart
 
@@ -64,6 +65,16 @@ export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=docreader,app.kube
 kubectl cp <PKD_PA_CERTIFICATES_PATH> ${POD_NAME}:/app/pkdPa/
 ```
 
+An alternative to PVCs with ReadWriteMany access mode is to create a custom image based on regulaforensics/docreader. This image will include RFID PKD masterlists onboard at the default path `/app/pkdPa/`, thereby eliminating the need for PVCs with ReadWriteMany for container creation.
+
+```console
+helm install my-release regulaforensics/docreader \
+    --set image.repository=<your own repository> \
+    --set image.tag=<your image tag> \
+    --set licenseSecretName=docreader-license \
+    --set config.sdk.rfid.enabled=true
+```
+
 ### Chip Verification
 
 To install the chart with the release name `my-release` and Chip Verification capabilities:
@@ -90,6 +101,17 @@ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading the Chart
+
+To upgrade the `my-release` deployment:
+
+```console
+helm upgrade my-release regulaforensics/docreader
+```
+
+### Upgrading an existing Release to a new major version
+
+A major chart version change (like v0.1.2 -> v1.0.0) indicates that there is an incompatible breaking change needing manual actions.
 
 ## Common parameters
 
