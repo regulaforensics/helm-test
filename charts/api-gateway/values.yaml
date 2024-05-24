@@ -50,6 +50,8 @@ envSettings:
   sqlHost: localhost
   sqlPort: 5432
   sqlDatabase: tagger
+  airflowUser: admin
+  airflowPassword: admin
 
 env: []
 # - name: ""
