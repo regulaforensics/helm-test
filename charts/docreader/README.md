@@ -14,11 +14,11 @@ helm repo update
 See the [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation.
 
 ## Prerequisites
-
-- At least 2 GB of RAM available on your cluster per pod's worker
-- Helm 3
-- PV provisioner support in the underlying infrastructure (essential for storing logs)
-- Kubernetes version >=1.23-0
+> [!NOTE]
+> - At least 2 GB of RAM available on your cluster per pod's worker
+> - Helm >=3.10
+> - PV provisioner support in the underlying infrastructure (essential for storing logs)
+> - Kubernetes version >=1.23-0
 
 ## Installing the Chart
 
