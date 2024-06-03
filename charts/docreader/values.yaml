@@ -254,6 +254,49 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+networkPolicy:
+  # networkPolicy.enabled: Enable creation of NetworkPolicy resources.
+  enabled: true
+  # networkPolicy.annotations: Add annotations to network policy.
+  annotations: {}
+  # networkPolicy.ingress: When true enables the creation of ingress network policy.
+  ingress: true
+  # networkPolicy.allowExternal: When set to false, only pods with the correct '-client' label will have network access to docreader port defined.
+  # When true, docreader will accept connections from any source (with the correct destination port).
+  allowExternal: false
+  # networkPolicy.explicitNamespacesSelector: A Kubernetes LabelSelector to explicitly select namespaces
+  # from which traffic could be allowed. If explicitNamespacesSelector is missing or set to {},
+  # only client Pods that are in the networkPolicy's namespace and that match other criteria, the ones that have the good label, can reach the docreader.
+  # But sometimes, we want the docreader to be accessible to clients from other namespaces, in this case, we can use this
+  # LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  #
+  # Example:
+  # explicitNamespacesSelector:
+  #   matchLabels:
+  #     role: frontend
+  #   matchExpressions:
+  #    - {key: role, operator: In, values: [frontend]}
+  #
+  explicitNamespacesSelector: {}
+  #
+  egress:
+    # networkPolicy.egress.enabled: When enabled, an egress network policy will be
+    # created allowing docreader to connect to external data sources from kubernetes cluster.
+    enabled: false
+    # networkPolicy.egress.blockDNSResolution: When enabled, DNS resolution will be blocked
+    # for all pods in the docreader namespace.
+    blockDNSResolution: false
+    # networkPolicy.egress.ports: Add individual ports to be allowed by the egress
+    # Add ports to the egress by specifying - port: <port number>
+    # Example
+    # - port: 80
+    # - port: 443
+    #
+    ports:
+    # networkPolicy.egress.to: Allow egress traffic to specific destinations
+    to: []
+    #
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false

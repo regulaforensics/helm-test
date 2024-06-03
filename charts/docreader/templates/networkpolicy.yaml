@@ -1,0 +1,55 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "docreader.fullname" . }}
+  labels:
+    {{- include "docreader.labels" . | nindent 4 }}
+  {{- with .Values.networkPolicy.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  policyTypes:
+    {{- if .Values.networkPolicy.ingress }}
+    - Ingress
+    {{- end }}
+    {{- if .Values.networkPolicy.egress.enabled }}
+    - Egress
+    {{- end }}
+  podSelector:
+    matchLabels:
+      {{- include "docreader.selectorLabels" . | nindent 6 }}
+  {{- if .Values.networkPolicy.egress.enabled }}
+  egress:
+    {{- if not .Values.networkPolicy.egress.blockDNSResolution }}
+    - ports:
+        - port: 53
+          protocol: UDP
+    {{- end }}
+    - ports:
+        {{ .Values.networkPolicy.egress.ports | toJson }}
+      {{- with .Values.networkPolicy.egress.to }}
+      to:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
+  {{- end }}
+  {{- if .Values.networkPolicy.ingress }}
+  ingress:
+    - ports:
+      - port: docreader
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels:
+              {{ include "docreader.fullname" . }}-client: "true"
+        {{- with .Values.networkPolicy.explicitNamespacesSelector }}
+        - namespaceSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        - podSelector:
+            matchLabels:
+              {{- include "docreader.selectorLabels" . | nindent 14 }}
+      {{- end }}
+  {{- end }}
+{{- end }}
