@@ -299,11 +299,21 @@ networkPolicy:
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # The name of the service account to use.
   name: ~
   # Annotations to add to the service account
   annotations: {}
+
+rbac:
+  create: true
+  annotations: {}
+  # Use an existing Role
+  # useExistingRole: name-of-some-role
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 
 serviceMonitor:
   # Set this to `true` to create ServiceMonitor for Prometheus operator
