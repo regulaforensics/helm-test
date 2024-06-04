@@ -261,7 +261,7 @@ networkPolicy:
   annotations: {}
   # networkPolicy.ingress: When true enables the creation of ingress network policy.
   ingress: true
-  # networkPolicy.allowExternal: When set to false, only pods with the correct '-client' label will have network access to docreader port defined.
+  # networkPolicy.allowExternal: When set to false, only pods with the correct '-client' label within docreader namespace will have network access to docreader port defined.
   # When true, docreader will accept connections from any source (with the correct destination port).
   allowExternal: false
   # networkPolicy.explicitNamespacesSelector: A Kubernetes LabelSelector to explicitly select namespaces
@@ -295,7 +295,7 @@ networkPolicy:
     # - port: 80
     # - port: 443
     #
-    ports:
+    ports: []
     # networkPolicy.egress.to: Allow egress traffic to specific destinations
     to: []
     #
