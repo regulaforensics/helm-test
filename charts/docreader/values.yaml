@@ -277,10 +277,7 @@ networkPolicy:
   #   matchExpressions:
   #    - {key: role, operator: In, values: [frontend]}
   #
-  # Allow traffic from kube-system namespace (ingress controller)
-  explicitNamespacesSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: kube-system
+  explicitNamespacesSelector: {}
   #
   egress:
     # networkPolicy.egress.enabled: When enabled, an egress network policy will be
