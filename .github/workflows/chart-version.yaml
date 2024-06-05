@@ -1,9 +1,7 @@
 name: Chart Version Test
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   # JOB to run change detection
