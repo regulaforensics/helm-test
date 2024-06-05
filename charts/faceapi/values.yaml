@@ -386,14 +386,14 @@ networkPolicy:
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # The name of the service account to use.
   name: ~
   # Annotations to add to the service account
   annotations: {}
 
 rbac:
-  create: true
+  create: false
   annotations: {}
   # Use an existing Role
   # useExistingRole: name-of-some-role
