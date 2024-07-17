@@ -148,45 +148,46 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Application parameters
 
-| Parameter                                                 | Description                                                                       | Default                                                   |
-|-----------------------------------------------------------|-----------------------------------------------------------------------------------|-----------------------------------------------------------|
-| `licenseSecretName`                                       | The name of an existing secret containing the regula.license file                 | `""`                                                      |
-| `config.sdk.compare.limitPerImageTypes`                   | Limit per Image Type                                                              | `2`                                                       |
-| `config.sdk.logging.level`                                | Specify application logs level. Possible values: `ERROR`, `WARN`, `INFO`, `DEBUG` | `INFO`                                                    |
-| `config.sdk.detect`                                       | Configuration of SDK `detect` capabilities                                        | `[]`                                                      |
-| `config.sdk.liveness`                                     | Configuration of SDK `liveness` capabilities                                      | `[]`                                                      |
-|                                                                                                                                                                                                           |
-| `config.service.webServer.port`                           | Port server binding                                                               | `41101`                                                   |
-| `config.service.webServer.workers`                        | Number of workers per pod                                                         | `1`                                                       |
-| `config.service.webServer.timeout`                        | Number of seconds for the worker to process the request                           | `30`                                                      |
-| `config.service.webServer.demoApp.enabled`                | Serve a demo web app                                                              | `true`                                                    |
-| `config.service.webServer.cors.origins`                   | Origin, allowed to use API                                                        | `*`                                                       |
-| `config.service.webServer.cors.headers`                   | Headers, allowed to read from the API                                             | `*`                                                       |
-| `config.service.webServer.cors.methods`                   | Methods, allowed to invoke on the API                                             | `"POST,PUT,GET,DELETE,PATCH,HEAD,OPTIONS`                 |
-| `config.service.webServer.logging.level`                  | Specify application logs level. Possible values: `ERROR`, `WARN`, `INFO`, `DEBUG` | `INFO`                                                    |
-| `config.service.webServer.logging.formatter`              | Specify application logs format. Possible values: `text`, `json`                  | `text`                                                    |
-| `config.service.webServer.logging.access.console`         | Whether to print access logs to a console                                         | `true`                                                    |
-| `config.service.webServer.logging.access.path`            | Access logs file path                                                             | `logs/access/facesdk-reader-access.log`                   |
-| `config.service.webServer.logging.app.console`            | Whether to print application logs to a console                                    | `true`                                                    |
-| `config.service.webServer.logging.app.path`               | Application logs file path                                                        | `logs/app/facesdk-reader-app.log`                         |
-| `config.service.webServer.metrics.enabled`                | Whether to enable Prometheus metrics endpoint                                     | `false`                                                   |
-| `config.service.webServer.ssl.enabled`                    | Whether to enable SSL mode                                                        | `false`                                                   |
-| `config.service.webServer.ssl.certificatesSecretName`     | The name of an existing secret containing the cert/key files required for HTTPS   | `""`                                                      |
-| `config.service.webServer.ssl.tlsVersion`                 | Specifies the version of the TLS protocol. Possible values: `1.1`, `1.2`, `1.3`   | `1.2`                                                     |
-|                                                                                                                                                                                                           |
-| `config.service.storage.type`                             | Global storage type. Possible values: `fs`, `s3`, `gcs`, `az`                     | `fs`                                                      |
-| `config.service.storage.s3.accessKey`                     | S3 Access Key                                                                     | `""`                                                      |
-| `config.service.storage.s3.accessSecret`                  | S3 Secret Access Key                                                              | `""`                                                      |
-| `config.service.storage.s3.region`                        | S3 region                                                                         | `"us-east-1"`                                             |
-| `config.service.storage.s3.secure`                        | Secure connection                                                                 | `"true"`                                                  |
-| `config.service.storage.s3.endpointUrl`                   | Endpoint URL to the S3 compatible storage                                         | `"https://s3.amazonaws.com"`                              |
-| `config.service.storage.s3.awsCredentialsSecretName`      | Secret name containing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY credentials        | `""`                                                      |
-| `config.service.storage.gcs.gcsKeyJsonSecretName`         | Secret name containing Google Service Account key (json file)                     | `""`                                                      |
-| `config.service.storage.az.connectionString`              | Azure Storage Account connection string                                           | `""`                                                      |
-| `config.service.storage.az.connectionStringSecretName`    | Secret name containing Azure Storage Account connection string                    | `""`                                                      |
-|                                                                                                                                                                                                           |
-| `config.service.database.connectionString`                | Database connection string                                                        | `""`                                                      |
-| `config.service.database.connectionStringSecretName`      | Secret name containing Database connection string                                 | `""`                                                      |
+| Parameter                                                 | Description                                                                       | Default                                                       |
+|-----------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------|
+| `licenseSecretName`                                       | The name of an existing secret containing the regula.license file                 | `""`                                                          |
+| `config.sdk.compare.limitPerImageTypes`                   | Limit per Image Type                                                              | `2`                                                           |
+| `config.sdk.logging.level`                                | Specify application logs level. Possible values: `ERROR`, `WARN`, `INFO`, `DEBUG` | `INFO`                                                        |
+| `config.sdk.detect`                                       | Configuration of SDK `detect` capabilities                                        | `[]`                                                          |
+| `config.sdk.liveness`                                     | Configuration of SDK `liveness` capabilities                                      | `[]`                                                          |
+|                                                                                                                                                                                                               |
+| `config.service.webServer.port`                           | Port server binding                                                               | `41101`                                                       |
+| `config.service.webServer.workers`                        | Number of workers per pod                                                         | `1`                                                           |
+| `config.service.webServer.timeout`                        | Number of seconds for the worker to process the request                           | `30`                                                          |
+| `config.service.webServer.demoApp.enabled`                | Serve a demo web app                                                              | `true`                                                        |
+| `config.service.webServer.cors.origins`                   | Origin, allowed to use API                                                        | `*`                                                           |
+| `config.service.webServer.cors.headers`                   | Headers, allowed to read from the API                                             | `*`                                                           |
+| `config.service.webServer.cors.methods`                   | Methods, allowed to invoke on the API                                             | `"POST,PUT,GET,DELETE,PATCH,HEAD,OPTIONS`                     |
+| `config.service.webServer.logging.level`                  | Specify application logs level. Possible values: `ERROR`, `WARN`, `INFO`, `DEBUG` | `INFO`                                                        |
+| `config.service.webServer.logging.formatter`              | Specify application logs format. Possible values: `text`, `json`                  | `text`                                                        |
+| `config.service.webServer.logging.access.console`         | Whether to print access logs to a console                                         | `true`                                                        |
+| `config.service.webServer.logging.access.path`            | Access logs file path                                                             | `logs/access/facesdk-reader-access.log`                       |
+| `config.service.webServer.logging.access.format`          | Access logs format                                                                | `%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"` |
+| `config.service.webServer.logging.app.console`            | Whether to print application logs to a console                                    | `true`                                                        |
+| `config.service.webServer.logging.app.path`               | Application logs file path                                                        | `logs/app/facesdk-reader-app.log`                             |
+| `config.service.webServer.metrics.enabled`                | Whether to enable Prometheus metrics endpoint                                     | `false`                                                       |
+| `config.service.webServer.ssl.enabled`                    | Whether to enable SSL mode                                                        | `false`                                                       |
+| `config.service.webServer.ssl.certificatesSecretName`     | The name of an existing secret containing the cert/key files required for HTTPS   | `""`                                                          |
+| `config.service.webServer.ssl.tlsVersion`                 | Specifies the version of the TLS protocol. Possible values: `1.1`, `1.2`, `1.3`   | `1.2`                                                         |
+|                                                                                                                                                                                                               |
+| `config.service.storage.type`                             | Global storage type. Possible values: `fs`, `s3`, `gcs`, `az`                     | `fs`                                                          |
+| `config.service.storage.s3.accessKey`                     | S3 Access Key                                                                     | `""`                                                          |
+| `config.service.storage.s3.accessSecret`                  | S3 Secret Access Key                                                              | `""`                                                          |
+| `config.service.storage.s3.region`                        | S3 region                                                                         | `"us-east-1"`                                                 |
+| `config.service.storage.s3.secure`                        | Secure connection                                                                 | `"true"`                                                      |
+| `config.service.storage.s3.endpointUrl`                   | Endpoint URL to the S3 compatible storage                                         | `"https://s3.amazonaws.com"`                                  |
+| `config.service.storage.s3.awsCredentialsSecretName`      | Secret name containing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY credentials        | `""`                                                          |
+| `config.service.storage.gcs.gcsKeyJsonSecretName`         | Secret name containing Google Service Account key (json file)                     | `""`                                                          |
+| `config.service.storage.az.connectionString`              | Azure Storage Account connection string                                           | `""`                                                          |
+| `config.service.storage.az.connectionStringSecretName`    | Secret name containing Azure Storage Account connection string                    | `""`                                                          |
+|                                                                                                                                                                                                               |
+| `config.service.database.connectionString`                | Database connection string                                                        | `""`                                                          |
+| `config.service.database.connectionStringSecretName`      | Secret name containing Database connection string                                 | `""`                                                          |
 
 
 ## Detect/Match parameters
