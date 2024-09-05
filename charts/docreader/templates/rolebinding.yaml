@@ -21,7 +21,7 @@ subjects:
 - kind: ServiceAccount
   {{- if .Values.serviceAccount.create }}
   name: {{ include "docreader.serviceAccount" . }}
-  {{- else}}
+  {{- else }}
   name: default
   {{- end }}
 {{- end }}
