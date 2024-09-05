@@ -299,11 +299,13 @@ rbac:
   create: false
   annotations: {}
   # Use an existing Role
-  # useExistingRole: name-of-some-role
-  extraRoleRules: []
-  # - apiGroups: []
-  #   resources: []
-  #   verbs: []
+  # useExistingRole: YourExistingRoleName
+  extraRoleRules:
+  # Uncomment the lines below if you are going to use RBAC with default Role
+  # Or add your rule to the given below ones
+  # - apiGroups: [""]
+  #   resources: ["namespaces", "serviceaccounts"]
+  #   verbs: ["get"]
 
 serviceMonitor:
   # Set this to `true` to create ServiceMonitor for Prometheus operator
