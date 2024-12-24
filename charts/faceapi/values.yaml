@@ -84,6 +84,12 @@ config:
     logging:
       level: "INFO"
 
+    param:
+      # RegressionAge:
+      #   inferenceParams:
+      #     modelInfo:
+      #       halfInterval: 2
+
     detect:
       # scenarios:
       #   - scenario: AA

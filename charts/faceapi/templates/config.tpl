@@ -9,8 +9,12 @@ sdk:
   detect: {{- toYaml .Values.config.sdk.detect | nindent 4 }}
   {{- end }}
 
-  {{- if and .Values.config.service.liveness.enabled .Values.config.sdk.liveness  }}
+  {{- if and .Values.config.service.liveness.enabled .Values.config.sdk.liveness }}
   liveness: {{- toYaml .Values.config.sdk.liveness | nindent 4 }}
+  {{- end }}
+
+  {{- if .Values.config.sdk.param }}
+  param: {{- toYaml .Values.config.sdk.param | nindent 4 }}
   {{- end }}
 
 service:
