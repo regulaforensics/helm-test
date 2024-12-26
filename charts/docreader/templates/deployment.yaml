@@ -41,6 +41,49 @@ spec:
       imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: wait-for-db-migrations
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - pipenv
+            - run
+            - python
+            - src/main.py
+            - wait-for-migrations
+          env:            
+            {{- include "docreader.envs" . | indent 10 }}
+            {{- if and (eq .Values.config.service.storage.type "s3") .Values.config.service.storage.s3.awsCredentialsSecretName }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docreader.aws.credentials.secret" . }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docreader.aws.credentials.secret" . }}
+                  key: AWS_SECRET_ACCESS_KEY
+            {{- end }}
+            {{- if and (eq .Values.config.service.storage.type "az") .Values.config.service.storage.az.connectionStringSecretName }}
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docreader.az.credentials.secret" . }}
+                  key: AZURE_STORAGE_CONNECTION_STRING
+            {{- end }}
+            {{- if and (not .Values.postgresql.enabled) .Values.config.service.database.connectionStringSecretName }}
+            - name: SQL_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docreader.db.credentials.secret" . }}
+                  key: SQL_CONNECTION_STRING
+            {{- end }}
+          volumeMounts:
+            - name: docreader-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true           
       containers:
         - name: {{ .Chart.Name }}
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
@@ -103,6 +146,8 @@ spec:
           {{- end }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: DOCREADER_DATABASE_SKIP_MIGRATIONS
+              value: "true"
             {{- include "docreader.envs" . | indent 10 }}
             {{- if and (eq .Values.config.service.storage.type "s3") .Values.config.service.storage.s3.awsCredentialsSecretName }}
             - name: AWS_ACCESS_KEY_ID
