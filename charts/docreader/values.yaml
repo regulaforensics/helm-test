@@ -76,6 +76,10 @@ podDisruptionBudget:
 # licenseSecretName: docreader-license
 licenseSecretName: ~
 
+dbMigrationsJob:
+  # in case if you want to run the migrations job separately from the main process. Applicable for the version >= 7.6
+  enabled: false
+
 config:
   sdk:
     systemInfo:
