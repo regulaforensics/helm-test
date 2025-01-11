@@ -1,7 +1,8 @@
+{{- if or .Values.config.service.sessionApi.enabled .Values.config.sdk.rfid.chipVerification.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "docreader.fullname" . }}-db-migration
+  name: {{ include "docreader.migration" . }}
   labels: {{- include "docreader.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": pre-upgrade
@@ -10,11 +11,10 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
-      labels: {{- include "docreader.selectorLabels" . | nindent 8 }}    
+      labels: {{- include "docreader.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "docreader.serviceAccount" . }}
       {{- with .Values.nodeSelector }}
@@ -41,7 +41,7 @@ spec:
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       restartPolicy: Never
       containers:
-        - name: {{ .Chart.Name }}-db-migration
+        - name: {{ include "docreader.migration" . }}
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -69,3 +69,4 @@ spec:
         - name: docreader-config
           configMap:
             name: {{ include "docreader.config.name" . }}
+{{- end }}
