@@ -438,6 +438,32 @@ entries:
   docreader:
   - apiVersion: v2
     appVersion: nightly
+    created: "2025-01-11T11:17:57.908192673Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: 35ab970d95e2f5bbcfe000210236c549588418c800d7fea3e41d69a560c4752a
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/docreader-2.0.0/docreader-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
+    appVersion: nightly
     created: "2024-12-23T14:58:31.980343189Z"
     dependencies:
     - condition: postgresql.enabled
@@ -2582,4 +2608,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/faceapi-0.2.4/faceapi-0.2.4.tgz
     version: 0.2.4
-generated: "2024-12-24T12:36:16.668129124Z"
+generated: "2025-01-11T11:17:57.908501209Z"
