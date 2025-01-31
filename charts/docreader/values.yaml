@@ -98,7 +98,6 @@ config:
         storageClassName: ~
         existingClaim: ~
 
-
   service:
     webServer:
       port: 8080
@@ -166,6 +165,7 @@ config:
       #   #  `kubectl create secret generic gcs-credentials -n <namespace> --from-file=gcs_key.json=<path_to_key>`
       #   gcsKeyJsonSecretName: ~
       # az:
+      #   storageAccount: ~
       #   connectionString: "<AZURE_STORAGE_CONNECTION_STRING>"
       #   #  connectionStringSecretName overrides storage.az.connectionString value
       #   #  Supply the name of existing secret with AZURE_STORAGE_CONNECTION_STRING key.

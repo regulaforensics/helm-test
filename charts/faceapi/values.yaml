@@ -188,6 +188,7 @@ config:
       #   #  `kubectl create secret generic gcs-credentials -n <namespace> --from-file=gcs_key.json=<path_to_key>`
       #   gcsKeyJsonSecretName: ~
       # az:
+      #   storageAccount: ~
       #   connectionString: "<AZURE_STORAGE_CONNECTION_STRING>"
       #   #  connectionStringSecretName overrides storage.az.connectionString value
       #   #  Supply the name of existing secret with AZURE_STORAGE_CONNECTION_STRING key.
@@ -274,13 +275,13 @@ config:
     houseKeeper:
       enabled: true
       beatCadence: 10
-      keepFor: 14400  # 4 hours, time for keeping houseKeeper statistics in the database
+      keepFor: 14400 # 4 hours, time for keeping houseKeeper statistics in the database
       liveness:
         enabled: false
-        keepFor: 31536000  # 1 year
+        keepFor: 31536000 # 1 year
       search:
         enabled: false
-        keepFor: 31536000  # 1 year
+        keepFor: 31536000 # 1 year
 
     search:
       enabled: false
@@ -454,7 +455,6 @@ autoscaling:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: ~
-
 
 ###################################
 # Subcharts
