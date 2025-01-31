@@ -275,13 +275,13 @@ config:
     houseKeeper:
       enabled: true
       beatCadence: 10
-      keepFor: 14400 # 4 hours, time for keeping houseKeeper statistics in the database
+      keepFor: 14400
       liveness:
         enabled: false
-        keepFor: 31536000 # 1 year
+        keepFor: 31536000
       search:
         enabled: false
-        keepFor: 31536000 # 1 year
+        keepFor: 31536000
 
     search:
       enabled: false
