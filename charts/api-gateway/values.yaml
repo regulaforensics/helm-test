@@ -122,6 +122,12 @@ postgresql-ha:
       adminUsername: "regulapgpool"
       adminPassword: "regulapgpoolpasswd"
 
+custom_db:
+  enabled: false
+  host: "host"
+  username: "regula"
+  password: "regulapasswd"
+  database: "regula_db"
 
 redis:
   enabled: false

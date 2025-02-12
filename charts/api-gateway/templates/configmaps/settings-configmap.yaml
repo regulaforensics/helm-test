@@ -82,14 +82,17 @@ data:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        {{- if not .Values.custom_db.enabled }}
+            'NAME': '{{ .Values.custom_db.database }}',
+            'USER': '{{ .Values.custom_db.username }}',
+            'PASSWORD': '{{ Values.custom_db.password }}',
+            'HOST': '{{ Values.custom_db.host }}'
+        {- else }}
             'NAME': '{{ index .Values "postgresql-ha" "global" "postgresql" "database" }}',
             'USER': '{{ index .Values "postgresql-ha" "global" "postgresql" "username" }}',
             'PASSWORD': '{{ index .Values "postgresql-ha" "global" "postgresql" "password" }}',
-            {{- if .Values.postgresql-ha.enabled }}
             'HOST': '{{ include "gateway.postgresql" . }}',
-            {{- else }}
-            'HOST': '{{ index .Values "postgresql-ha" "url" }}',
-            {{- end }}
+        {- end }}
             'PORT': '5432',
             'AUTOCOMMIT': True,
             'CONN_MAX_AGE': 0,
