@@ -82,7 +82,7 @@ data:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        {{- if .Values.custom_db.enabled }}}
+        {{- if .Values.custom_db.enabled }}
             'NAME': '{{ .Values.custom_db.database }}',
             'USER': '{{ .Values.custom_db.username }}',
             'PASSWORD': '{{ .Values.custom_db.password }}',
