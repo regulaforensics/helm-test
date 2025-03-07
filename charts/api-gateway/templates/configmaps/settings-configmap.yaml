@@ -33,6 +33,7 @@ data:
         'django.contrib.auth',
         'django.contrib.contenttypes',
         'django.contrib.sessions',
+        'django_prometheus',
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'drf_yasg',
@@ -40,10 +41,11 @@ data:
         'rest_framework.authtoken',
         'rest_auth',
         'rest_framework_swagger',
-        'trainmodels'
+        'trainmodels',
     ]
 
     MIDDLEWARE = [
+        'django_prometheus.middleware.PrometheusBeforeMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
@@ -51,6 +53,7 @@ data:
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'django_prometheus.middleware.PrometheusAfterMiddleware',
     ]
 
     ROOT_URLCONF = 'gateway.urls'
