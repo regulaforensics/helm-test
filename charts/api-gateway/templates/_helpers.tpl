@@ -59,22 +59,55 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 {{- end }}
 
-
-{{/* Config map name */}}
-{{- define "settings" -}}
-{{ (printf "%s-settings" .Release.Name) }}
-{{- end }}
-
-{{/* Config map name */}}
-{{- define "env_settings" -}}
-{{ (printf "%s-env-settings" .Release.Name) }}
-{{- end }}
-
-
 {{/* User defined gateway environment variables */}}
 {{- define "gateway_envs" -}}
   {{- range $i, $config := .Values.env }}
   - name: {{ $config.name }}
     value: {{ $config.value | quote }}
   {{- end }}
+{{- end }}
+
+{{/* Airflow DB SQL connection details */}}
+{{- define "gateway.env_settings" -}}
+  - name: SQL_USER
+    value: "{{ .Values.envSettings.sqlUser }}"
+  - name: SQL_PASSWORD
+    value: "{{ .Values.envSettings.sqlPassword }}"
+  - name: SQL_HOST
+    value: "{{ .Values.envSettings.sqlHost }}"
+  - name: SQL_PORT
+    value: "{{ .Values.envSettings.sqlPort }}"
+  - name: SQL_DATABASE
+    value: "{{ .Values.envSettings.sqlDatabase }}"
+  - name: AIRFLOW_USER
+    value: "{{ .Values.envSettings.airflowUser }}"
+  - name: AIRFLOW_PASSWORD
+    value: "{{ .Values.envSettings.airflowPassword }}"
+{{- if .Values.custom_db.enabled }}
+  - name: GATEWAY_DB_USER
+    value: "{{ .Values.custom_db.username }}"
+  - name: GATEWAY_DB_PASSWORD
+    value: "{{ .Values.custom_db.password }}"
+  - name: GATEWAY_DB_NAME
+    value: "{{ .Values.custom_db.database }}"
+  - name: GATEWAY_DB_HOST
+    value: "{{ .Values.custom_db.host }}"
+{{- else }}
+  - name: GATEWAY_DB_USER
+    value: "{{ index .Values "postgresql-ha" "global" "postgresql" "username" }}"
+  - name: GATEWAY_DB_PASSWORD
+    value: "{{ index .Values "postgresql-ha" "global" "postgresql" "password" }}"
+  - name: GATEWAY_DB_NAME
+    value: "{{ index .Values "postgresql-ha" "global" "postgresql" "database" }}"
+  - name: GATEWAY_DB_HOST
+    value: "{{ include "gateway.postgresql" . }}"
+{{- end }}
+  - name: GATEWAY_ALLOWED_HOSTS
+    value: "{{ .Values.envSettings.gatewayAllowedHosts }}"
+  - name: GATEWAY_DEBUG
+    value: "{{ .Values.envSettings.gatewayDebug }}"
+  - name: GATEWAY_LOGS_BASE_PATH
+    value: "{{ .Values.envSettings.gatewayLogs }}"
+  - name: RUNTIME
+    value: "{{ .Values.envSettings.gatewayRuntime }}"
 {{- end }}
