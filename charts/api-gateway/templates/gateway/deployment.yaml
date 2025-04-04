@@ -52,11 +52,13 @@ spec:
             {{- toYaml .Values.gateway.resources | nindent 12 }}
           env:
             {{- include "gateway.redis" . | indent 10 }}
-            {{- include "gateway.env_settings" . | indent 10 }}
+            {{- include "gateway.env_settings" . | nindent 12 }}
             {{- include "gateway_envs" . | indent 10 }}
+          volumeMounts:
 {{- if .Values.gateway.extraVolumeMounts }}
 {{ toYaml .Values.gateway.extraVolumeMounts | indent 12 }}
 {{- end }}
+      volumes:
 {{- if .Values.gateway.extraVolumes }}
 {{ toYaml .Values.gateway.extraVolumes | indent 8 }}
 {{- end }}

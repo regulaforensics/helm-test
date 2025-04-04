@@ -64,6 +64,8 @@ gateway:
     gatewayAllowedHosts: "*,api-gateway"
     gatewayRuntime: PROD
 
+  env: []
+
   custom_db:
     enabled: false
     host: "host"
