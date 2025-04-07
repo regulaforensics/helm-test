@@ -1,6 +1,6 @@
 {{/* Expand the name of the chart. */}}
 {{- define "gateway.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.gateway.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 
@@ -10,10 +10,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "gateway.fullname" -}}
-{{- if .Values.fullnameOverride }}
-  {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- if .Values.gateway.fullnameOverride }}
+  {{- .Values.gateway.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-  {{- $name := default .Chart.Name .Values.nameOverride }}
+  {{- $name := default .Chart.Name .Values.gateway.nameOverride }}
 {{- if contains $name .Release.Name }}
   {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -59,22 +59,55 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 {{- end }}
 
-
-{{/* Config map name */}}
-{{- define "settings" -}}
-{{ (printf "%s-settings" .Release.Name) }}
-{{- end }}
-
-{{/* Config map name */}}
-{{- define "env_settings" -}}
-{{ (printf "%s-env-settings" .Release.Name) }}
-{{- end }}
-
-
 {{/* User defined gateway environment variables */}}
 {{- define "gateway_envs" -}}
-  {{- range $i, $config := .Values.env }}
+  {{- range $i, $config := .Values.gateway.env }}
   - name: {{ $config.name }}
     value: {{ $config.value | quote }}
   {{- end }}
+{{- end }}
+
+{{/* Airflow DB SQL connection details */}}
+{{- define "gateway.env_settings" -}}
+- name: SQL_USER
+  value: "{{ .Values.gateway.envSettings.sqlUser }}"
+- name: SQL_PASSWORD
+  value: "{{ .Values.gateway.envSettings.sqlPassword }}"
+- name: SQL_HOST
+  value: "{{ .Values.gateway.envSettings.sqlHost }}"
+- name: SQL_PORT
+  value: "{{ .Values.gateway.envSettings.sqlPort }}"
+- name: SQL_DATABASE
+  value: "{{ .Values.gateway.envSettings.sqlDatabase }}"
+- name: AIRFLOW_USER
+  value: "{{ .Values.gateway.envSettings.airflowUser }}"
+- name: AIRFLOW_PASSWORD
+  value: "{{ .Values.gateway.envSettings.airflowPassword }}"
+{{- if .Values.gateway.custom_db.enabled }}
+- name: GATEWAY_DB_USER
+  value: "{{ .Values.gateway.custom_db.username }}"
+- name: GATEWAY_DB_PASSWORD
+  value: "{{ .Values.gateway.custom_db.password }}"
+- name: GATEWAY_DB_NAME
+  value: "{{ .Values.gateway.custom_db.database }}"
+- name: GATEWAY_DB_HOST
+  value: "{{ .Values.gateway.custom_db.host }}"
+{{- else }}
+- name: GATEWAY_DB_USER
+  value: "{{ index .Values "postgresql-ha" "global" "postgresql" "username" }}"
+- name: GATEWAY_DB_PASSWORD
+  value: "{{ index .Values "postgresql-ha" "global" "postgresql" "password" }}"
+- name: GATEWAY_DB_NAME
+  value: "{{ index .Values "postgresql-ha" "global" "postgresql" "database" }}"
+- name: GATEWAY_DB_HOST
+  value: "{{ include "gateway.postgresql" . }}"
+{{- end }}
+- name: GATEWAY_ALLOWED_HOSTS
+  value: "{{ .Values.gateway.envSettings.gatewayAllowedHosts }}"
+- name: GATEWAY_DEBUG
+  value: "{{ .Values.gateway.envSettings.gatewayDebug }}"
+- name: GATEWAY_LOGS_BASE_PATH
+  value: "{{ .Values.gateway.envSettings.gatewayLogs }}"
+- name: RUNTIME
+  value: "{{ .Values.gateway.envSettings.gatewayRuntime }}"
 {{- end }}
