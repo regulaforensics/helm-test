@@ -35,7 +35,7 @@ jobs:
           done
 
       # Push all Helm charts from the ./packages directory to OCI registry
-      - name: Push Helm chart to OCI registry
+      - name: Push Helm charts to OCI registry
         run: |
           for package in ./packages/*.tgz; do
             helm push "$package" oci://${{ secrets.OCI_REGISTRY_URL }}/${{ secrets.OCI_REGISTRY_USERNAME }}
