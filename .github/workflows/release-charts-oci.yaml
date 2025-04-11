@@ -1,0 +1,42 @@
+name: Release Helm Charts to OCI Helm Repo
+
+on:
+  push:
+    branches:
+      - main
+      - private
+  workflow_dispatch:
+
+jobs:
+  release-chart-oci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Helm
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      # Log in to Docker OCI registry
+      - name: Log in to Docker OCI registry
+        run: echo "${{ secrets.OCI_REGISTRY_PASSWORD }}" | helm registry login ${{ secrets.OCI_REGISTRY_URL }} --username ${{ secrets.OCI_REGISTRY_USERNAME }} --password-stdin
+
+      # Package all Helm charts in the ./charts directory
+      - name: Package Helm charts
+        run: |
+          mkdir -p ./packages
+          for chart in ./charts/*; do
+            if [[ -d "$chart" && -f "$chart/Chart.yaml" ]]; then
+              helm package "$chart" --destination ./packages
+            fi
+          done
+
+      # Push all Helm charts from the ./packages directory to OCI registry
+      - name: Push Helm charts to OCI registry
+        run: |
+          for package in ./packages/*.tgz; do
+            helm push "$package" oci://${{ secrets.OCI_REGISTRY_URL }}/${{ secrets.OCI_REGISTRY_USERNAME }}
+          done
