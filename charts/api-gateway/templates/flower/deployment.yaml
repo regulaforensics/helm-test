@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gateway.fullname" . }}-flower
+  labels:
+    {{- include "flower.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.flower.replicas }}
+  selector:
+    matchLabels:
+      {{- include "flower.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.gateway.podAnnotations }}
+        {{- toYaml .Values.gateway.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.flower.podAnnotations }}
+          {{- toYaml .Values.flower.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "flower.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.flower.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.flower.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.flower.securityContext | nindent 12 }}
+          image: "{{ .Values.flower.image.repository }}:{{ .Values.flower.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.flower.image.pullPolicy }}
+          ports:
+            - name: flower
+              containerPort: 5555
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.flower.resources | nindent 12 }}
+          env:
+            {{- include "gateway.redis" . | nindent 12 }}
+            {{- include "flower_envs" . | nindent 12 }}
+          volumeMounts:
+            {{- if .Values.flower.extraVolumeMounts }}
+              {{- toYaml .Values.flower.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- if .Values.flower.extraVolumes }}
+          {{- toYaml  .Values.flower.extraVolumes | nindent 8 }}
+        {{- end }}
