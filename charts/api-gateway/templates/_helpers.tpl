@@ -167,13 +167,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   value: "{{ include "gateway.fullname" . }}"
 {{- end }}
 {{- if .Values.gateway.custom_db.enabled }}
-- name: DJANGO_DB_HOST
-  value: "{{ .Values.gateway.custom_db.host }}"
 - name: GATEWAY_DB_HOST
   value: "{{ .Values.gateway.custom_db.host }}"
 {{- else }}
-- name: DJANGO_DB_HOST
-  value: "{{ include "gateway.postgresql" . }}"
 - name: GATEWAY_DB_HOST
   value: "{{ include "gateway.postgresql" . }}"
 {{- end }}
@@ -195,13 +191,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   value: {{ $config.value | quote }}
 {{- end }}
 {{- if .Values.gateway.custom_db.enabled }}
-- name: DJANGO_DB_HOST
-  value: "{{ .Values.gateway.custom_db.host }}"
 - name: GATEWAY_DB_HOST
   value: "{{ .Values.gateway.custom_db.host }}"
 {{- else }}
-- name: DJANGO_DB_HOST
-  value: "{{ include "gateway.postgresql" . }}"
 - name: GATEWAY_DB_HOST
   value: "{{ include "gateway.postgresql" . }}"
 {{- end }}
