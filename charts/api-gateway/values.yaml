@@ -83,7 +83,7 @@ gateway:
     ## service annotations
     annotations: {}
     # Optionally assign a known public LB IP
-    # loadBalancerIP: ~
+    loadBalancerIP: ~
     # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
     # set allowed inbound rules on the security group assigned to the master load balancer
     # loadBalancerSourceRanges:
@@ -110,7 +110,6 @@ gateway:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-
 
   autoscaling:
     enabled: false
@@ -140,7 +139,105 @@ redis:
   master:
     persistence:
       size: 2Gi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+              - key: service-node
+                operator: In
+                values:
+                - "true"
   replica:
     replicaCount: 0
   auth:
     enabled: false
+
+celery:
+  enabled: false
+  replicas: 1
+  image:
+    repository: regulaforensics/ml
+    tag: ~
+    pullPolicy: Always
+  imagePullSecrets: []
+
+  resources: {}
+
+  podAnnotations: {}
+  podSecurityContext:
+    fsGroup: 0
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  securityContext: {}
+
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: service-node
+              operator: In
+              values:
+              - "true"
+
+  env:
+  - name: SERVICE
+    value: "celery"
+  - name: RUNTIME
+    value: "PROD"
+
+  extraVolumes: []
+  extraVolumeMounts: []
+
+flower:
+  enabled: false
+  replicas: 1
+  image:
+    repository: regulaforensics/ml
+    tag: ~
+    pullPolicy: Always
+  imagePullSecrets: []
+
+  resources: {}
+
+  podAnnotations: {}
+  podSecurityContext:
+    fsGroup: 0
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  securityContext: {}
+
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: service-node
+              operator: In
+              values:
+              - "true"
+
+  env:
+  - name: SERVICE
+    value: "flower"
+  - name: RUNTIME
+    value: "PROD"
+
+  extraVolumes: []
+  extraVolumeMounts: []
+
+  service:
+    type: ClusterIP
+    port: 5555
+    annotations: {}
+    loadBalancerIP: ~
+    loadBalancerSourceRanges: []

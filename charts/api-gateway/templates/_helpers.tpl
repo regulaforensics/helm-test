@@ -39,10 +39,24 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "flower.labels" -}}
+helm.sh/chart: {{ include "gateway.chart" . }}
+{{ include "flower.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
 
 {{/* Selector labels */}}
 {{- define "gateway.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "gateway.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{- define "flower.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "gateway.name" . }}-flower
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
@@ -69,6 +83,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Airflow DB SQL connection details */}}
 {{- define "gateway.env_settings" -}}
+- name: SERVICE
+  value: "gateway"
 - name: SQL_USER
   value: "{{ .Values.gateway.envSettings.sqlUser }}"
 - name: SQL_PASSWORD
@@ -110,4 +126,83 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   value: "{{ .Values.gateway.envSettings.gatewayLogs }}"
 - name: RUNTIME
   value: "{{ .Values.gateway.envSettings.gatewayRuntime }}"
+{{- if .Values.celery.enabled }}
+{{- if .Values.redis.enabled }}
+- name: CELERY_BROKER_URL
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+- name: CELERY_RESULT_BACKEND
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "celery_envs" -}}
+- name: SERVICE
+  value: "celery"
+- name: CELERY_ACCEPT_CONTENT
+  value: "['json']"
+- name: CELERY_TASK_SERIALIZER
+  value: "json"
+- name: CELERY_RESULT_SERIALIZER
+  value: "json"
+- name: CELERY_TIMEZONE
+  value: "UTC"
+- name: CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP
+  value: "True"
+{{- if .Values.redis.enabled }}
+- name: CELERY_BROKER_URL
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+- name: CELERY_RESULT_BACKEND
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+{{- end }}
+{{- range $i, $config := .Values.celery.env }}
+- name: {{ $config.name }}
+  value: {{ $config.value | quote }}
+{{- end }}
+{{- if .Values.gateway.service.loadBalancerIP }}
+- name: CELERY_API_HOST
+  value: "{{ .Values.gateway.service.loadBalancerIP }}"
+{{- else }}
+- name: CELERY_API_HOST
+  value: "{{ include "gateway.fullname" . }}"
+{{- end }}
+{{- if .Values.gateway.custom_db.enabled }}
+- name: DJANGO_DB_HOST
+  value: "{{ .Values.gateway.custom_db.host }}"
+- name: GATEWAY_DB_HOST
+  value: "{{ .Values.gateway.custom_db.host }}"
+{{- else }}
+- name: DJANGO_DB_HOST
+  value: "{{ include "gateway.postgresql" . }}"
+- name: GATEWAY_DB_HOST
+  value: "{{ include "gateway.postgresql" . }}"
+{{- end }}
+{{- end }}
+
+{{- define "flower_envs" -}}
+- name: SERVICE
+  value: "flower"
+{{- if .Values.celery.enabled }}
+{{- if .Values.redis.enabled }}
+- name: CELERY_BROKER_URL
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+- name: CELERY_RESULT_BACKEND
+  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
+{{- end }}
+{{- end }}
+{{- range $i, $config := .Values.flower.env }}
+- name: {{ $config.name }}
+  value: {{ $config.value | quote }}
+{{- end }}
+{{- if .Values.gateway.custom_db.enabled }}
+- name: DJANGO_DB_HOST
+  value: "{{ .Values.gateway.custom_db.host }}"
+- name: GATEWAY_DB_HOST
+  value: "{{ .Values.gateway.custom_db.host }}"
+{{- else }}
+- name: DJANGO_DB_HOST
+  value: "{{ include "gateway.postgresql" . }}"
+- name: GATEWAY_DB_HOST
+  value: "{{ include "gateway.postgresql" . }}"
+{{- end }}
 {{- end }}
