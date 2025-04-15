@@ -186,8 +186,6 @@ celery:
               - "true"
 
   env:
-  - name: SERVICE
-    value: "celery"
   - name: RUNTIME
     value: "PROD"
 
@@ -227,8 +225,6 @@ flower:
               - "true"
 
   env:
-  - name: SERVICE
-    value: "flower"
   - name: RUNTIME
     value: "PROD"
 
@@ -241,3 +237,4 @@ flower:
     annotations: {}
     loadBalancerIP: ~
     loadBalancerSourceRanges: []
+    
