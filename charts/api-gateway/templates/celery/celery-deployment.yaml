@@ -3,23 +3,21 @@ kind: Deployment
 metadata:
   name: {{ include "gateway.fullname" . }}-celery
   labels:
-    {{- include "gateway.labels" . | nindent 4 }}
+    {{- include "celery.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.celery.replicas }}
   selector:
     matchLabels:
-      {{- include "gateway.selectorLabels" . | nindent 6 }}
+      {{- include "celery.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
-        {{- if .Values.gateway.podAnnotations }}
-        {{- toYaml .Values.gateway.podAnnotations | nindent 8 }}
-        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/celery/celery-configmap.yaml") . | sha256sum }}
         {{- if .Values.celery.podAnnotations }}
           {{- toYaml .Values.celery.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "gateway.selectorLabels" . | nindent 8 }}
+        {{- include "celery.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.celery.nodeSelector }}
       nodeSelector:
@@ -40,16 +38,23 @@ spec:
       securityContext:
         {{- toYaml .Values.celery.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "gateway.fullname" . }}-celery
           securityContext:
             {{- toYaml .Values.celery.securityContext | nindent 12 }}
           image: "{{ .Values.celery.image.repository }}:{{ .Values.celery.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.celery.image.pullPolicy }}
+          command: ["celery"]
+          args:
+            - "--app=gateway"
+            - "worker"
+            - "--loglevel=INFO"
           resources:
             {{- toYaml .Values.celery.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "celery.config.name" . }}
           env:
-            {{- include "gateway.redis" . | nindent 12 }}
-            {{- include "celery_envs" . | nindent 12 }}
+            {{- include "celery_envs" . | indent 10 }}
           volumeMounts:
             {{- if .Values.celery.extraVolumeMounts }}
               {{- toYaml .Values.celery.extraVolumeMounts | nindent 12 }}

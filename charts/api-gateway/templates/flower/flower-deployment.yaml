@@ -12,9 +12,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- if .Values.gateway.podAnnotations }}
-        {{- toYaml .Values.gateway.podAnnotations | nindent 8 }}
-        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/flower/flower-configmap.yaml") . | sha256sum }}
         {{- if .Values.flower.podAnnotations }}
           {{- toYaml .Values.flower.podAnnotations | nindent 8 }}
         {{- end }}
@@ -40,20 +38,26 @@ spec:
       securityContext:
         {{- toYaml .Values.flower.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "gateway.fullname" . }}-flower
           securityContext:
             {{- toYaml .Values.flower.securityContext | nindent 12 }}
           image: "{{ .Values.flower.image.repository }}:{{ .Values.flower.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.flower.image.pullPolicy }}
+          command: ["celery"]
+          args:
+            - "--app=gateway"
+            - "flower"
           ports:
             - name: flower
               containerPort: 5555
               protocol: TCP
           resources:
             {{- toYaml .Values.flower.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "flower.config.name" . }}
           env:
-            {{- include "gateway.redis" . | nindent 12 }}
-            {{- include "flower_envs" . | nindent 12 }}
+            {{- include "flower_envs" . | indent 10 }}
           volumeMounts:
             {{- if .Values.flower.extraVolumeMounts }}
               {{- toYaml .Values.flower.extraVolumeMounts | nindent 12 }}

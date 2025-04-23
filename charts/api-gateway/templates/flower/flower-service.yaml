@@ -15,12 +15,14 @@ spec:
       targetPort: flower
       protocol: TCP
       name: flower
+  {{- if eq .Values.flower.service.type "LoadBalancer" }}
   {{- if .Values.flower.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.flower.service.loadBalancerIP }}
   {{- end }}
   {{- if .Values.flower.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
   {{- toYaml .Values.flower.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
   {{- end }}
   selector:
     {{- include "flower.selectorLabels" . | nindent 4 }}
