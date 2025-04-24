@@ -130,7 +130,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* Gateway URL*/}}
 {{- define "gateway.url" -}}
-{{ include "gateway.fullname" . }}:8000
+{{ include "gateway.fullname" . }}:{{ .Values.gateway.service.port }}
 {{- end }}
 
 
