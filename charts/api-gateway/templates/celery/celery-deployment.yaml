@@ -13,8 +13,8 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/celery/celery-configmap.yaml") . | sha256sum }}
-        {{- if .Values.celery.podAnnotations }}
-          {{- toYaml .Values.celery.podAnnotations | nindent 8 }}
+        {{- if .Values.gateway.podAnnotations }}
+        {{- toYaml .Values.gateway.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
         {{- include "celery.selectorLabels" . | nindent 8 }}
@@ -31,7 +31,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.celery.imagePullSecrets }}
+      {{- with .Values.gateway.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -41,8 +41,8 @@ spec:
         - name: {{ include "gateway.fullname" . }}-celery
           securityContext:
             {{- toYaml .Values.celery.securityContext | nindent 12 }}
-          image: "{{ .Values.celery.image.repository }}:{{ .Values.celery.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.celery.image.pullPolicy }}
+          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
           command: ["celery"]
           args:
             - "--app=gateway"
