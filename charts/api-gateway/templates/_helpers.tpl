@@ -29,7 +29,7 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 
-{{/* Common labels */}}
+{{/* Gateway labels */}}
 {{- define "gateway.labels" -}}
 helm.sh/chart: {{ include "gateway.chart" . }}
 {{ include "gateway.selectorLabels" . }}
@@ -40,24 +40,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 
-{{/* Selector labels */}}
+{{/* Gateway Selector labels */}}
 {{- define "gateway.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "gateway.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/* PostgreSQL host */}}
-{{- define "gateway.postgresql" -}}
-{{ default (printf "%s-postgresql-ha-pgpool" .Release.Name) }}
+
+{{/* Gateway Config map name */}}
+{{- define "gateway.config.name" -}}
+{{ (printf "%s-gateway-config" .Release.Name) }}
 {{- end }}
 
-{{/* Redis */}}
-{{- define "gateway.redis" -}}
-{{- if .Values.redis.enabled }}
-- name: GATEWAY_REDIS
-  value: {{ (printf "redis://%s-redis-master:6379" .Release.Name) }}
-{{- end }}
-{{- end }}
 
 {{/* User defined gateway environment variables */}}
 {{- define "gateway_envs" -}}
@@ -67,47 +61,86 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   {{- end }}
 {{- end }}
 
-{{/* Airflow DB SQL connection details */}}
-{{- define "gateway.env_settings" -}}
-- name: SQL_USER
-  value: "{{ .Values.gateway.envSettings.sqlUser }}"
-- name: SQL_PASSWORD
-  value: "{{ .Values.gateway.envSettings.sqlPassword }}"
-- name: SQL_HOST
-  value: "{{ .Values.gateway.envSettings.sqlHost }}"
-- name: SQL_PORT
-  value: "{{ .Values.gateway.envSettings.sqlPort }}"
-- name: SQL_DATABASE
-  value: "{{ .Values.gateway.envSettings.sqlDatabase }}"
-- name: AIRFLOW_USER
-  value: "{{ .Values.gateway.envSettings.airflowUser }}"
-- name: AIRFLOW_PASSWORD
-  value: "{{ .Values.gateway.envSettings.airflowPassword }}"
-{{- if .Values.gateway.custom_db.enabled }}
-- name: GATEWAY_DB_USER
-  value: "{{ .Values.gateway.custom_db.username }}"
-- name: GATEWAY_DB_PASSWORD
-  value: "{{ .Values.gateway.custom_db.password }}"
-- name: GATEWAY_DB_NAME
-  value: "{{ .Values.gateway.custom_db.database }}"
-- name: GATEWAY_DB_HOST
-  value: "{{ .Values.gateway.custom_db.host }}"
-{{- else }}
-- name: GATEWAY_DB_USER
-  value: "{{ index .Values "postgresql-ha" "global" "postgresql" "username" }}"
-- name: GATEWAY_DB_PASSWORD
-  value: "{{ index .Values "postgresql-ha" "global" "postgresql" "password" }}"
-- name: GATEWAY_DB_NAME
-  value: "{{ index .Values "postgresql-ha" "global" "postgresql" "database" }}"
-- name: GATEWAY_DB_HOST
-  value: "{{ include "gateway.postgresql" . }}"
+
+{{/* Celery labels */}}
+{{- define "celery.labels" -}}
+helm.sh/chart: {{ include "gateway.chart" . }}
+{{ include "celery.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-- name: GATEWAY_ALLOWED_HOSTS
-  value: "{{ .Values.gateway.envSettings.gatewayAllowedHosts }}"
-- name: GATEWAY_DEBUG
-  value: "{{ .Values.gateway.envSettings.gatewayDebug }}"
-- name: GATEWAY_LOGS_BASE_PATH
-  value: "{{ .Values.gateway.envSettings.gatewayLogs }}"
-- name: RUNTIME
-  value: "{{ .Values.gateway.envSettings.gatewayRuntime }}"
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+
+{{/* Celery Selector labels */}}
+{{- define "celery.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "gateway.name" . }}-celery
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+
+{{/* Celery Config map name */}}
+{{- define "celery.config.name" -}}
+{{ (printf "%s-celery-config" .Release.Name) }}
+{{- end }}
+
+
+{{/* User defined celery environment variables */}}
+{{- define "celery_envs" -}}
+  {{- range $i, $config := .Values.celery.env }}
+  - name: {{ $config.name }}
+    value: {{ $config.value | quote }}
+  {{- end }}
+{{- end }}
+
+
+{{/* Flower labels */}}
+{{- define "flower.labels" -}}
+helm.sh/chart: {{ include "gateway.chart" . }}
+{{ include "flower.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+
+{{/* Flower Selector labels */}}
+{{- define "flower.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "gateway.name" . }}-flower
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+
+{{/* Flower Config map name */}}
+{{- define "flower.config.name" -}}
+{{ (printf "%s-flower-config" .Release.Name) }}
+{{- end }}
+
+
+{{/* User defined flower environment variables */}}
+{{- define "flower_envs" -}}
+  {{- range $i, $config := .Values.flower.env }}
+  - name: {{ $config.name }}
+    value: {{ $config.value | quote }}
+  {{- end }}
+{{- end }}
+
+
+{{/* Gateway URL*/}}
+{{- define "gateway.url" -}}
+{{ include "gateway.fullname" . }}:{{ .Values.gateway.service.port }}
+{{- end }}
+
+
+{{/* Redis Host*/}}
+{{- define "redis.host" -}}
+{{ default (printf "redis://%s-redis-master:6379/0" .Release.Name) }}
+{{- end }}
+
+
+{{/* PostgreSQL Host */}}
+{{- define "postgresql.host" -}}
+{{ default (printf "%s-postgresql-ha-pgpool" .Release.Name) }}
 {{- end }}

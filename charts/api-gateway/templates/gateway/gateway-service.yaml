@@ -15,12 +15,14 @@ spec:
       targetPort: gateway
       protocol: TCP
       name: gateway
+  {{- if eq .Values.gateway.service.type "LoadBalancer" }}
   {{- if .Values.gateway.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.gateway.service.loadBalancerIP }}
   {{- end }}
   {{- if .Values.gateway.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
   {{- toYaml .Values.gateway.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
   {{- end }}
   selector:
     {{- include "gateway.selectorLabels" . | nindent 4 }}

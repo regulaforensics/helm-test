@@ -2,8 +2,8 @@
 ---
 apiVersion: v2
 name: api-gateway
-version: 1.4.12
-appVersion: api-gateway-2.4.2
+version: 1.5.0
+appVersion: 2.4.2
 description: ML. Airflow API Gateway
 icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
 keywords:
@@ -14,9 +14,9 @@ dependencies:
   - name: postgresql-ha
     version: 9.4.11
     repository: "https://charts.bitnami.com/bitnami"
-    condition: postgresql-ha.enabled
+    condition: postgresql.enabled
   - name: redis
-    version: 17.11.2
+    version: 17.15.2
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
 maintainers:

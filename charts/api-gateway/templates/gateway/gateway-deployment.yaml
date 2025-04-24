@@ -14,6 +14,7 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/gateway/gateway-configmap.yaml") . | sha256sum }}
         {{- if .Values.gateway.podAnnotations }}
         {{- toYaml .Values.gateway.podAnnotations | nindent 8 }}
         {{- end }}
@@ -50,15 +51,36 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.gateway.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "gateway.config.name" . }}
+            {{- if .Values.gateway.config.apiTokenSecret }}
+            - secretRef:
+                name: {{ .Values.gateway.config.apiTokenSecret }}
+            {{- end }}
+            {{- if .Values.gateway.config.secretKeySecret }}
+            - secretRef:
+                name: {{ .Values.gateway.config.secretKeySecret }}
+            {{- end }}
+            {{- if and (not .Values.postgresql.enabled) .Values.gateway.config.database.gateway.gatewaySecret }}
+            - secretRef:
+                name: {{ .Values.gateway.config.database.gateway.gatewaySecret }}
+            {{- end }}
+            {{- if .Values.gateway.config.database.tagger.taggerSecret }}
+            - secretRef:
+                name: {{ .Values.gateway.config.database.tagger.taggerSecret }}
+            {{- end }}
+            {{- if .Values.gateway.config.integration.airflow.airflowSecret }}
+            - secretRef:
+                name: {{ .Values.gateway.config.integration.airflow.airflowSecret }}
+            {{- end }}
           env:
-            {{- include "gateway.redis" . | indent 10 }}
-            {{- include "gateway.env_settings" . | nindent 12 }}
             {{- include "gateway_envs" . | indent 10 }}
           volumeMounts:
-{{- if .Values.gateway.extraVolumeMounts }}
-{{ toYaml .Values.gateway.extraVolumeMounts | indent 12 }}
-{{- end }}
+            {{- if .Values.gateway.extraVolumeMounts }}
+              {{- toYaml .Values.gateway.extraVolumeMounts | nindent 12 }}
+            {{- end }}
       volumes:
-{{- if .Values.gateway.extraVolumes }}
-{{ toYaml .Values.gateway.extraVolumes | indent 8 }}
-{{- end }}
+        {{- if .Values.gateway.extraVolumes }}
+          {{- toYaml  .Values.gateway.extraVolumes | nindent 8 }}
+        {{- end }}
