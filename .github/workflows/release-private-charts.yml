@@ -1,0 +1,52 @@
+name: Release Private Charts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "charts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  HELM_REPO_URL: https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases
+  RELEASE_BRANCH: helm-chart-releases
+
+jobs:
+  release-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@github.com"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Package Helm Charts
+        run: |
+          mkdir -p helm-releases
+          helm package charts/* -d helm-releases
+
+      - name: Update Helm Repo Index
+        run: |
+          curl -sf $HELM_REPO_URL/index.yaml -o helm-releases/index.yaml || echo "No existing index found, creating a new one"
+          helm repo index helm-releases/ --merge helm-releases/index.yaml --url $HELM_REPO_URL
+
+      - name: Commit and Push Changes
+        run: |
+          git stash --include-untracked
+          git fetch origin $RELEASE_BRANCH
+          git checkout $RELEASE_BRANCH
+          rm -rf helm-releases/index.yaml
+          git stash pop || echo "Some files were not stashed"
+          git add helm-releases/*
+          git commit -m "Updated Helm charts from ref: $GITHUB_SHA"
+          git push origin $RELEASE_BRANCH
