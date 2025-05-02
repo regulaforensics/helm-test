@@ -3,14 +3,14 @@ entries:
   afis-api:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-05-02T08:20:18.567666622Z"
+    created: "2025-05-02T08:24:39.357446126Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
       repository: https://charts.bitnami.com/bitnami
       version: 11.9.13
     description: Afis api service. On-premise and cloud integration
-    digest: 923f5d205848c849652518c4982877ed07d61f0b01a3c5408e6394f73b8c8484
+    digest: d7918a65ac42c6d0a5456bd3c3c45fdd7fa6095d1c67ef9814f657514949f576
     home: https://test-afisapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -29,7 +29,7 @@ entries:
   api-gateway:
   - apiVersion: v2
     appVersion: 2.4.2
-    created: "2025-05-02T08:20:18.5773189Z"
+    created: "2025-05-02T08:24:39.365820685Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql-ha
@@ -40,7 +40,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 17.15.2
     description: ML. Airflow API Gateway
-    digest: f02e6fc1965875ec642f750520673a29784aa87490c682b9be8ce2738a623fdb
+    digest: 0b706dfabd697467c4a923c425c32610ecf88c2f88dbe3dada9157cdaee8c30a
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
     - regula
@@ -58,7 +58,33 @@ entries:
   docreader:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-05-02T08:20:18.582366667Z"
+    created: "2025-05-02T08:24:39.376735959Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: 28977eb11e38e3b30d77a6c392cbbca804fbdb56dbc3bb76a4ab1e46e446948e
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/private/helm-releases/docreader-2.2.0.tgz
+    version: 2.2.0
+  - apiVersion: v2
+    appVersion: nightly
+    created: "2025-05-02T08:24:39.371229902Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -85,7 +111,7 @@ entries:
   faceapi:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-05-02T08:20:18.62122194Z"
+    created: "2025-05-02T08:24:39.415319977Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -96,7 +122,7 @@ entries:
       repository: https://zilliztech.github.io/milvus-helm/
       version: 4.1.28
     description: Face Recognition Service. On-premise and cloud integration
-    digest: dcb142faf409c97ab5d38543d5dad626d85aafc25c6cffbd38406de9a1c639e2
+    digest: 82f10954d795ffc3ee7a838bdb144dad2649a49a166f482274ab5978b6a24b49
     home: https://faceapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -115,7 +141,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-05-02T08:20:18.6018808Z"
+    created: "2025-05-02T08:24:39.396330846Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -143,4 +169,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/regulaforensics/helm-test/private/helm-releases/faceapi-2.0.0.tgz
     version: 2.0.0
-generated: "2025-05-02T08:20:18.563924019Z"
+generated: "2025-05-02T08:24:39.352849002Z"
