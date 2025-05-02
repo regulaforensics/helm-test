@@ -1,9 +1,0 @@
-remote: origin
-target-branch: main
-chart-dirs:
-  - charts
-chart-repos:
-  - bitnami=https://charts.bitnami.com/bitnami
-  - minio=https://charts.min.io/
-  - milvus=https://zilliztech.github.io/milvus-helm
-check-version-increment: false
