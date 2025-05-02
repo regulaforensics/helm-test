@@ -1,0 +1,116 @@
+apiVersion: v1
+entries:
+  afis-api:
+  - apiVersion: v2
+    appVersion: nightly
+    created: "2025-05-02T08:14:36.869263268Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Afis api service. On-premise and cloud integration
+    digest: c29567c453cae009dc105ff233f6efb4c87b5bce337f9db80e5bcc211f88f6c0
+    home: https://test-afisapi.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - afis-api
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: afis-api
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/private/helm-releases/afis-api-0.1.0.tgz
+    version: 0.1.0
+  api-gateway:
+  - apiVersion: v2
+    appVersion: 2.4.2
+    created: "2025-05-02T08:14:36.878333037Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql-ha
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.4.11
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    description: ML. Airflow API Gateway
+    digest: 50ac3f4ff3d6bd29e6bd85452c98c96538c198b3eba35e4f32e08ed3eb1cf7ae
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - regulaforensics
+    - api-gateway
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: api-gateway
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/private/helm-releases/api-gateway-1.5.0.tgz
+    version: 1.5.0
+  docreader:
+  - apiVersion: v2
+    appVersion: nightly
+    created: "2025-05-02T08:14:36.883680207Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: d5b1e658d5e198788c1d29e3ea31013cea6efd5a919f2ffd2958804458f74927
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/private/helm-releases/docreader-2.1.0.tgz
+    version: 2.1.0
+  faceapi:
+  - apiVersion: v2
+    appVersion: nightly
+    created: "2025-05-02T08:14:36.903237868Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    - condition: milvus.enabled
+      name: milvus
+      repository: https://zilliztech.github.io/milvus-helm/
+      version: 4.1.28
+    description: Face Recognition Service. On-premise and cloud integration
+    digest: 46a92abe44cc269efbf914d530fcba1a847769a8e470fb80365f7eb45ecf7e7f
+    home: https://faceapi.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - faceapi
+    - face-api
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: faceapi
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/private/helm-releases/faceapi-2.0.0.tgz
+    version: 2.0.0
+generated: "2025-05-02T08:14:36.86552165Z"
