@@ -8,11 +8,11 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 Once Helm is set up properly, add the repo as follows:
 
 ```
-helm repo add regula-test https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/
+helm repo add regulaforensics https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/
 helm repo update
 ```
 
-You can then run `helm search repo regula-test` to see the charts.
+You can then run `helm search repo regulaforensics` to see the charts.
 
 - [Docreader](https://github.com/regulaforensics/helm-test/tree/main/charts/docreader)
 - [FaceAPI](https://github.com/regulaforensics/helm-test/tree/main/charts/faceapi)
