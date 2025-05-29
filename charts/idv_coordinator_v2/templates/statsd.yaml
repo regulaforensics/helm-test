@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statsd
+  labels:
+    component: statsd
+    app: idv
+spec:
+  {{- if not .Values.statsd.autoscaling.enabled }}
+  replicas: {{ .Values.statsd.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: statsd
+      component: statsd
+      product: idv
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configs/idv-statsd.yaml") . | sha256sum }}
+        checksum/version: {{ .Values.versionSha | quote }}
+        forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+      labels:
+        app.kubernetes.io/name: statsd
+        component: statsd
+        product: idv
+    spec:
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: idv-statsd-config
+          defaultMode: 420
+      containers:
+      - name: statsd
+        image: prom/statsd-exporter:v0.26.1
+        args:
+          - '--statsd.mapping-config=/etc/statsd-exporter/mappings.yml'
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.statsd.resources | nindent 12 }}
+        {{- with .Values.statsd.probes.livenessProbe }}
+        livenessProbe:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        {{- with .Values.statsd.probes.readinessProbe }}
+        readinessProbe:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        {{- with .Values.statsd.probes.startupProbe }}
+        startupProbe:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        {{- with .Values.statsd.ports }}
+        ports:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        env:
+          {{- tpl (toYaml .Values.env) . | nindent 12 }}
+        {{- with .Values.statsd.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.statsd.affinity }}
+        affinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.statsd.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        volumeMounts:
+          - name: config
+            mountPath: /etc/statsd-exporter/mappings.yml
+            subPath: mappings.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: statsd
+  labels:
+    component: statsd
+    app: idv
+spec:
+  ports:
+  {{- range .Values.statsd.service.ports }}
+  - port: {{ tpl (.port | toString) $ }}
+    targetPort: {{ tpl (.targetPort | toString) $ }}
+    protocol: {{ tpl .protocol $ }}
+    name: {{ tpl .name $ }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: statsd
+  type: {{ .Values.statsd.service.type }}

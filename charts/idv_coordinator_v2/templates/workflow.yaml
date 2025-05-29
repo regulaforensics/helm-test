@@ -1,0 +1,79 @@
+{{ if eq .Values.config.mode "cluster" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow
+  labels:
+    component: workflow
+    app: idv
+spec:
+  {{- if not .Values.workflow.autoscaling.enabled }}
+  replicas: {{ .Values.workflow.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: workflow
+      component: workflow
+      product: idv
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configs/idv-config.yaml") . | sha256sum }}
+        checksum/version: {{ .Values.versionSha | quote }}
+        forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+      labels:
+        app.kubernetes.io/name: workflow
+        component: workflow
+        product: idv
+    spec:
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.licenseSecretName }}
+      - name: license
+        secret:
+          secretName: {{ .Values.licenseSecretName }}
+      {{- end }}
+      - name: idv-config
+        configMap:
+          name: idv-config
+          items:
+            - key: idv-config
+              path: idv-config.yaml
+      containers:
+      - name: workflow
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.workflow.resources | nindent 12 }}
+        volumeMounts:
+        {{- if .Values.licenseSecretName }}
+        - name: license
+          mountPath: /app/extBin/unix/regula.license
+          subPath: regula.license
+          readOnly: true
+        {{- end }}
+        - name: idv-config
+          mountPath: /etc/idv/idv-config.yaml
+          subPath: idv-config.yaml
+        command: ["idv"]
+        args: ["workflow", "start"]
+        env:
+          {{- tpl (toYaml .Values.env) . | nindent 12 }}
+        {{- with .Values.workflow.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.workflow.affinity }}
+        affinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.workflow.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      terminationGracePeriodSeconds: 30
+{{end}}

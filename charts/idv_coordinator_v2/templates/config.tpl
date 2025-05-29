@@ -1,0 +1,195 @@
+{{- define "idv.config" -}}
+mode: {{ quote .Values.config.mode }}
+fernetKey: {{ quote .Values.config.fernetKey }}
+baseUrl: {{ quote .Values.config.baseUrl }}
+identifier: {{ quote .Values.config.identifier }}
+
+metrics:
+  statsd:
+    enabled: {{ .Values.config.metrics.statsd.enabled }}
+    host: {{ .Values.config.metrics.statsd.host }}
+    port: {{ .Values.config.metrics.statsd.port }}
+    prefix: {{ quote .Values.config.metrics.statsd.prefix }}
+  database:
+    enabled: {{ .Values.config.metrics.database.enabled }}
+    expireAfterSeconds: {{ .Values.config.metrics.database.expireAfterSeconds }}
+  alerts:
+    enabled: {{ .Values.config.metrics.alerts.enabled}}
+    source: {{ .Values.config.metrics.alerts.source}}
+    prometheus:
+      url: {{ .Values.config.metrics.alerts.prometheus.url}}
+      filter:
+        groups: {{ .Values.config.metrics.alerts.prometheus.filter.groups}}
+logging:
+  level: {{ quote .Values.config.logging.level }}
+  formatter: {{ quote .Values.config.logging.formatter }}
+  console: {{ quote .Values.config.logging.console }}
+  file: {{ quote .Values.config.logging.file }}
+  path: {{ quote .Values.config.logging.path }}
+  maxFileSize: {{ .Values.config.logging.maxFileSize }}
+  filesCount: {{ .Values.config.logging.filesCount }}
+storage:
+  type: {{ quote .Values.config.storage.type }}
+  s3:
+    endpoint: {{ .Values.config.storage.s3.endpoint }}
+    accessKey: {{ quote .Values.config.storage.s3.accessKey }}
+    accessSecret: {{ quote .Values.config.storage.s3.accessSecret }}
+    bucket: {{ quote .Values.config.storage.s3.bucket }}
+    region: {{ quote .Values.config.storage.s3.region }}
+    secure: {{ quote .Values.config.storage.s3.secure }}
+  fs:
+    path: {{ .Values.config.storage.fs.path }}
+
+  sessions:
+    location:
+      bucket: {{ quote .Values.config.storage.sessions.location.bucket }}
+      prefix: {{ quote .Values.config.storage.sessions.location.prefix }}
+      folder: {{ quote .Values.config.storage.sessions.location.folder }}
+
+  persons:
+    location:
+      bucket: {{ quote .Values.config.storage.persons.location.bucket }}
+      prefix: {{ quote .Values.config.storage.persons.location.prefix }}
+      folder: {{ quote .Values.config.storage.persons.location.folder }}
+
+  workflows:
+    location:
+      bucket: {{ quote .Values.config.storage.workflows.location.bucket }}
+      prefix: {{ quote .Values.config.storage.workflows.location.prefix }}
+      folder: {{ quote .Values.config.storage.workflows.location.folder }}
+
+  userFiles:
+    location:
+      bucket: {{ quote .Values.config.storage.userFiles.location.bucket }}
+      prefix: {{ quote .Values.config.storage.userFiles.location.prefix }}
+      folder: {{ quote .Values.config.storage.userFiles.location.folder }}
+
+  locales:
+    location:
+      bucket: {{ quote .Values.config.storage.locales.location.bucket }}
+      prefix: {{ quote .Values.config.storage.locales.location.prefix }}
+      folder: {{ quote .Values.config.storage.locales.location.folder }}
+
+mobile:
+{{ .Values.config.mobile | toYaml | indent 2 }}
+
+smtp:
+  enabled: {{ .Values.config.smtp.enabled }}
+  host: {{ .Values.config.smtp.host }}
+  port: {{ .Values.config.smtp.port }}
+  username: {{ .Values.config.smtp.username }}
+  password: {{ .Values.config.smtp.password }}
+  tls: {{ .Values.config.smtp.tls }}
+
+oauth2:
+  enabled: {{ .Values.config.oauth2.enabled }}
+  providers:
+{{- range .Values.config.oauth2.providers }}
+    - name: {{ .name | quote }}
+      clientId: {{ .clientId | quote }}
+      scope: {{ .scope | quote }}
+      secret: {{ .secret | quote }}
+      type: {{ .type | quote }}
+      defaultRoles: {{ .defaultRoles | toJson }}
+      defaultGroups: {{ .defaultGroups | toJson }}
+      urls:
+        jwk: {{ .urls.jwk | quote }}
+        authorize: {{ .urls.authorize | quote }}
+        token: {{ .urls.token | quote }}
+        refresh: {{ .urls.refresh | quote }}
+        revoke: {{ .urls.revoke | quote }}
+{{- end }}
+
+faceSearch:
+  enabled: {{ .Values.config.faceSearch.enabled }}
+  limit: {{.Values.config.faceSearch.limit}}
+  threshold: {{.Values.config.faceSearch.threshold}}
+  database:
+    type: {{ quote .Values.config.faceSearch.database.type}}
+    opensearch:
+      host: {{ quote .Values.config.faceSearch.database.opensearch.host }}
+      port: {{ quote .Values.config.faceSearch.database.opensearch.port }}
+      useSsl: {{ .Values.config.faceSearch.database.opensearch.useSsl }}
+      verifyCerts: {{ .Values.config.faceSearch.database.opensearch.verifyCerts }}
+      username: {{ quote .Values.config.faceSearch.database.opensearch.username }}
+      password: {{ quote .Values.config.faceSearch.database.opensearch.password }}
+      dimension: {{ .Values.config.faceSearch.database.opensearch.dimension }}
+      indexName: {{ quote .Values.config.faceSearch.database.opensearch.indexName }}
+      awsAuth:
+        enabled: {{ .Values.config.faceSearch.database.opensearch.awsAuth.enabled }}
+        region: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.region }}
+        accessKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.accessKey }}
+        secretKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.secretKey }}
+
+services:
+  api:
+    enabled: {{ .Values.config.services.api.enabled }}
+    port: {{ .Values.config.services.api.port }}
+    host: {{ quote .Values.config.services.api.host }}
+    workers: {{ quote .Values.config.services.api.workers }}
+
+  audit:
+    enabled: {{ .Values.config.services.audit.enabled }}
+    wsEnabled: {{ .Values.config.services.audit.wsEnabled }}
+
+  analytics:
+    enabled: {{ .Values.config.services.analytics.enabled }}
+    connectionString: {{ quote .Values.config.services.analytics.connectionString }}
+
+  scheduler:
+    enabled: {{ .Values.config.services.scheduler.enabled }}
+    jobs:
+      expireSessions:
+        cron: {{ quote .Values.config.services.scheduler.jobs.expireSessions.cron }}
+      reloadWorkflows:
+        cron: {{ quote .Values.config.services.scheduler.jobs.reloadWorkflows.cron }}
+      cleanSessions:
+        cron: {{ quote .Values.config.services.scheduler.jobs.cleanSessions.cron }}
+        keepFor: {{ quote .Values.config.services.scheduler.jobs.cleanSessions.keepFor }}
+      expireDeviceLogs:
+        cron: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.cron }}
+        keepFor: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.keepFor }}
+      reloadLocales:
+        cron: {{ quote .Values.config.services.scheduler.jobs.reloadLocales.cron }}
+
+  workflow:
+    enabled: {{ .Values.config.services.workflow.enabled }}
+    workers: {{ .Values.config.services.workflow.workers }}
+
+  docreader:
+    enabled: {{ .Values.config.services.docreader.enabled }}
+    prefix: {{ .Values.config.services.docreader.prefix }}
+    url: {{ quote .Values.config.services.docreader.url }}
+
+  faceapi:
+    enabled: {{ .Values.config.services.faceapi.enabled }}
+    prefix: {{ .Values.config.services.faceapi.prefix }}
+    url: {{ quote .Values.config.services.faceapi.url }}
+
+mongo:
+  url: {{ .Values.config.mongo.url }}
+
+topics:
+  event:
+    name: event
+    url: {{ quote .Values.config.topics.event.url }}
+    {{- if .Values.config.topics.event.options }}
+    options: {{- toYaml  .Values.config.topics.event.options | nindent 8 }}
+    {{- end }}
+  audit:
+    name: audit
+    url: {{ quote .Values.config.topics.audit.url }}
+    {{- if .Values.config.topics.audit.options }}
+    options: {{- toYaml  .Values.config.topics.audit.options | nindent 8 }}
+    {{- end }}
+  client:
+    name: client
+    url: {{ quote .Values.config.topics.client.url }}
+    {{- if .Values.config.topics.client.options }}
+    options: {{- toYaml  .Values.config.topics.client.options | nindent 8 }}
+    {{- end }}
+{{- if .Values.config.custom }}
+custom:
+  {{- toYaml  .Values.config.custom | nindent 2 }}
+{{- end }}
+{{- end }}

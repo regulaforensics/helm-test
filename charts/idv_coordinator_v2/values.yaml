@@ -1,0 +1,396 @@
+deployment:
+  forceUpdate: ""
+
+versionSha: "latest"
+image:
+  repository: regulaforensics/idv-coordinator
+  pullPolicy: Always
+  tag: "latest"
+
+# Supply the name of existing secret with the regula.license file.
+# You can load it to a k8s generic secret via the following command:
+# `kubectl create secret generic idv-license -n <namespace> --from-file=regula.license`
+#
+licenseSecretName: idv-license
+
+opensearch:
+  enabled: true
+  image:
+    tag: "2.19.0"
+  fullnameOverride: opensearch
+  opensearchPassword: ""
+  replicas: 1
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+  securityConfig:
+    enabled: true
+  nodeGroup: "single-node"
+  singleNode: true
+  config:
+    opensearch.yml:
+      discovery.type: single-node
+      plugins.security.disabled: true
+      bootstrap.memory_lock: true
+  extraEnvs:
+    - name: OPENSEARCH_JAVA_OPTS
+      value: "-Xms128m -Xmx512m"
+
+
+traefik:
+  service:
+    enabled: true
+    type: LoadBalancer
+    ports:
+      - name: main
+        port: 80
+        protocol: TCP
+        targetPort: 80
+
+  deployment:
+    enabled: true
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+
+  ingressRoute:
+    dashboard:
+      enabled: true
+
+  ports:
+    web:
+      exposedPort: 80
+      exposeInternal: true
+    traefik:
+      port: 9000
+
+  providers:
+    file:
+      enabled: true
+      watch: true
+      content: |
+        http:
+          routers:
+            route-portal:
+              rule: "PathPrefix(`/`)"
+              service: api
+              priority: 0
+              entryPoints:
+                - web
+
+          services:
+            api:
+              loadBalancer:
+                servers:
+                  - url: "http://api:8000/"
+
+
+statsd:
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+
+  nodeSelector: { }
+  tolerations: [ ]
+  affinity: { }
+  resources: { }
+
+  ports:
+    - name: statsd-ingest
+      containerPort: 9125
+      protocol: UDP
+    - name: statsd-scrape
+      containerPort: 9102
+      protocol: TCP
+
+  service:
+    type: ClusterIP
+    ports:
+      - name: statsd-ingest
+        port: 9125
+        targetPort: 9125
+        protocol: UDP
+      - name: statsd-scrape
+        port: 9102
+        targetPort: 9102
+        protocol: TCP
+
+  probes:
+    readinessProbe:
+      httpGet:
+        path: /metrics
+        port: 9102
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+    livenessProbe:
+      httpGet:
+        path: /metrics
+        port: 9102
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+
+api:
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+
+  nodeSelector: { }
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+  ports:
+    - name: http
+      containerPort: 8000
+      protocol: TCP
+
+  service:
+    type: ClusterIP
+    ports:
+      - name: svc-port
+        port: 8000
+        targetPort: 8000
+        protocol: TCP
+
+  probes:
+    readinessProbe:
+      httpGet:
+        path: /api/health
+        port: 8000
+    livenessProbe:
+      httpGet:
+        path: /api/health
+        port: 8000
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 3
+
+scheduler:
+  replicaCount: 1
+  autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 100
+      targetCPUUtilizationPercentage: 80
+
+  nodeSelector: { }
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+workflow:
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+
+  nodeSelector: { }
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+audit:
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+
+  nodeSelector: { }
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+imagePullSecrets:
+  - name: dockerhub-access
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "idv"
+
+env:
+  - name: IDV_COORDINATOR_CONFIG_PATH
+    value: /etc/idv/idv-config.yaml
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+config:
+  baseUrl: ""
+  mode: "standalone"
+  fernetKey: ""
+
+  mobile: {}
+
+  logging:
+    level: INFO
+    formatter: "%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s"
+    console: true
+    file: false
+    path: /var/log
+    maxFileSize: 10485760
+    filesCount: 10
+
+  mongo:
+    url: ""
+
+  metrics:
+    statsd:
+      enabled: true
+      host: statsd
+      port: 9125
+      prefix: idv
+    database:
+      enabled: true
+      expireAfterSeconds: 15552000
+    alerts:
+      enabled: false
+      source: prometheus
+      prometheus:
+        url: http://prometheus:9090
+        filter:
+          groups: [ "idv.rules" ]
+
+  storage:
+    type: fs
+    s3:
+      endpoint: ""
+      accessKey: ""
+      accessSecret: ""
+      region: master
+      secure: false
+    fs:
+      path: "/var/idv/data"
+
+    sessions:
+      location:
+        bucket: coordinator
+        prefix: "sessions"
+        folder: ""
+    persons:
+      location:
+        bucket: coordinator
+        prefix: "persons"
+        folder: "person_files"
+    workflows:
+      location:
+        bucket: coordinator
+        prefix: "workflows"
+        folder: ""
+    userFiles:
+      location:
+        bucket: "coordinator"
+        prefix: "files"
+        folder: "user_files"
+    locales:
+      location:
+        bucket: "coordinator"
+        prefix: "localization"
+        folder: "config"
+
+  faceSearch:
+    enabled: true
+    limit: 1000
+    threshold: 0.75
+    database:
+      type: opensearch
+      opensearch:
+        host: "opensearch"
+        port: "9200"
+        useSsl: false
+        verifyCerts: false
+        username: admin
+        password: ""
+        dimension: 512
+        indexName: hnsw
+        awsAuth:
+          enabled: false
+          region: ""
+          accessKey: ""
+          secretKey: ""
+
+  services:
+    api:
+      enabled: true
+      port: 8000
+      host: "0.0.0.0"
+      workers: 2
+
+    analytics:
+      enabled: false
+      connectionString: ""
+
+    audit:
+      enabled: true
+      wsEnabled: true
+
+    workflow:
+      enabled: true
+      workers: 50
+
+    docreader:
+      enabled: false
+      prefix: drapi
+      url: ~
+
+    faceapi:
+      enabled: false
+      prefix: faceapi
+      url: ~
+
+    scheduler:
+      enabled: true
+      jobs:
+        expireSessions:
+          cron: "*/10 * * * * *"
+        reloadWorkflows:
+          cron: "*/5 * * * * *"
+        cleanSessions:
+          cron: "*/30 * * * * *"
+          keepFor: "1w"
+        expireDeviceLogs:
+          cron: "* */5 * * *"
+          keepFor: "30d"
+        reloadLocales:
+          cron: "*/15 * * * * *"
+
+  topics:
+    event:
+      url: memory://
+    audit:
+      url: memory://
+    client:
+      url: memory://
+
+  oauth2:
+    enabled: false
+    providers: []
+    custom: {}
+
+  smtp:
+    enabled: true
+    host: "email-smtp.eu-west-1.amazonaws.com"
+    port: 587
+    tls: true

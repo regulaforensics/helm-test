@@ -1,0 +1,78 @@
+{{ if eq .Values.config.mode "cluster" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit
+  labels:
+    component: audit
+    app: idv
+spec:
+  {{- if not .Values.audit.autoscaling.enabled }}
+  replicas: {{ .Values.audit.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: audit
+      component: audit
+      product: idv
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configs/idv-config.yaml") . | sha256sum }}
+        checksum/version: {{ .Values.versionSha | quote }}
+        forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+      labels:
+        app.kubernetes.io/name: audit
+        component: audit
+        product: idv
+    spec:
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.licenseSecretName }}
+      - name: license
+        secret:
+          secretName: {{ .Values.licenseSecretName }}
+      {{- end }}
+      - name: idv-config
+        configMap:
+          name: idv-config
+          items:
+            - key: idv-config
+              path: idv-config.yaml
+      containers:
+      - name: audit
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.audit.resources | nindent 12 }}
+        volumeMounts:
+        {{- if .Values.licenseSecretName }}
+        - name: license
+          mountPath: /app/extBin/unix/regula.license
+          subPath: regula.license
+          readOnly: true
+        {{- end }}
+        - name: idv-config
+          mountPath: /etc/idv/idv-config.yaml
+          subPath: idv-config.yaml
+        command: ["idv"]
+        args: ["audit", "start"]
+        env:
+          {{- tpl (toYaml .Values.env) . | nindent 12 }}
+        {{- with .Values.audit.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.audit.affinity }}
+        affinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.audit.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+{{ end }}

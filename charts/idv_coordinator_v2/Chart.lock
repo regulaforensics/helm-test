@@ -1,0 +1,9 @@
+dependencies:
+- name: traefik
+  repository: https://traefik.github.io/charts
+  version: 26.1.0
+- name: opensearch
+  repository: https://opensearch-project.github.io/helm-charts
+  version: 2.19.0
+digest: sha256:62d334e1e45034f0db6746991f8ba90731ea0c1f4c09cc91f69a534473a39a08
+generated: "2025-05-06T20:23:47.816133+03:00"

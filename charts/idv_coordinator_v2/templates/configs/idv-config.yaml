@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: idv-config
+data:
+  idv-config: |+
+    {{- include "idv.config" . | nindent 4 }}

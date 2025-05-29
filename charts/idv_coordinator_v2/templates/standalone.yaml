@@ -1,0 +1,100 @@
+{{ if eq .Values.config.mode "standalone" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: standalone
+  labels:
+    component: standalone
+    app: idv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: standalone
+      component: standalone
+      product: idv
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configs/idv-config.yaml") . | sha256sum }}
+        checksum/version: {{ .Values.versionSha | quote }}
+        forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+      labels:
+        app.kubernetes.io/name: standalone
+        component: standalone
+        product: idv
+    spec:
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: idv-config
+        configMap:
+          name: idv-config
+          items:
+            - key: idv-config
+              path: idv-config.yaml
+      containers:
+      - name: api
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.api.resources | nindent 12 }}
+        {{- with .Values.api.probes.livenessProbe }}
+        livenessProbe:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        {{- with .Values.api.probes.readinessProbe }}
+        readinessProbe:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        {{- with .Values.api.probes.startupProbe }}
+        startupProbe:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        {{- with .Values.api.ports }}
+        ports:
+          {{- tpl (toYaml .) $ | nindent 12 }}
+        {{- end }}
+        volumeMounts:
+        - name: idv-config
+          mountPath: /etc/idv/idv-config.yaml
+          subPath: idv-config.yaml
+        command: ["idv"]
+        args: ["standalone"]
+        env:
+          {{- tpl (toYaml .Values.env) . | nindent 12 }}
+        {{- with .Values.api.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.api.affinity }}
+        affinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.api.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  labels:
+    component: api
+    app: idv
+spec:
+  ports:
+  {{- range .Values.api.service.ports }}
+  - port: {{ tpl (.port | toString) $ }}
+    targetPort: {{ tpl (.targetPort | toString) $ }}
+    protocol: {{ tpl .protocol $ }}
+    name: {{ tpl .name $ }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: standalone
+  type: {{ .Values.api.service.type }}
+{{ end }}
