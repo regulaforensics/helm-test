@@ -146,7 +146,7 @@ api:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
 
-  nodeSelector: { }
+  nodeSelector: {}
   tolerations: []
   affinity: {}
   resources: {}
@@ -165,16 +165,29 @@ api:
         protocol: TCP
 
   probes:
-    readinessProbe:
-      httpGet:
-        path: /api/health
-        port: 8000
     livenessProbe:
-      httpGet:
-        path: /api/health
-        port: 8000
+      enabled: true
+      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    readinessProbe:
+      enabled: true
+      port: 8000
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    startupProbe:
+      enabled: false
+      port: 8000
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
       failureThreshold: 3
 
 scheduler:
@@ -216,14 +229,13 @@ audit:
   affinity: {}
   resources: {}
 
-imagePullSecrets:
-  - name: dockerhub-access
+imagePullSecrets: {}
 
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: true
+  create: false
   annotations: {}
   name: "idv"
 
@@ -239,7 +251,7 @@ securityContext: {}
 
 config:
   baseUrl: ""
-  mode: "standalone"
+  mode: "cluster"
   fernetKey: ""
 
   mobile: {}

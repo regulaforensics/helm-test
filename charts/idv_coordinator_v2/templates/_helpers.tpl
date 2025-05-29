@@ -57,6 +57,6 @@ Create the name of the service account to use
 {{- if .Values.serviceAccount.create }}
 {{- tpl .Values.serviceAccount.name . }}
 {{- else }}
-{{- default "default" .Values.pod.serviceAccount.name }}
+{{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}

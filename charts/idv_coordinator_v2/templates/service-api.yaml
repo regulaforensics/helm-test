@@ -1,0 +1,20 @@
+{{ if eq .Values.config.mode "cluster" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "idv.fullname" . }}
+  labels: {{- include "idv.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ports:
+  {{- range .Values.api.service.ports }}
+  - port: {{ tpl (.port | toString) $ }}
+    targetPort: {{ tpl (.targetPort | toString) $ }}
+    protocol: {{ tpl .protocol $ }}
+    name: {{ tpl .name $ }}
+  {{- end }}
+  selector: {{- include "idv.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.api.service.type }}
+{{ end }}
