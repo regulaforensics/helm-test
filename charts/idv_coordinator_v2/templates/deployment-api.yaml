@@ -43,6 +43,7 @@ spec:
           items:
             - key: idv-config
               path: idv-config.yaml
+      securityContext: {{- toYaml .Values.api.securityContext | nindent 8 }}
       containers:
       - name: api
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

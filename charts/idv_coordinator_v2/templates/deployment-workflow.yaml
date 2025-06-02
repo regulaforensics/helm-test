@@ -2,34 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workflow
+  name: {{ include "idv.fullname" . }}-workflow
   labels:
+    {{- include "idv.labels" . | nindent 4 }}
     component: workflow
-    app: idv
 spec:
   {{- if not .Values.workflow.autoscaling.enabled }}
   replicas: {{ .Values.workflow.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: workflow
+      {{- include "idv.selectorLabels" . | nindent 6 }}
       component: workflow
-      product: idv
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configs/idv-config.yaml") . | sha256sum }}
         checksum/version: {{ .Values.versionSha | quote }}
         forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
       labels:
-        app.kubernetes.io/name: workflow
+        {{- include "idv.labels" . | nindent 8 }}
         component: workflow
-        product: idv
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
       {{- if .Values.licenseSecretName }}
@@ -39,16 +39,16 @@ spec:
       {{- end }}
       - name: idv-config
         configMap:
-          name: idv-config
+          name: {{ include "idv.fullname" . }}-config
           items:
             - key: idv-config
               path: idv-config.yaml
+      securityContext: {{- toYaml .Values.workflow.securityContext | nindent 8 }}
       containers:
       - name: workflow
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
-          {{- toYaml .Values.workflow.resources | nindent 12 }}
+        resources: {{- toYaml .Values.workflow.resources | nindent 10 }}
         volumeMounts:
         {{- if .Values.licenseSecretName }}
         - name: license
@@ -61,19 +61,15 @@ spec:
           subPath: idv-config.yaml
         command: ["idv"]
         args: ["workflow", "start"]
-        env:
-          {{- tpl (toYaml .Values.env) . | nindent 12 }}
+        env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
         {{- with .Values.workflow.nodeSelector }}
-        nodeSelector:
-          {{- toYaml . | nindent 8 }}
+        nodeSelector: {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.workflow.affinity }}
-        affinity:
-          {{- toYaml . | nindent 8 }}
+        affinity: {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.workflow.tolerations }}
-        tolerations:
-          {{- toYaml . | nindent 8 }}
+        tolerations: {{- toYaml . | nindent 8 }}
         {{- end }}
       terminationGracePeriodSeconds: 30
 {{end}}
