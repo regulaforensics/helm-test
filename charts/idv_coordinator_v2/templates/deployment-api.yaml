@@ -11,7 +11,7 @@ spec:
   replicas: {{ .Values.api.replicaCount }}
   {{- end }}
   selector:
-    matchLabels: 
+    matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}
       component: api
   template:
@@ -95,7 +95,7 @@ spec:
         - name: idv-config
           mountPath: /etc/idv/idv-config.yaml
           subPath: idv-config.yaml
-        command: [ "idv" ]
+        command: ["idv"]
         args: ["webserver", "start"]
         env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
         {{- with .Values.api.nodeSelector }}
