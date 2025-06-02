@@ -150,7 +150,6 @@ api:
   tolerations: []
   affinity: {}
   resources: {}
-  securityContext: {}
 
   ports:
     - name: http
@@ -203,7 +202,6 @@ scheduler:
   tolerations: []
   affinity: {}
   resources: {}
-  securityContext: {}
 
 workflow:
   replicaCount: 1
@@ -217,7 +215,6 @@ workflow:
   tolerations: []
   affinity: {}
   resources: {}
-  securityContext: {}
 
 audit:
   replicaCount: 1

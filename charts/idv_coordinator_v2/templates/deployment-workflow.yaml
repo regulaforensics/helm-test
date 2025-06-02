@@ -43,12 +43,13 @@ spec:
           items:
             - key: idv-config
               path: idv-config.yaml
-      securityContext: {{- toYaml .Values.workflow.securityContext | nindent 8 }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: workflow
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources: {{- toYaml .Values.workflow.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.securityContext | nindent 10 }}
         volumeMounts:
         {{- if .Values.licenseSecretName }}
         - name: license

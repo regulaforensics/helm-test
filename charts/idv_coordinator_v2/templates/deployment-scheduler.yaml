@@ -43,12 +43,13 @@ spec:
           items:
             - key: idv-config
               path: idv-config.yaml
-      securityContext: {{- toYaml .Values.scheduler.securityContext | nindent 8 }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: scheduler
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources: {{- toYaml .Values.scheduler.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.securityContext | nindent 10 }}
         volumeMounts:
         {{- if .Values.licenseSecretName }}
         - name: license
