@@ -2,34 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scheduler
+  name: {{ include "idv.fullname" . }}-scheduler
   labels:
+    {{- include "idv.labels" . | nindent 4 }}
     component: scheduler
-    app: idv
 spec:
   {{- if not .Values.scheduler.autoscaling.enabled }}
   replicas: {{ .Values.scheduler.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: scheduler
+      {{- include "idv.selectorLabels" . | nindent 6 }}
       component: scheduler
-      product: idv
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configs/idv-config.yaml") . | sha256sum }}
         checksum/version: {{ .Values.versionSha | quote }}
         forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
       labels:
-        app.kubernetes.io/name: scheduler
+        {{- include "idv.labels" . | nindent 8 }}
         component: scheduler
-        product: idv
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
       {{- if .Values.licenseSecretName }}
@@ -39,7 +39,7 @@ spec:
       {{- end }}
       - name: idv-config
         configMap:
-          name: idv-config
+          name: {{ include "idv.fullname" . }}-config
           items:
             - key: idv-config
               path: idv-config.yaml
@@ -47,8 +47,7 @@ spec:
       - name: scheduler
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
-          {{- toYaml .Values.scheduler.resources | nindent 12 }}
+        resources: {{- toYaml .Values.scheduler.resources | nindent 10 }}
         volumeMounts:
         {{- if .Values.licenseSecretName }}
         - name: license
@@ -61,19 +60,15 @@ spec:
           subPath: idv-config.yaml
         command: ["idv"]
         args: ["scheduler", "start"]
-        env:
-          {{- tpl (toYaml .Values.env) . | nindent 12 }}
+        env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
         {{- with .Values.scheduler.nodeSelector }}
-        nodeSelector:
-          {{- toYaml . | nindent 8 }}
+        nodeSelector: {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.scheduler.affinity }}
-        affinity:
-          {{- toYaml . | nindent 8 }}
+        affinity: {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.scheduler.tolerations }}
-        tolerations:
-          {{- toYaml . | nindent 8 }}
+        tolerations: {{- toYaml . | nindent 8 }}
         {{- end }}
       terminationGracePeriodSeconds: 30
 {{ end }}

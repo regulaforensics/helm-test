@@ -35,6 +35,7 @@ Common labels
 */}}
 {{- define "idv.labels" -}}
 helm.sh/chart: {{ include "idv.chart" . }}
+app: idv
 {{ include "idv.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -46,7 +47,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "idv.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "idv.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

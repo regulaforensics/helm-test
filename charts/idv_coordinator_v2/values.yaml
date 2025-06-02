@@ -198,7 +198,7 @@ scheduler:
       maxReplicas: 100
       targetCPUUtilizationPercentage: 80
 
-  nodeSelector: { }
+  nodeSelector: {}
   tolerations: []
   affinity: {}
   resources: {}
@@ -235,7 +235,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: false
+  create: true
   annotations: {}
   name: "idv"
 

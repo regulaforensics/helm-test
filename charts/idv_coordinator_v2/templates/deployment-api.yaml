@@ -2,14 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "idv.fullname" . }}
-  labels: {{- include "idv.labels" . | nindent 4 }}
+  name: {{ include "idv.fullname" . }}-api
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: api
 spec:
   {{- if not .Values.api.autoscaling.enabled }}
   replicas: {{ .Values.api.replicaCount }}
   {{- end }}
   selector:
-    matchLabels: {{- include "idv.selectorLabels" . | nindent 6 }}
+    matchLabels: 
+      {{- include "idv.selectorLabels" . | nindent 6 }}
+      component: api
   template:
     metadata:
       annotations:
@@ -19,7 +23,9 @@ spec:
         {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
-      labels: {{- include "idv.labels" . | nindent 8 }}
+      labels:
+        {{- include "idv.labels" . | nindent 8 }}
+        component: api
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
