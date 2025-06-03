@@ -38,7 +38,7 @@ spec:
               path: idv-config.yaml
       containers:
       - name: api
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
           {{- toYaml .Values.api.resources | nindent 12 }}

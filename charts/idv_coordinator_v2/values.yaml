@@ -86,8 +86,12 @@ traefik:
                 servers:
                   - url: "http://api:8000/"
 
-
 statsd:
+  image:
+    repository: prom/statsd-exporter
+    tag: v0.26.1
+    pullPolicy: Always
+
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -95,10 +99,10 @@ statsd:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
 
-  nodeSelector: { }
-  tolerations: [ ]
-  affinity: { }
-  resources: { }
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
 
   ports:
     - name: statsd-ingest
@@ -121,22 +125,86 @@ statsd:
         protocol: TCP
 
   probes:
-    readinessProbe:
-      httpGet:
-        path: /metrics
-        port: 9102
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
-      successThreshold: 1
-      failureThreshold: 3
     livenessProbe:
-      httpGet:
-        path: /metrics
-        port: 9102
+      enabled: true
+      port: 9102
       initialDelaySeconds: 10
       timeoutSeconds: 5
-      successThreshold: 1
+      periodSeconds: 10
       failureThreshold: 3
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      port: 9102
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+      successThreshold: 1
+    startupProbe:
+      enabled: false
+      port: 9102
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+      successThreshold: 1
+  
+  args:
+    - --statsd.mapping-config=/etc/statsd-exporter/mappings.yml
+  
+  mappings:
+    - match: "idv.(.*)_http_method_(.*)_route_(.*)_status_(.*)_duration"
+      name: "idv_${1}_http_duration"
+      match_type: regex
+      labels:
+        service: "$1"
+        method: "$2"
+        url_rule: "$3"
+        status: "$4"
+    - match: "idv.(.*)_http_status_(.*)_total"
+      name: "idv_${1}_http_request_total"
+      match_type: regex
+      labels:
+        service: "$1"
+        status: "$2"
+    - match: "idv.(.*)_(.*)_duration"
+      name: "idv_${1}_duration"
+      match_type: regex
+      labels:
+        service: "$1"
+        operation: "$2"
+    - match: "idv.(.*)_(.*)_(.*)_condition_eval_count"
+      name: "idv_workflow_step_condition_eval_count"
+      match_type: regex
+      labels:
+        workflow_id: "$1"
+        condition: "$2"
+        result: "$3"
+    - match: "idv.(.*)_(.*)_error_count"
+      name: "idv_error"
+      match_type: regex
+      labels:
+        service: "$1"
+        operation: "$2"
+    - match: "idv.(.*)_(.*)_success_count"
+      name: "idv_${1}_success_count"
+      match_type: regex
+      labels:
+        service: "$1"
+        operation: "$2"
+    - match: "idv.(.*)_(.*)_error_count"
+      name: "idv_${1}_error_count"
+      match_type: regex
+      labels:
+        service: "$1"
+        operation: "$2"
+    - match: "idv.(.*)_(.*)_count"
+      name: "idv_${1}_total"
+      match_type: regex
+      labels:
+        service: "$1"
+        operation: "$2"
 
 api:
   replicaCount: 1

@@ -1,21 +1,20 @@
-{{ if eq .Values.config.mode "cluster" }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "idv.fullname" . }}-api
+  name: {{ include "idv.fullname" . }}-statsd
   labels:
     {{- include "idv.labels" . | nindent 4 }}
-    component: api
+    component: statsd
 spec:
   ports:
-  {{- range .Values.api.service.ports }}
+  {{- range .Values.statsd.service.ports }}
   - port: {{ tpl (.port | toString) $ }}
     targetPort: {{ tpl (.targetPort | toString) $ }}
     protocol: {{ tpl .protocol $ }}
     name: {{ tpl .name $ }}
   {{- end }}
-  selector: 
+  selector:
     {{- include "idv.selectorLabels" . | nindent 4 }}
-    component: api
-  type: {{ .Values.api.service.type }}
-{{ end }}
+    component: statsd
+  type: {{ .Values.statsd.service.type }}
+  
