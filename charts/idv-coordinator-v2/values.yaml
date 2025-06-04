@@ -421,7 +421,7 @@ config:
     custom: {}
 
   smtp:
-    enabled: true
+    enabled: false
     host: "email-smtp.eu-west-1.amazonaws.com"
     port: 587
     tls: true
