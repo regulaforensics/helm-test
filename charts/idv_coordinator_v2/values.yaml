@@ -319,7 +319,7 @@ securityContext: {}
 
 config:
   baseUrl: ""
-  mode: "cluster"
+  mode: "cluster" # "standalone" or "cluster"
   fernetKey: ""
 
   mobile: {}
