@@ -11,7 +11,7 @@ image:
 # You can load it to a k8s generic secret via the following command:
 # `kubectl create secret generic idv-license -n <namespace> --from-file=regula.license`
 #
-licenseSecretName: idv-license
+licenseSecretName: null
 
 opensearch:
   enabled: true
@@ -270,8 +270,9 @@ securityContext: {}
 
 config:
   baseUrl: ""
-  mode: "standalone"  # "standalone" or "cluster"
+  mode: "cluster"  # "standalone" or "cluster"
   fernetKey: ""
+  identifier: null
 
   mobile: {}
 
@@ -290,8 +291,6 @@ config:
   metrics:
     statsd:
       enabled: true
-      host: statsd
-      port: 9125
       prefix: idv
     database:
       enabled: true
@@ -384,12 +383,12 @@ config:
     docreader:
       enabled: false
       prefix: drapi
-      url: ~
+      url: ''
 
     faceapi:
       enabled: false
       prefix: faceapi
-      url: ~
+      url: ''
 
     scheduler:
       enabled: true
@@ -410,14 +409,29 @@ config:
   topics:
     event:
       url: memory://
+      options: null
     audit:
       url: memory://
+      options: null
     client:
       url: memory://
+      options: null
 
   oauth2:
     enabled: false
-    providers: []
+    providers:
+      - name: azure
+        type: microsoft
+        clientId: "9d17ceda-e784-4285-9af3-98f22bc401b2"
+        scope: "email openid profile User.Read"
+        defaultRoles: ["admin"]
+        defaultGroups: []
+        urls:
+          jwk: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/discovery/v2.0/keys"
+          authorize: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/authorize"
+          token: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/token"
+          refresh: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/token"
+          revoke: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/revoke"
     custom: {}
 
   smtp:
@@ -425,3 +439,5 @@ config:
     host: "email-smtp.eu-west-1.amazonaws.com"
     port: 587
     tls: true
+    username: ''
+    password: ''

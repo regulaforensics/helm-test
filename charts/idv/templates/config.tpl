@@ -7,8 +7,8 @@ identifier: {{ quote .Values.config.identifier }}
 metrics:
   statsd:
     enabled: {{ .Values.config.metrics.statsd.enabled }}
-    host: {{ .Values.config.metrics.statsd.host }}
-    port: {{ .Values.config.metrics.statsd.port }}
+    host: {{ include "idv.fullname" . }}-statsd
+    port: 9125
     prefix: {{ quote .Values.config.metrics.statsd.prefix }}
   database:
     enabled: {{ .Values.config.metrics.database.enabled }}
@@ -34,7 +34,6 @@ storage:
     endpoint: {{ .Values.config.storage.s3.endpoint }}
     accessKey: {{ quote .Values.config.storage.s3.accessKey }}
     accessSecret: {{ quote .Values.config.storage.s3.accessSecret }}
-    bucket: {{ quote .Values.config.storage.s3.bucket }}
     region: {{ quote .Values.config.storage.s3.region }}
     secure: {{ quote .Values.config.storage.s3.secure }}
   fs:
@@ -188,8 +187,4 @@ topics:
     {{- if .Values.config.topics.client.options }}
     options: {{- toYaml  .Values.config.topics.client.options | nindent 8 }}
     {{- end }}
-{{- if .Values.config.custom }}
-custom:
-  {{- toYaml  .Values.config.custom | nindent 2 }}
-{{- end }}
 {{- end }}
