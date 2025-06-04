@@ -100,10 +100,10 @@ statsd:
       periodSeconds: 10
       failureThreshold: 3
       successThreshold: 1
-  
+
   args:
     - --statsd.mapping-config=/etc/statsd-exporter/mappings.yml
-  
+
   mappings:
     - match: "idv.(.*)_http_method_(.*)_route_(.*)_status_(.*)_duration"
       name: "idv_${1}_http_duration"
@@ -212,10 +212,10 @@ api:
 scheduler:
   replicaCount: 1
   autoscaling:
-      enabled: false
-      minReplicas: 1
-      maxReplicas: 100
-      targetCPUUtilizationPercentage: 80
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -230,7 +230,7 @@ workflow:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
 
-  nodeSelector: { }
+  nodeSelector: {}
   tolerations: []
   affinity: {}
   resources: {}
@@ -243,7 +243,7 @@ audit:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
 
-  nodeSelector: { }
+  nodeSelector: {}
   tolerations: []
   affinity: {}
   resources: {}
@@ -270,7 +270,7 @@ securityContext: {}
 
 config:
   baseUrl: ""
-  mode: "cluster" # "standalone" or "cluster"
+  mode: "cluster"  # "standalone" or "cluster"
   fernetKey: ""
 
   mobile: {}
@@ -302,7 +302,7 @@ config:
       prometheus:
         url: http://prometheus:9090
         filter:
-          groups: [ "idv.rules" ]
+          groups: ["idv.rules"]
 
   storage:
     type: fs
