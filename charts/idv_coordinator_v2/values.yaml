@@ -37,55 +37,6 @@ opensearch:
     - name: OPENSEARCH_JAVA_OPTS
       value: "-Xms128m -Xmx512m"
 
-
-traefik:
-  service:
-    enabled: true
-    type: LoadBalancer
-    ports:
-      - name: main
-        port: 80
-        protocol: TCP
-        targetPort: 80
-
-  deployment:
-    enabled: true
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-
-  ingressRoute:
-    dashboard:
-      enabled: true
-
-  ports:
-    web:
-      exposedPort: 80
-      exposeInternal: true
-    traefik:
-      port: 9000
-
-  providers:
-    file:
-      enabled: true
-      watch: true
-      content: |
-        http:
-          routers:
-            route-portal:
-              rule: "PathPrefix(`/`)"
-              service: api
-              priority: 0
-              entryPoints:
-                - web
-
-          services:
-            api:
-              loadBalancer:
-                servers:
-                  - url: "http://api:8000/"
-
 statsd:
   image:
     repository: prom/statsd-exporter
