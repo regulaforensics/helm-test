@@ -13,59 +13,6 @@ image:
 #
 licenseSecretName: null
 
-mongodb:
-  enabled: false
-  fullnameOverride: mongodb
-  architecture: standalone
-  auth:
-    enabled: false
-
-valkey:
-  enabled: false
-  fullnameOverride: valkey
-  replicaCount: 1
-  architecture: standalone
-  auth:
-    enabled: true
-    password: "t3stPss"
-  master:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-    persistence:
-      enabled: false
-  service:
-    type: ClusterIP
-    port: 6379
-
-opensearch:
-  enabled: false
-  image:
-    tag: 2.19.0
-  fullnameOverride: opensearch
-  opensearchPassword: ""
-  replicas: 1
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-  securityConfig:
-    enabled: true
-  nodeGroup: single-node
-  singleNode: true
-  config:
-    opensearch.yml:
-      discovery.type: single-node
-      plugins.security.disabled: true
-      bootstrap.memory_lock: true
-  extraEnvs:
-    - name: OPENSEARCH_JAVA_OPTS
-      value: "-Xms128m -Xmx512m"
-
 statsd:
   image:
     repository: prom/statsd-exporter
@@ -353,6 +300,26 @@ env:
   #       name: idv
   #       key: AWS_SECRET_ACCESS_KEY
 
+ingress:
+  enabled: false
+  # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
+  # className: ""
+
+  annotations: {}
+
+  # The hostnames or hosts configuration for the web Ingress
+  hosts: []
+    # - idv.domain.com
+  paths: []
+    # - path: /
+  pathType: Prefix
+
+  # TLS configuration for the Docreader Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
 podAnnotations: {}
 
 podSecurityContext: {}
@@ -528,3 +495,56 @@ config:
     tls: true
     username: ""
     password: ""
+
+mongodb:
+  enabled: false
+  fullnameOverride: mongodb
+  architecture: standalone
+  auth:
+    enabled: false
+
+valkey:
+  enabled: false
+  fullnameOverride: valkey
+  replicaCount: 1
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "t3stPss"
+  master:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    persistence:
+      enabled: false
+  service:
+    type: ClusterIP
+    port: 6379
+
+opensearch:
+  enabled: false
+  image:
+    tag: 2.19.0
+  fullnameOverride: opensearch
+  opensearchPassword: ""
+  replicas: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  securityConfig:
+    enabled: true
+  nodeGroup: single-node
+  singleNode: true
+  config:
+    opensearch.yml:
+      discovery.type: single-node
+      plugins.security.disabled: true
+      bootstrap.memory_lock: true
+  extraEnvs:
+    - name: OPENSEARCH_JAVA_OPTS
+      value: "-Xms128m -Xmx512m"
