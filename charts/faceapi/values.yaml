@@ -248,6 +248,9 @@ config:
       hideMetadata: false
       consistency: "eventual"
       protectPersonalInfo: false
+      exposeData:
+        portrait: false
+        video: false
       config:
         recalculateLandmarks: false
       sessions:
