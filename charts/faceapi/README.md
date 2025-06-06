@@ -216,6 +216,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.liveness.ecdhSchema`                               | ECDH schema to use                                                                            | `default`                             |
 | `config.service.liveness.hideMetadata`                             | Whether to hide processing data's metadata                                                    | `false`                               |
 | `config.service.liveness.protectPersonalInfo`                      | Whether to hide Personal information metadata                                                 | `false`                               |
+| `config.service.liveness.exposeData.portrait`                      | Whether to expose Portrait metadata                                                           | `false`                               |
+| `config.service.liveness.exposeData.video`                         | Whether to expose Video metadata                                                              | `false`                               |
 | `config.service.liveness.sessions.location.bucket`                 | The Liveness sessions bucket name in case of `s3`/`gcs` storage type                          | `""`                                  |
 | `config.service.liveness.sessions.location.container`              | The Liveness sessions storage container name in case of `az` storage type                     | `""`                                  |
 | `config.service.liveness.sessions.location.folder`                 | The Liveness sessions folder name in case of `fs` storage type                                | `"/app/faceapi-liveness/sessions"`    |
