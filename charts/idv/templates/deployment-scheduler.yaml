@@ -1,0 +1,76 @@
+{{ if eq .Values.config.mode "cluster" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "idv.fullname" . }}-scheduler
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: scheduler
+spec:
+  {{- if not .Values.scheduler.autoscaling.enabled }}
+  replicas: {{ .Values.scheduler.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "idv.selectorLabels" . | nindent 6 }}
+      component: scheduler
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configs/idv-config.yaml") . | sha256sum }}
+        checksum/version: {{ .Values.versionSha | quote }}
+        forceUpdate: {{ .Values.deployment.forceUpdate | quote }}
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "idv.labels" . | nindent 8 }}
+        component: scheduler
+    spec:
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.licenseSecretName }}
+      - name: license
+        secret:
+          secretName: {{ .Values.licenseSecretName }}
+      {{- end }}
+      - name: idv-config
+        configMap:
+          name: {{ include "idv.fullname" . }}-config
+          items:
+            - key: idv-config
+              path: idv-config.yaml
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: scheduler
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources: {{- toYaml .Values.scheduler.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.securityContext | nindent 10 }}
+        volumeMounts:
+        {{- if .Values.licenseSecretName }}
+        - name: license
+          mountPath: /app/extBin/unix/regula.license
+          subPath: regula.license
+          readOnly: true
+        {{- end }}
+        - name: idv-config
+          mountPath: /etc/idv/idv-config.yaml
+          subPath: idv-config.yaml
+        command: ["idv"]
+        args: ["scheduler", "start"]
+        env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
+        {{- with .Values.scheduler.nodeSelector }}
+        nodeSelector: {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.affinity }}
+        affinity: {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.tolerations }}
+        tolerations: {{- toYaml . | nindent 8 }}
+        {{- end }}
+      terminationGracePeriodSeconds: 30
+{{- end }}

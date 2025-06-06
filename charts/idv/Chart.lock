@@ -1,0 +1,12 @@
+dependencies:
+- name: opensearch
+  repository: https://opensearch-project.github.io/helm-charts
+  version: 2.19.0
+- name: valkey
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.0.8
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.5.17
+digest: sha256:255b88e0c18d83061ac344bbc3049848893cf5fe10e3e8ad1e46b7219f673f45
+generated: "2025-06-06T12:22:19.922847+03:00"

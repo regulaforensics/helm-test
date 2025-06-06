@@ -1,13 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "faceapi.fullname" . -}}
+{{- $serviceName := include "idv.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $paths := .Values.ingress.paths -}}
 {{- $pathType := .Values.ingress.pathType | default "Prefix" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "faceapi.fullname" . }}
-  labels: {{- include "faceapi.labels" . | nindent 4 }}
+  name: {{ include "idv.fullname" . }}
+  labels: {{- include "idv.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
