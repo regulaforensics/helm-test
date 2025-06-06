@@ -74,16 +74,17 @@ mobile:
 
 smtp:
   enabled: {{ .Values.config.smtp.enabled }}
-  host: {{ .Values.config.smtp.host }}
+  host: {{ .Values.config.smtp.host | quote }}
   port: {{ .Values.config.smtp.port }}
-  username: {{ .Values.config.smtp.username }}
-  password: {{ .Values.config.smtp.password }}
+  username: {{ .Values.config.smtp.username | quote }}
+  password: {{ .Values.config.smtp.password | quote }}
   tls: {{ .Values.config.smtp.tls }}
 
 oauth2:
   enabled: {{ .Values.config.oauth2.enabled }}
+  {{- if eq .Values.config.oauth2.enabled true }}
   providers:
-{{- range .Values.config.oauth2.providers }}
+  {{- range .Values.config.oauth2.providers }}
     - name: {{ .name | quote }}
       clientId: {{ .clientId | quote }}
       scope: {{ .scope | quote }}
@@ -97,7 +98,8 @@ oauth2:
         token: {{ .urls.token | quote }}
         refresh: {{ .urls.refresh | quote }}
         revoke: {{ .urls.revoke | quote }}
-{{- end }}
+  {{- end }}
+  {{- end }}
 
 faceSearch:
   enabled: {{ .Values.config.faceSearch.enabled }}
