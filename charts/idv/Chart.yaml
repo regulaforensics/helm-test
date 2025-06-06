@@ -28,3 +28,11 @@ dependencies:
     version: 2.19.0
     repository: https://opensearch-project.github.io/helm-charts
     condition: opensearch.enabled
+  - name: valkey
+    version: 3.0.8
+    repository: https://charts.bitnami.com/bitnami
+    condition: valkey.enabled
+  - name: mongodb
+    version: 16.5.17
+    repository: https://charts.bitnami.com/bitnami
+    condition: mongodb.enabled

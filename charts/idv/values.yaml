@@ -1,11 +1,11 @@
 deployment:
   forceUpdate: ""
 
-versionSha: "latest"
+versionSha: latest
 image:
   repository: regulaforensics/idv-coordinator
   pullPolicy: Always
-  tag: "latest"
+  tag: latest
 
 # Supply the name of existing secret with the regula.license file.
 # You can load it to a k8s generic secret via the following command:
@@ -13,20 +13,49 @@ image:
 #
 licenseSecretName: null
 
+mongodb:
+  enabled: false
+  fullnameOverride: mongodb
+  architecture: standalone
+  auth:
+    enabled: false
+
+valkey:
+  enabled: false
+  fullnameOverride: valkey
+  replicaCount: 1
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "t3stPss"
+  master:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    persistence:
+      enabled: false
+  service:
+    type: ClusterIP
+    port: 6379
+
 opensearch:
-  enabled: true
+  enabled: false
   image:
-    tag: "2.19.0"
+    tag: 2.19.0
   fullnameOverride: opensearch
   opensearchPassword: ""
   replicas: 1
   resources:
     requests:
-      cpu: "200m"
-      memory: "512Mi"
+      cpu: 200m
+      memory: 512Mi
   securityConfig:
     enabled: true
-  nodeGroup: "single-node"
+  nodeGroup: single-node
   singleNode: true
   config:
     opensearch.yml:
@@ -40,7 +69,7 @@ opensearch:
 statsd:
   image:
     repository: prom/statsd-exporter
-    tag: v0.26.1
+    tag: v0.28.0
     pullPolicy: Always
 
   replicaCount: 1
@@ -261,6 +290,68 @@ serviceAccount:
 env:
   - name: IDV_COORDINATOR_CONFIG_PATH
     value: /etc/idv/idv-config.yaml
+  # The 'idv' secret has to be preinstalled in the same namespace as the IDV Coordinator.
+  # Uncomment the following lines to use secrets for sensitive configuration values.
+  # - name: IDV_CONFIG__MONGO__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__MONGO__URL
+  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__0__SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__0__SECRET
+  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__1__SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__1__SECRET
+  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__3__SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__3__SECRET
+  # - name: IDV_CONFIG__FERNETKEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__FERNETKEY
+  # - name: IDV_CONFIG__TOPICS__EVENT__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__TOPICS__EVENT__URL
+  # - name: IDV_CONFIG__TOPICS__CLIENT__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__TOPICS__CLIENT__URL
+  # - name: IDV_CONFIG__TOPICS__AUDIT__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__TOPICS__AUDIT__URL
+  # - name: IDV_CONFIG__SMTP__PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__SMTP__PASSWORD
+  # - name: IDV_CONFIG__SMTP__USERNAME
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__SMTP__USERNAME
+  # - name: AWS_ACCESS_KEY_ID
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: AWS_ACCESS_KEY_ID
+  # - name: AWS_SECRET_ACCESS_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: AWS_SECRET_ACCESS_KEY
 
 podAnnotations: {}
 
@@ -270,7 +361,7 @@ securityContext: {}
 
 config:
   baseUrl: ""
-  mode: "cluster"  # "standalone" or "cluster"
+  mode: cluster  # "standalone" or "cluster"
   fernetKey: ""
   identifier: null
 
@@ -287,6 +378,8 @@ config:
 
   mongo:
     url: ""
+    # Comment the line above and uncomment the line below to use MongoDB subchart
+    # url: mongodb://mongodb:27017/idv
 
   metrics:
     statsd:
@@ -341,14 +434,15 @@ config:
         folder: "config"
 
   faceSearch:
-    enabled: true
+    # Set opensearch.enabled.true if 'faceSearch' is enabled
+    enabled: false
     limit: 1000
     threshold: 0.75
     database:
       type: opensearch
       opensearch:
-        host: "opensearch"
-        port: "9200"
+        host: opensearch
+        port: 9200
         useSsl: false
         verifyCerts: false
         username: admin
@@ -365,7 +459,7 @@ config:
     api:
       enabled: true
       port: 8000
-      host: "0.0.0.0"
+      host: 0.0.0.0
       workers: 2
 
     analytics:
@@ -409,35 +503,28 @@ config:
   topics:
     event:
       url: memory://
+      # Comment the line above and uncomment the line below if valkey.enabled.true is set
+      # url: "redis://:t3stPss@valkey-primary:6379"
       options: null
     audit:
       url: memory://
+      # Comment the line above and uncomment the line below if valkey.enabled.true is set
+      # url: "redis://:t3stPss@valkey-primary:6379"
       options: null
     client:
       url: memory://
+      # Comment the line above and uncomment the line below if valkey.enabled.true is set
+      # url: "redis://:t3stPss@valkey-primary:6379"
       options: null
 
   oauth2:
     enabled: false
-    providers:
-      - name: azure
-        type: microsoft
-        clientId: "9d17ceda-e784-4285-9af3-98f22bc401b2"
-        scope: "email openid profile User.Read"
-        defaultRoles: ["admin"]
-        defaultGroups: []
-        urls:
-          jwk: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/discovery/v2.0/keys"
-          authorize: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/authorize"
-          token: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/token"
-          refresh: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/token"
-          revoke: "https://login.microsoftonline.com/aca46d15-86b6-4479-b998-01a1b9c7a2a1/oauth2/v2.0/revoke"
-    custom: {}
+    providers: []
 
   smtp:
     enabled: false
-    host: "email-smtp.eu-west-1.amazonaws.com"
+    host: ""
     port: 587
     tls: true
-    username: ''
-    password: ''
+    username: ""
+    password: ""
