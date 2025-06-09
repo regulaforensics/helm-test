@@ -135,6 +135,9 @@ service:
     hideMetadata: {{ .Values.config.service.liveness.hideMetadata }}
     consistency: {{ quote .Values.config.service.liveness.consistency }}
     protectPersonalInfo: {{ .Values.config.service.liveness.protectPersonalInfo }}
+    exposeData:
+      portrait: {{ .Values.config.service.liveness.exposeData.portrait }}
+      video: {{ .Values.config.service.liveness.exposeData.video }}
     config:
       recalculateLandmarks: {{ .Values.config.service.liveness.config.recalculateLandmarks }}
     sessions:
