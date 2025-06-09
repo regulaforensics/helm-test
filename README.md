@@ -18,6 +18,7 @@ You can then run `helm search repo regula-test` to see the charts.
 - [FaceAPI](https://github.com/regulaforensics/helm-test/tree/main/charts/faceapi)
 - [afis-api](https://github.com/regulaforensics/helm-test/tree/main/charts/afis-api)
 - [api-gateway](https://github.com/regulaforensics/helm-test/tree/main/charts/api-gateway)
+- [idv](https://github.com/regulaforensics/helm-test/tree/main/charts/idv)
 
 <!-- Keep full URL links to repo files because this README syncs from main to gh-pages.  -->
 Chart documentation is available at [docs.regulaforensics.com](https://docs.regulaforensics.com).
