@@ -311,10 +311,10 @@ ingress:
   hosts: []
     # - idv.domain.com
   paths: []
-    # - path: /
+    # - /
   pathType: Prefix
 
-  # TLS configuration for the Docreader Ingress
+  # TLS configuration for the IDV Ingress
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
