@@ -1,0 +1,15 @@
+{{- if .Values.workflow.podDisruptionBudget.enabled }}
+kind: PodDisruptionBudget
+apiVersion: policy/v1
+metadata:
+  name: {{ include "idv.fullname" . }}-workflow
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: workflow
+spec:
+  selector:
+    matchLabels:
+      {{- include "idv.selectorLabels" . | nindent 6 }}
+      component: workflow
+  {{- toYaml .Values.workflow.podDisruptionBudget.config | nindent 2 }}
+{{- end }}

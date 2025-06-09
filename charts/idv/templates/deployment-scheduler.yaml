@@ -7,9 +7,7 @@ metadata:
     {{- include "idv.labels" . | nindent 4 }}
     component: scheduler
 spec:
-  {{- if not .Values.scheduler.autoscaling.enabled }}
   replicas: {{ .Values.scheduler.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}

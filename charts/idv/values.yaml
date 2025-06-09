@@ -142,6 +142,15 @@ api:
   affinity: {}
   resources: {}
 
+  # API pod disruption budget
+  podDisruptionBudget:
+    enabled: false
+    # PDB configuration
+    config:
+      # minAvailable and maxUnavailable cannot be both set
+      maxUnavailable: 1
+      minAvailable: ~
+
   service:
     type: ClusterIP
     port: 80
@@ -192,6 +201,15 @@ workflow:
   tolerations: []
   affinity: {}
   resources: {}
+
+  # Workflow pod disruption budget
+  podDisruptionBudget:
+    enabled: false
+    # PDB configuration
+    config:
+      # minAvailable and maxUnavailable cannot be both set
+      maxUnavailable: 1
+      minAvailable: ~
 
 audit:
   replicaCount: 1
