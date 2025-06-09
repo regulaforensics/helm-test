@@ -140,6 +140,7 @@ api:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -195,6 +196,7 @@ workflow:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []

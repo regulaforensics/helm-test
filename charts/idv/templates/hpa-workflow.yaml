@@ -1,0 +1,33 @@
+{{- if .Values.workflow.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "idv.fullname" . }}-workflow
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: workflow
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "idv.fullname" . }}-workflow
+  minReplicas: {{ .Values.workflow.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.workflow.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.workflow.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.workflow.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.workflow.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.workflow.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
