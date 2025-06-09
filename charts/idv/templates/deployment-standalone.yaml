@@ -47,7 +47,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /api/health
-            port: {{ .Values.api.probes.livenessProbe.port }}
+            port: api
           initialDelaySeconds: {{ .Values.api.probes.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.api.probes.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.api.probes.livenessProbe.periodSeconds }}
@@ -58,7 +58,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /api/health
-            port: {{ .Values.api.probes.readinessProbe.port }}
+            port: api
           initialDelaySeconds: {{ .Values.api.probes.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.api.probes.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.api.probes.readinessProbe.periodSeconds }}
@@ -69,16 +69,17 @@ spec:
         startupProbe:
           httpGet:
             path: /api/health
-            port: {{ .Values.api.probes.startupProbe.port }}
+            port: api
           initialDelaySeconds: {{ .Values.api.probes.startupProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.api.probes.startupProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.api.probes.startupProbe.periodSeconds }}
           failureThreshold: {{ .Values.api.probes.startupProbe.failureThreshold }}
           successThreshold: {{ .Values.api.probes.startupProbe.successThreshold }}
         {{- end }}
-        {{- with .Values.api.ports }}
-        ports: {{- tpl (toYaml .) $ | nindent 10 }}
-        {{- end }}
+        ports:
+        - name: api
+          containerPort: {{ .Values.config.services.api.port }}
+          protocol: TCP
         volumeMounts:
         - name: idv-config
           mountPath: /etc/idv/idv-config.yaml

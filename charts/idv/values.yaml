@@ -146,23 +146,15 @@ api:
   affinity: {}
   resources: {}
 
-  ports:
-    - name: http
-      containerPort: 8000
-      protocol: TCP
-
   service:
     type: ClusterIP
-    ports:
-      - name: svc-port
-        port: 8000
-        targetPort: 8000
-        protocol: TCP
+    port: 80
+    annotations: {}
+    loadBalancerSourceRanges: []
 
   probes:
     livenessProbe:
       enabled: true
-      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
       periodSeconds: 10
@@ -170,7 +162,6 @@ api:
       failureThreshold: 3
     readinessProbe:
       enabled: true
-      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
       periodSeconds: 10
@@ -178,7 +169,6 @@ api:
       failureThreshold: 3
     startupProbe:
       enabled: false
-      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
       periodSeconds: 10

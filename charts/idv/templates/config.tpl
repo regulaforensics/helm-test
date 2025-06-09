@@ -7,19 +7,25 @@ identifier: {{ quote .Values.config.identifier }}
 metrics:
   statsd:
     enabled: {{ .Values.config.metrics.statsd.enabled }}
+    {{- if .Values.config.metrics.statsd.enabled }}
     host: {{ include "idv.fullname" . }}-statsd
     port: 9125
     prefix: {{ quote .Values.config.metrics.statsd.prefix }}
+    {{- end }}
   database:
     enabled: {{ .Values.config.metrics.database.enabled }}
+    {{- if .Values.config.metrics.database.enabled }}
     expireAfterSeconds: {{ .Values.config.metrics.database.expireAfterSeconds }}
+    {{- end }}
   alerts:
-    enabled: {{ .Values.config.metrics.alerts.enabled}}
+    enabled: {{ .Values.config.metrics.alerts.enabled }}
+    {{- if .Values.config.metrics.alerts.enabled }}
     source: {{ .Values.config.metrics.alerts.source}}
     prometheus:
       url: {{ .Values.config.metrics.alerts.prometheus.url}}
       filter:
         groups: {{ .Values.config.metrics.alerts.prometheus.filter.groups}}
+    {{- end }}
 logging:
   level: {{ quote .Values.config.logging.level }}
   formatter: {{ quote .Values.config.logging.formatter }}
@@ -74,15 +80,17 @@ mobile:
 
 smtp:
   enabled: {{ .Values.config.smtp.enabled }}
+  {{- if .Values.config.smtp.enabled }}
   host: {{ .Values.config.smtp.host | quote }}
   port: {{ .Values.config.smtp.port }}
   username: {{ .Values.config.smtp.username | quote }}
   password: {{ .Values.config.smtp.password | quote }}
   tls: {{ .Values.config.smtp.tls }}
+  {{- end }}
 
 oauth2:
   enabled: {{ .Values.config.oauth2.enabled }}
-  {{- if eq .Values.config.oauth2.enabled true }}
+  {{- if .Values.config.oauth2.enabled }}
   providers:
   {{- range .Values.config.oauth2.providers }}
     - name: {{ .name | quote }}
@@ -103,6 +111,7 @@ oauth2:
 
 faceSearch:
   enabled: {{ .Values.config.faceSearch.enabled }}
+  {{- if .Values.config.faceSearch.enabled }}
   limit: {{.Values.config.faceSearch.limit}}
   threshold: {{.Values.config.faceSearch.threshold}}
   database:
@@ -121,24 +130,32 @@ faceSearch:
         region: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.region }}
         accessKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.accessKey }}
         secretKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.secretKey }}
+  {{- end }}
 
 services:
   api:
     enabled: {{ .Values.config.services.api.enabled }}
+    {{- if .Values.config.services.api.enabled }}
     port: {{ .Values.config.services.api.port }}
     host: {{ quote .Values.config.services.api.host }}
     workers: {{ quote .Values.config.services.api.workers }}
+    {{- end }}
 
   audit:
     enabled: {{ .Values.config.services.audit.enabled }}
+    {{- if .Values.config.services.audit.enabled }}
     wsEnabled: {{ .Values.config.services.audit.wsEnabled }}
+    {{- end }}
 
   analytics:
     enabled: {{ .Values.config.services.analytics.enabled }}
+    {{- if .Values.config.services.analytics.enabled }}
     connectionString: {{ quote .Values.config.services.analytics.connectionString }}
+    {{- end }}
 
   scheduler:
     enabled: {{ .Values.config.services.scheduler.enabled }}
+    {{- if .Values.config.services.scheduler.enabled }}
     jobs:
       expireSessions:
         cron: {{ quote .Values.config.services.scheduler.jobs.expireSessions.cron }}
@@ -152,20 +169,27 @@ services:
         keepFor: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.keepFor }}
       reloadLocales:
         cron: {{ quote .Values.config.services.scheduler.jobs.reloadLocales.cron }}
+    {{- end }}
 
   workflow:
     enabled: {{ .Values.config.services.workflow.enabled }}
+    {{- if .Values.config.services.workflow.enabled }}
     workers: {{ .Values.config.services.workflow.workers }}
+    {{- end }}
 
   docreader:
     enabled: {{ .Values.config.services.docreader.enabled }}
+    {{- if .Values.config.services.docreader.enabled }}
     prefix: {{ .Values.config.services.docreader.prefix }}
     url: {{ quote .Values.config.services.docreader.url }}
+    {{- end }}
 
   faceapi:
     enabled: {{ .Values.config.services.faceapi.enabled }}
+    {{- if .Values.config.services.faceapi.enabled }}
     prefix: {{ .Values.config.services.faceapi.prefix }}
     url: {{ quote .Values.config.services.faceapi.url }}
+    {{- end }}
 
 mongo:
   url: {{ .Values.config.mongo.url }}
