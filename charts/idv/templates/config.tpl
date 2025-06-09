@@ -26,6 +26,7 @@ metrics:
       filter:
         groups: {{ .Values.config.metrics.alerts.prometheus.filter.groups}}
     {{- end }}
+
 logging:
   level: {{ quote .Values.config.logging.level }}
   formatter: {{ quote .Values.config.logging.formatter }}
@@ -34,46 +35,72 @@ logging:
   path: {{ quote .Values.config.logging.path }}
   maxFileSize: {{ .Values.config.logging.maxFileSize }}
   filesCount: {{ .Values.config.logging.filesCount }}
+
 storage:
-  type: {{ quote .Values.config.storage.type }}
+  {{- if eq .Values.config.storage.type "fs" }}
+  type: fs
+  fs:
+    path: {{ .Values.config.storage.fs.path }}
+  {{- end }}
+  {{- if eq .Values.config.storage.type "s3" }}
+  type: s3
   s3:
     endpoint: {{ .Values.config.storage.s3.endpoint }}
     accessKey: {{ quote .Values.config.storage.s3.accessKey }}
     accessSecret: {{ quote .Values.config.storage.s3.accessSecret }}
     region: {{ quote .Values.config.storage.s3.region }}
     secure: {{ quote .Values.config.storage.s3.secure }}
-  fs:
-    path: {{ .Values.config.storage.fs.path }}
+  {{- end }}
 
   sessions:
     location:
+      {{- if eq .Values.config.storage.type "s3" }}
       bucket: {{ quote .Values.config.storage.sessions.location.bucket }}
       prefix: {{ quote .Values.config.storage.sessions.location.prefix }}
+      {{- end }}
+      {{- if eq .Values.config.storage.type "fs" }}
       folder: {{ quote .Values.config.storage.sessions.location.folder }}
+      {{- end }}
 
   persons:
     location:
+      {{- if eq .Values.config.storage.type "s3" }}
       bucket: {{ quote .Values.config.storage.persons.location.bucket }}
       prefix: {{ quote .Values.config.storage.persons.location.prefix }}
+      {{- end }}
+      {{- if eq .Values.config.storage.type "fs" }}
       folder: {{ quote .Values.config.storage.persons.location.folder }}
+      {{- end }}
 
   workflows:
     location:
+      {{- if eq .Values.config.storage.type "s3" }}
       bucket: {{ quote .Values.config.storage.workflows.location.bucket }}
       prefix: {{ quote .Values.config.storage.workflows.location.prefix }}
+      {{- end }}
+      {{- if eq .Values.config.storage.type "fs" }}
       folder: {{ quote .Values.config.storage.workflows.location.folder }}
+      {{- end }}
 
   userFiles:
     location:
+      {{- if eq .Values.config.storage.type "s3" }}
       bucket: {{ quote .Values.config.storage.userFiles.location.bucket }}
       prefix: {{ quote .Values.config.storage.userFiles.location.prefix }}
+      {{- end }}
+      {{- if eq .Values.config.storage.type "fs" }}
       folder: {{ quote .Values.config.storage.userFiles.location.folder }}
+      {{- end }}
 
   locales:
     location:
+      {{- if eq .Values.config.storage.type "s3" }}
       bucket: {{ quote .Values.config.storage.locales.location.bucket }}
       prefix: {{ quote .Values.config.storage.locales.location.prefix }}
+      {{- end }}
+      {{- if eq .Values.config.storage.type "fs" }}
       folder: {{ quote .Values.config.storage.locales.location.folder }}
+      {{- end }}
 
 mobile:
 {{ .Values.config.mobile | toYaml | indent 2 }}
