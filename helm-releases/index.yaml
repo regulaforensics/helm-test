@@ -3,14 +3,14 @@ entries:
   afis-api:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-06-09T07:40:18.772749009Z"
+    created: "2025-06-09T14:08:40.608725553Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
       repository: https://charts.bitnami.com/bitnami
       version: 11.9.13
     description: Afis api service. On-premise and cloud integration
-    digest: d0423a22bea8e9894b4d1df5649d338e1b6b81a2c5de78caf8fc02d9262d07c4
+    digest: 24387a58ccf75789ef810bee52288328c10d5010e1aafc269f1a22933f05aeb4
     home: https://test-afisapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -29,7 +29,7 @@ entries:
   api-gateway:
   - apiVersion: v2
     appVersion: 2.4.2
-    created: "2025-06-09T07:40:18.781222614Z"
+    created: "2025-06-09T14:08:40.617074914Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql-ha
@@ -40,7 +40,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 17.15.2
     description: ML. Airflow API Gateway
-    digest: dec714465861050ac46d3e174a49013d6afb8396744f398ceca43ef1609fe9aa
+    digest: 5f11d37894a8d86e0601789108ee568b87cd7392aebb962edd19ef85bce9a000
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
     - regula
@@ -58,7 +58,7 @@ entries:
   docreader:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-06-09T07:40:18.786655087Z"
+    created: "2025-06-09T14:08:40.62254746Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -66,7 +66,7 @@ entries:
       version: 13.4.4
     description: Fast and accurate data extraction from identity documents. On-premise
       and cloud integration
-    digest: 4fc9ccfa69a7ed9ac5f3a5710556aa5322f1d567022276cfba971cf3d2fffcfd
+    digest: b94ca3a32e8a88fd855b28addb89d61bedf172295016b41105cba28a48bdae34
     home: https://api.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -111,7 +111,7 @@ entries:
   faceapi:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-06-09T07:40:18.806206797Z"
+    created: "2025-06-09T14:08:40.641330486Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -122,7 +122,7 @@ entries:
       repository: https://zilliztech.github.io/milvus-helm/
       version: 4.1.28
     description: Face Recognition Service. On-premise and cloud integration
-    digest: 947755f44484daab57efbbde53705372b19bec245c1a406c1d35d38f632aef61
+    digest: 56cff60f544199ef1c38c68a420390940cf70b2ba9d89d7ec751b1fa0f4c824c
     home: https://faceapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -202,6 +202,29 @@ entries:
   idv:
   - apiVersion: v2
     appVersion: 2.3.5
+    created: "2025-06-09T14:08:40.654201418Z"
+    dependencies:
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts
+      version: 2.19.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.0.8
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.5.17
+    description: IDV Platform. On-premise and cloud integration
+    digest: e59a900f0264597123f54a36ffdfdc22aac7b46fdc9b7528a6f0929d16621819
+    name: idv
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/idv-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 2.3.5
     created: "2025-06-09T07:40:18.818914526Z"
     dependencies:
     - condition: opensearch.enabled
@@ -223,4 +246,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/idv-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-09T07:40:18.768213117Z"
+generated: "2025-06-09T14:08:40.604262361Z"
