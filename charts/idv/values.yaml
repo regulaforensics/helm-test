@@ -20,11 +20,6 @@ statsd:
     pullPolicy: Always
 
   replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -178,11 +173,6 @@ api:
 
 scheduler:
   replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -205,11 +195,6 @@ workflow:
 
 audit:
   replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
