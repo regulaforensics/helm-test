@@ -6,9 +6,7 @@ metadata:
     {{- include "idv.labels" . | nindent 4 }}
     component: statsd
 spec:
-  {{- if not .Values.statsd.autoscaling.enabled }}
   replicas: {{ .Values.statsd.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "idv.selectorLabels" . | nindent 6 }}

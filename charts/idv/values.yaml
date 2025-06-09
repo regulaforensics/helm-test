@@ -20,11 +20,6 @@ statsd:
     pullPolicy: Always
 
   replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -140,29 +135,31 @@ api:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
   affinity: {}
   resources: {}
 
-  ports:
-    - name: http
-      containerPort: 8000
-      protocol: TCP
+  # API pod disruption budget
+  podDisruptionBudget:
+    enabled: false
+    # PDB configuration
+    config:
+      # minAvailable and maxUnavailable cannot be both set
+      maxUnavailable: 1
+      minAvailable: ~
 
   service:
     type: ClusterIP
-    ports:
-      - name: svc-port
-        port: 8000
-        targetPort: 8000
-        protocol: TCP
+    port: 80
+    annotations: {}
+    loadBalancerSourceRanges: []
 
   probes:
     livenessProbe:
       enabled: true
-      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
       periodSeconds: 10
@@ -170,7 +167,6 @@ api:
       failureThreshold: 3
     readinessProbe:
       enabled: true
-      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
       periodSeconds: 10
@@ -178,7 +174,6 @@ api:
       failureThreshold: 3
     startupProbe:
       enabled: false
-      port: 8000
       initialDelaySeconds: 20
       timeoutSeconds: 5
       periodSeconds: 10
@@ -187,11 +182,6 @@ api:
 
 scheduler:
   replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -205,19 +195,24 @@ workflow:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
   affinity: {}
   resources: {}
 
+  # Workflow pod disruption budget
+  podDisruptionBudget:
+    enabled: false
+    # PDB configuration
+    config:
+      # minAvailable and maxUnavailable cannot be both set
+      maxUnavailable: 1
+      minAvailable: ~
+
 audit:
   replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
 
   nodeSelector: {}
   tolerations: []
@@ -311,10 +306,10 @@ ingress:
   hosts: []
     # - idv.domain.com
   paths: []
-    # - path: /
+    # - /
   pathType: Prefix
 
-  # TLS configuration for the Docreader Ingress
+  # TLS configuration for the IDV Ingress
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -424,7 +419,6 @@ config:
 
   services:
     api:
-      enabled: true
       port: 8000
       host: 0.0.0.0
       workers: 2

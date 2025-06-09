@@ -1,4 +1,3 @@
-{{ if eq .Values.config.mode "cluster" }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,16 +5,24 @@ metadata:
   labels:
     {{- include "idv.labels" . | nindent 4 }}
     component: api
-spec:
-  ports:
-  {{- range .Values.api.service.ports }}
-  - port: {{ tpl (.port | toString) $ }}
-    targetPort: {{ tpl (.targetPort | toString) $ }}
-    protocol: {{ tpl .protocol $ }}
-    name: {{ tpl .name $ }}
+    mode: {{ .Values.config.mode }}
+  {{- with .Values.api.service.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
-  selector: 
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: api
+      protocol: TCP
+      name: api
+  {{- if .Values.api.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.api.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.api.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{- toYaml .Values.api.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  selector:
     {{- include "idv.selectorLabels" . | nindent 4 }}
     component: api
-  type: {{ .Values.api.service.type }}
-{{ end }}
+    mode: {{ .Values.config.mode }}

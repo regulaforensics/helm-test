@@ -1,0 +1,19 @@
+{{- if .Values.api.podDisruptionBudget.enabled }}
+kind: PodDisruptionBudget
+apiVersion: policy/v1
+metadata:
+  name: {{ include "idv.fullname" . }}-api
+  labels:
+    {{- include "idv.labels" . | nindent 4 }}
+    component: api
+  {{- with .Values.api.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "idv.selectorLabels" . | nindent 6 }}
+      component: api
+  {{- toYaml .Values.api.podDisruptionBudget.config | nindent 2 }}
+{{- end }}

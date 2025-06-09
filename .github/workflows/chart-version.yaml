@@ -21,6 +21,9 @@ jobs:
         filters: |
           docreader: charts/docreader/**
           faceapi: charts/faceapi/**
+          idv: charts/idv/**
+          afis-api: charts/afis-api/**
+          api-gateway: charts/api-gateway/**
 
   chart-version:
     needs: changes
