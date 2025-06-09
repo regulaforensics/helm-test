@@ -161,12 +161,10 @@ faceSearch:
 
 services:
   api:
-    enabled: {{ .Values.config.services.api.enabled }}
-    {{- if .Values.config.services.api.enabled }}
+    enabled: true
     port: {{ .Values.config.services.api.port }}
     host: {{ quote .Values.config.services.api.host }}
     workers: {{ quote .Values.config.services.api.workers }}
-    {{- end }}
 
   audit:
     enabled: {{ .Values.config.services.audit.enabled }}
