@@ -6,7 +6,6 @@ metadata:
   labels:
     {{- include "idv.labels" . | nindent 4 }}
     component: audit
-    mode: {{ .Values.config.mode }}
 spec:
   replicas: {{ .Values.audit.replicaCount }}
   selector:
