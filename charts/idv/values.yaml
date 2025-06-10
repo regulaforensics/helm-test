@@ -534,8 +534,6 @@ valkey:
 
 opensearch:
   enabled: false
-  image:
-    tag: 2.19.0
   fullnameOverride: opensearch
   opensearchPassword: ""
   replicas: 1
@@ -548,7 +546,7 @@ opensearch:
   nodeGroup: single-node
   singleNode: true
   config:
-    opensearch.yml:
+    opensearch.yml: |
       discovery.type: single-node
       plugins.security.disabled: true
       bootstrap.memory_lock: true
