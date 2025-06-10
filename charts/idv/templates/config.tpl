@@ -4,6 +4,60 @@ fernetKey: {{ quote .Values.config.fernetKey }}
 baseUrl: {{ quote .Values.config.baseUrl }}
 identifier: {{ quote .Values.config.identifier }}
 
+services:
+  api:
+    enabled: true
+    port: {{ .Values.config.services.api.port }}
+    host: {{ quote .Values.config.services.api.host }}
+    workers: {{ quote .Values.config.services.api.workers }}
+
+  audit:
+    enabled: true
+    wsEnabled: {{ .Values.config.services.audit.wsEnabled }}
+
+  scheduler:
+    enabled: true
+    jobs:
+      expireSessions:
+        cron: {{ quote .Values.config.services.scheduler.jobs.expireSessions.cron }}
+      reloadWorkflows:
+        cron: {{ quote .Values.config.services.scheduler.jobs.reloadWorkflows.cron }}
+      cleanSessions:
+        cron: {{ quote .Values.config.services.scheduler.jobs.cleanSessions.cron }}
+        keepFor: {{ quote .Values.config.services.scheduler.jobs.cleanSessions.keepFor }}
+      expireDeviceLogs:
+        cron: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.cron }}
+        keepFor: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.keepFor }}
+      reloadLocales:
+        cron: {{ quote .Values.config.services.scheduler.jobs.reloadLocales.cron }}
+
+  workflow:
+    enabled: true
+    workers: {{ .Values.config.services.workflow.workers }}
+
+  docreader:
+    enabled: {{ .Values.config.services.docreader.enabled }}
+    {{- if .Values.config.services.docreader.enabled }}
+    prefix: {{ .Values.config.services.docreader.prefix }}
+    url: {{ quote .Values.config.services.docreader.url }}
+    {{- end }}
+
+  faceapi:
+    enabled: {{ .Values.config.services.faceapi.enabled }}
+    {{- if .Values.config.services.faceapi.enabled }}
+    prefix: {{ .Values.config.services.faceapi.prefix }}
+    url: {{ quote .Values.config.services.faceapi.url }}
+    {{- end }}
+
+logging:
+  level: {{ quote .Values.config.logging.level }}
+  formatter: {{ quote .Values.config.logging.formatter }}
+  console: {{ quote .Values.config.logging.console }}
+  file: {{ quote .Values.config.logging.file }}
+  path: {{ quote .Values.config.logging.path }}
+  maxFileSize: {{ .Values.config.logging.maxFileSize }}
+  filesCount: {{ .Values.config.logging.filesCount }}
+
 metrics:
   statsd:
     enabled: {{ .Values.config.metrics.statsd.enabled }}
@@ -26,15 +80,6 @@ metrics:
       filter:
         groups: {{ .Values.config.metrics.alerts.prometheus.filter.groups}}
     {{- end }}
-
-logging:
-  level: {{ quote .Values.config.logging.level }}
-  formatter: {{ quote .Values.config.logging.formatter }}
-  console: {{ quote .Values.config.logging.console }}
-  file: {{ quote .Values.config.logging.file }}
-  path: {{ quote .Values.config.logging.path }}
-  maxFileSize: {{ .Values.config.logging.maxFileSize }}
-  filesCount: {{ .Values.config.logging.filesCount }}
 
 storage:
   {{- if eq .Values.config.storage.type "fs" }}
@@ -102,39 +147,29 @@ storage:
       folder: {{ quote .Values.config.storage.locales.location.folder }}
       {{- end }}
 
-mobile:
-{{ .Values.config.mobile | toYaml | indent 2 }}
+mongo:
+  url: {{ .Values.config.mongo.url }}
 
-smtp:
-  enabled: {{ .Values.config.smtp.enabled }}
-  {{- if .Values.config.smtp.enabled }}
-  host: {{ .Values.config.smtp.host | quote }}
-  port: {{ .Values.config.smtp.port }}
-  username: {{ .Values.config.smtp.username | quote }}
-  password: {{ .Values.config.smtp.password | quote }}
-  tls: {{ .Values.config.smtp.tls }}
-  {{- end }}
-
-oauth2:
-  enabled: {{ .Values.config.oauth2.enabled }}
-  {{- if .Values.config.oauth2.enabled }}
-  providers:
-  {{- range .Values.config.oauth2.providers }}
-    - name: {{ .name | quote }}
-      clientId: {{ .clientId | quote }}
-      scope: {{ .scope | quote }}
-      secret: {{ .secret | quote }}
-      type: {{ .type | quote }}
-      defaultRoles: {{ .defaultRoles | toJson }}
-      defaultGroups: {{ .defaultGroups | toJson }}
-      urls:
-        jwk: {{ .urls.jwk | quote }}
-        authorize: {{ .urls.authorize | quote }}
-        token: {{ .urls.token | quote }}
-        refresh: {{ .urls.refresh | quote }}
-        revoke: {{ .urls.revoke | quote }}
-  {{- end }}
-  {{- end }}
+topics:
+  event:
+    name: event
+    url: {{ quote .Values.config.topics.event.url }}
+    {{- if .Values.config.topics.event.options }}
+    options: {{- toYaml  .Values.config.topics.event.options | nindent 8 }}
+    {{- end }}
+  audit:
+    name: audit
+    url: {{ quote .Values.config.topics.audit.url }}
+    {{- if .Values.config.topics.audit.options }}
+    options: {{- toYaml  .Values.config.topics.audit.options | nindent 8 }}
+    {{- end }}
+  client:
+    name: client
+    url: {{ quote .Values.config.topics.client.url }}
+    {{- if .Values.config.topics.client.options }}
+    options: {{- toYaml  .Values.config.topics.client.options | nindent 8 }}
+    {{- end }}
+{{- end }}
 
 faceSearch:
   enabled: {{ .Values.config.faceSearch.enabled }}
@@ -159,83 +194,36 @@ faceSearch:
         secretKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.secretKey }}
   {{- end }}
 
-services:
-  api:
-    enabled: true
-    port: {{ .Values.config.services.api.port }}
-    host: {{ quote .Values.config.services.api.host }}
-    workers: {{ quote .Values.config.services.api.workers }}
+mobile:
+{{ .Values.config.mobile | toYaml | indent 2 }}
 
-  audit:
-    enabled: {{ .Values.config.services.audit.enabled }}
-    {{- if .Values.config.services.audit.enabled }}
-    wsEnabled: {{ .Values.config.services.audit.wsEnabled }}
-    {{- end }}
+oauth2:
+  enabled: {{ .Values.config.oauth2.enabled }}
+  {{- if .Values.config.oauth2.enabled }}
+  providers:
+  {{- range .Values.config.oauth2.providers }}
+    - name: {{ .name | quote }}
+      clientId: {{ .clientId | quote }}
+      scope: {{ .scope | quote }}
+      secret: {{ .secret | quote }}
+      type: {{ .type | quote }}
+      defaultRoles: {{ .defaultRoles | toJson }}
+      defaultGroups: {{ .defaultGroups | toJson }}
+      urls:
+        jwk: {{ .urls.jwk | quote }}
+        authorize: {{ .urls.authorize | quote }}
+        token: {{ .urls.token | quote }}
+        refresh: {{ .urls.refresh | quote }}
+        revoke: {{ .urls.revoke | quote }}
+  {{- end }}
+  {{- end }}
 
-  analytics:
-    enabled: {{ .Values.config.services.analytics.enabled }}
-    {{- if .Values.config.services.analytics.enabled }}
-    connectionString: {{ quote .Values.config.services.analytics.connectionString }}
-    {{- end }}
-
-  scheduler:
-    enabled: {{ .Values.config.services.scheduler.enabled }}
-    {{- if .Values.config.services.scheduler.enabled }}
-    jobs:
-      expireSessions:
-        cron: {{ quote .Values.config.services.scheduler.jobs.expireSessions.cron }}
-      reloadWorkflows:
-        cron: {{ quote .Values.config.services.scheduler.jobs.reloadWorkflows.cron }}
-      cleanSessions:
-        cron: {{ quote .Values.config.services.scheduler.jobs.cleanSessions.cron }}
-        keepFor: {{ quote .Values.config.services.scheduler.jobs.cleanSessions.keepFor }}
-      expireDeviceLogs:
-        cron: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.cron }}
-        keepFor: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.keepFor }}
-      reloadLocales:
-        cron: {{ quote .Values.config.services.scheduler.jobs.reloadLocales.cron }}
-    {{- end }}
-
-  workflow:
-    enabled: {{ .Values.config.services.workflow.enabled }}
-    {{- if .Values.config.services.workflow.enabled }}
-    workers: {{ .Values.config.services.workflow.workers }}
-    {{- end }}
-
-  docreader:
-    enabled: {{ .Values.config.services.docreader.enabled }}
-    {{- if .Values.config.services.docreader.enabled }}
-    prefix: {{ .Values.config.services.docreader.prefix }}
-    url: {{ quote .Values.config.services.docreader.url }}
-    {{- end }}
-
-  faceapi:
-    enabled: {{ .Values.config.services.faceapi.enabled }}
-    {{- if .Values.config.services.faceapi.enabled }}
-    prefix: {{ .Values.config.services.faceapi.prefix }}
-    url: {{ quote .Values.config.services.faceapi.url }}
-    {{- end }}
-
-mongo:
-  url: {{ .Values.config.mongo.url }}
-
-topics:
-  event:
-    name: event
-    url: {{ quote .Values.config.topics.event.url }}
-    {{- if .Values.config.topics.event.options }}
-    options: {{- toYaml  .Values.config.topics.event.options | nindent 8 }}
-    {{- end }}
-  audit:
-    name: audit
-    url: {{ quote .Values.config.topics.audit.url }}
-    {{- if .Values.config.topics.audit.options }}
-    options: {{- toYaml  .Values.config.topics.audit.options | nindent 8 }}
-    {{- end }}
-  client:
-    name: client
-    url: {{ quote .Values.config.topics.client.url }}
-    {{- if .Values.config.topics.client.options }}
-    options: {{- toYaml  .Values.config.topics.client.options | nindent 8 }}
-    {{- end }}
-{{- end }}
+smtp:
+  enabled: {{ .Values.config.smtp.enabled }}
+  {{- if .Values.config.smtp.enabled }}
+  host: {{ .Values.config.smtp.host | quote }}
+  port: {{ .Values.config.smtp.port }}
+  username: {{ .Values.config.smtp.username | quote }}
+  password: {{ .Values.config.smtp.password | quote }}
+  tls: {{ .Values.config.smtp.tls }}
+  {{- end }}
