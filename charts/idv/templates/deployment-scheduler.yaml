@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "idv.labels" . | nindent 4 }}
     component: scheduler
+    mode: {{ .Values.config.mode }}
 spec:
   replicas: {{ .Values.scheduler.replicaCount }}
   selector:
@@ -26,6 +27,15 @@ spec:
         component: scheduler
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.scheduler.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduler.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduler.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -61,14 +71,5 @@ spec:
         command: ["idv"]
         args: ["scheduler", "start"]
         env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
-        {{- with .Values.scheduler.nodeSelector }}
-        nodeSelector: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.scheduler.affinity }}
-        affinity: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.scheduler.tolerations }}
-        tolerations: {{- toYaml . | nindent 8 }}
-        {{- end }}
       terminationGracePeriodSeconds: 30
 {{- end }}
