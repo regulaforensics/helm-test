@@ -169,7 +169,6 @@ topics:
     {{- if .Values.config.topics.client.options }}
     options: {{- toYaml  .Values.config.topics.client.options | nindent 8 }}
     {{- end }}
-{{- end }}
 
 faceSearch:
   enabled: {{ .Values.config.faceSearch.enabled }}
@@ -227,3 +226,4 @@ smtp:
   password: {{ .Values.config.smtp.password | quote }}
   tls: {{ .Values.config.smtp.tls }}
   {{- end }}
+{{- end }}
