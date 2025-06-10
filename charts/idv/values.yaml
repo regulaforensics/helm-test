@@ -152,7 +152,7 @@ config:
           keepFor: "30d"
         reloadLocales:
           cron: "*/15 * * * * *"
-    
+
     docreader:
       enabled: false
       prefix: drapi
