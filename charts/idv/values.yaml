@@ -123,22 +123,19 @@ config:
       port: 8000
       host: 0.0.0.0
       workers: 2
+      keepalive: 120
+      timeout: 120
+      auth:
+        enabled: true
+        jwt:
+          secret: null
+          jwkUrl: null
 
     audit:
       wsEnabled: true
 
     workflow:
       workers: 50
-
-    docreader:
-      enabled: false
-      prefix: drapi
-      url: ''
-
-    faceapi:
-      enabled: false
-      prefix: faceapi
-      url: ''
 
     scheduler:
       enabled: true
@@ -155,6 +152,16 @@ config:
           keepFor: "30d"
         reloadLocales:
           cron: "*/15 * * * * *"
+    
+    docreader:
+      enabled: false
+      prefix: drapi
+      url: ''
+
+    faceapi:
+      enabled: false
+      prefix: faceapi
+      url: ''
 
   logging:
     level: INFO
@@ -184,10 +191,10 @@ config:
     type: fs
     s3:
       endpoint: ""
-      accessKey: ""
-      accessSecret: ""
-      region: master
-      secure: false
+      accessKey: null
+      accessSecret: null
+      region: "eu-central-1"
+      secure: true
     fs:
       path: "/var/idv/data"
 

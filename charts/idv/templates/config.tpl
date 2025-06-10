@@ -8,12 +8,25 @@ services:
   api:
     enabled: true
     port: {{ .Values.config.services.api.port }}
-    host: {{ quote .Values.config.services.api.host }}
-    workers: {{ quote .Values.config.services.api.workers }}
+    host: {{ .Values.config.services.api.host }}
+    workers: {{ .Values.config.services.api.workers }}
+    keepalive: {{ .Values.config.services.api.keepalive }}
+    timeout: {{ .Values.config.services.api.timeout }}
+    auth:
+      enabled: {{ .Values.config.services.api.auth.enabled }}
+      {{- if .Values.config.services.api.auth.enabled }}
+      jwt:
+        secret: {{ .Values.config.services.api.auth.jwt.secret }}
+        jwkUrl: {{ .Values.config.services.api.auth.jwt.jwkUrl }}
+      {{- end }}
 
   audit:
     enabled: true
     wsEnabled: {{ .Values.config.services.audit.wsEnabled }}
+
+  workflow:
+    enabled: true
+    workers: {{ .Values.config.services.workflow.workers }}
 
   scheduler:
     enabled: true
@@ -30,10 +43,6 @@ services:
         keepFor: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.keepFor }}
       reloadLocales:
         cron: {{ quote .Values.config.services.scheduler.jobs.reloadLocales.cron }}
-
-  workflow:
-    enabled: true
-    workers: {{ .Values.config.services.workflow.workers }}
 
   docreader:
     enabled: {{ .Values.config.services.docreader.enabled }}
@@ -94,7 +103,7 @@ storage:
     accessKey: {{ quote .Values.config.storage.s3.accessKey }}
     accessSecret: {{ quote .Values.config.storage.s3.accessSecret }}
     region: {{ quote .Values.config.storage.s3.region }}
-    secure: {{ quote .Values.config.storage.s3.secure }}
+    secure: {{ .Values.config.storage.s3.secure }}
   {{- end }}
 
   sessions:
