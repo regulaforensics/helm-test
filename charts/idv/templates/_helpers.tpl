@@ -36,6 +36,7 @@ Common labels
 {{- define "idv.labels" -}}
 helm.sh/chart: {{ include "idv.chart" . }}
 app: idv
+mode: {{ .Values.config.mode }}
 {{ include "idv.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
