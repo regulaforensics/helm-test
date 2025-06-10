@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "idv.labels" . | nindent 4 }}
     component: scheduler
+    mode: {{ .Values.config.mode }}
 spec:
   replicas: {{ .Values.scheduler.replicaCount }}
   selector:
