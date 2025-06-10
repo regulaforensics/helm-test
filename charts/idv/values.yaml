@@ -1,3 +1,6 @@
+nameOverride: ""
+fullnameOverride: ""
+
 deployment:
   forceUpdate: ""
 
@@ -7,11 +10,367 @@ image:
   pullPolicy: Always
   tag: latest
 
+imagePullSecrets: {}
+
 # Supply the name of existing secret with the regula.license file.
 # You can load it to a k8s generic secret via the following command:
 # `kubectl create secret generic idv-license -n <namespace> --from-file=regula.license`
 #
 licenseSecretName: null
+
+api:
+  replicaCount: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    loadBalancerSourceRanges: []
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  # API pod disruption budget
+  podDisruptionBudget:
+    enabled: false
+    # PDB configuration
+    config:
+      # minAvailable and maxUnavailable cannot be both set
+      maxUnavailable: 1
+      minAvailable: ~
+
+  probes:
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    startupProbe:
+      enabled: false
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+
+scheduler:
+  replicaCount: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+workflow:
+  replicaCount: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  # Workflow pod disruption budget
+  podDisruptionBudget:
+    enabled: false
+    # PDB configuration
+    config:
+      # minAvailable and maxUnavailable cannot be both set
+      maxUnavailable: 1
+      minAvailable: ~
+
+audit:
+  replicaCount: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+
+config:
+  baseUrl: ""
+  mode: cluster  # "standalone" or "cluster"
+  fernetKey: ""
+  identifier: null
+
+  services:
+    api:
+      port: 8000
+      host: 0.0.0.0
+      workers: 2
+
+    audit:
+      wsEnabled: true
+
+    workflow:
+      workers: 50
+
+    docreader:
+      enabled: false
+      prefix: drapi
+      url: ''
+
+    faceapi:
+      enabled: false
+      prefix: faceapi
+      url: ''
+
+    scheduler:
+      enabled: true
+      jobs:
+        expireSessions:
+          cron: "*/10 * * * * *"
+        reloadWorkflows:
+          cron: "*/5 * * * * *"
+        cleanSessions:
+          cron: "*/30 * * * * *"
+          keepFor: "1w"
+        expireDeviceLogs:
+          cron: "* */5 * * *"
+          keepFor: "30d"
+        reloadLocales:
+          cron: "*/15 * * * * *"
+
+  logging:
+    level: INFO
+    formatter: "%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s"
+    console: true
+    file: false
+    path: /var/log
+    maxFileSize: 10485760
+    filesCount: 10
+
+  metrics:
+    statsd:
+      enabled: true
+      prefix: idv
+    database:
+      enabled: true
+      expireAfterSeconds: 15552000
+    alerts:
+      enabled: false
+      source: prometheus
+      prometheus:
+        url: http://prometheus:9090
+        filter:
+          groups: ["idv.rules"]
+
+  storage:
+    type: fs
+    s3:
+      endpoint: ""
+      accessKey: ""
+      accessSecret: ""
+      region: master
+      secure: false
+    fs:
+      path: "/var/idv/data"
+
+    sessions:
+      location:
+        bucket: coordinator
+        prefix: "sessions"
+        folder: ""
+    persons:
+      location:
+        bucket: coordinator
+        prefix: "persons"
+        folder: "person_files"
+    workflows:
+      location:
+        bucket: coordinator
+        prefix: "workflows"
+        folder: ""
+    userFiles:
+      location:
+        bucket: "coordinator"
+        prefix: "files"
+        folder: "user_files"
+    locales:
+      location:
+        bucket: "coordinator"
+        prefix: "localization"
+        folder: "config"
+
+  mongo:
+    url: ""
+    # Comment the line above and uncomment the line below to use MongoDB subchart
+    # url: mongodb://mongodb:27017/idv
+
+  topics:
+    event:
+      url: memory://
+      # Comment the line above and uncomment the line below if valkey.enabled.true is set
+      # url: "redis://:t3stPss@valkey-primary:6379"
+      options: null
+    audit:
+      url: memory://
+      # Comment the line above and uncomment the line below if valkey.enabled.true is set
+      # url: "redis://:t3stPss@valkey-primary:6379"
+      options: null
+    client:
+      url: memory://
+      # Comment the line above and uncomment the line below if valkey.enabled.true is set
+      # url: "redis://:t3stPss@valkey-primary:6379"
+      options: null
+
+  faceSearch:
+    # Set opensearch.enabled.true if 'faceSearch' is enabled
+    enabled: false
+    limit: 1000
+    threshold: 0.75
+    database:
+      type: opensearch
+      opensearch:
+        host: opensearch
+        port: 9200
+        useSsl: false
+        verifyCerts: false
+        username: admin
+        password: ""
+        dimension: 512
+        indexName: hnsw
+        awsAuth:
+          enabled: false
+          region: ""
+          accessKey: ""
+          secretKey: ""
+
+  mobile: {}
+
+  oauth2:
+    enabled: false
+    providers: []
+
+  smtp:
+    enabled: false
+    host: ""
+    port: 587
+    tls: true
+    username: ""
+    password: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "idv"
+
+env:
+  - name: IDV_COORDINATOR_CONFIG_PATH
+    value: /etc/idv/idv-config.yaml
+  # The 'idv' secret has to be preinstalled in the same namespace as the IDV Coordinator.
+  # Uncomment the following lines to use secrets for sensitive configuration values.
+  # - name: IDV_CONFIG__MONGO__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__MONGO__URL
+  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__0__SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__0__SECRET
+  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__1__SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__1__SECRET
+  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__3__SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__3__SECRET
+  # - name: IDV_CONFIG__FERNETKEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__FERNETKEY
+  # - name: IDV_CONFIG__TOPICS__EVENT__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__TOPICS__EVENT__URL
+  # - name: IDV_CONFIG__TOPICS__CLIENT__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__TOPICS__CLIENT__URL
+  # - name: IDV_CONFIG__TOPICS__AUDIT__URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__TOPICS__AUDIT__URL
+  # - name: IDV_CONFIG__SMTP__PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__SMTP__PASSWORD
+  # - name: IDV_CONFIG__SMTP__USERNAME
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: IDV_CONFIG__SMTP__USERNAME
+  # - name: AWS_ACCESS_KEY_ID
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: AWS_ACCESS_KEY_ID
+  # - name: AWS_SECRET_ACCESS_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: idv
+  #       key: AWS_SECRET_ACCESS_KEY
+
+ingress:
+  enabled: false
+  # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
+  # className: ""
+
+  annotations: {}
+
+  # The hostnames or hosts configuration for the web Ingress
+  hosts: []
+    # - idv.domain.com
+  paths: []
+    # - /
+  pathType: Prefix
+
+  # TLS configuration for the IDV Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
 
 statsd:
   image:
@@ -128,367 +487,14 @@ statsd:
         service: "$1"
         operation: "$2"
 
-api:
-  replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
 
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  resources: {}
+###################################
+# Subcharts
+###################################
 
-  # API pod disruption budget
-  podDisruptionBudget:
-    enabled: false
-    # PDB configuration
-    config:
-      # minAvailable and maxUnavailable cannot be both set
-      maxUnavailable: 1
-      minAvailable: ~
-
-  service:
-    type: ClusterIP
-    port: 80
-    annotations: {}
-    loadBalancerSourceRanges: []
-
-  probes:
-    livenessProbe:
-      enabled: true
-      initialDelaySeconds: 20
-      timeoutSeconds: 5
-      periodSeconds: 10
-      successThreshold: 1
-      failureThreshold: 3
-    readinessProbe:
-      enabled: true
-      initialDelaySeconds: 20
-      timeoutSeconds: 5
-      periodSeconds: 10
-      successThreshold: 1
-      failureThreshold: 3
-    startupProbe:
-      enabled: false
-      initialDelaySeconds: 20
-      timeoutSeconds: 5
-      periodSeconds: 10
-      successThreshold: 1
-      failureThreshold: 3
-
-scheduler:
-  replicaCount: 1
-
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  resources: {}
-
-workflow:
-  replicaCount: 1
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
-
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  resources: {}
-
-  # Workflow pod disruption budget
-  podDisruptionBudget:
-    enabled: false
-    # PDB configuration
-    config:
-      # minAvailable and maxUnavailable cannot be both set
-      maxUnavailable: 1
-      minAvailable: ~
-
-audit:
-  replicaCount: 1
-
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  resources: {}
-
-imagePullSecrets: {}
-
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  create: true
-  annotations: {}
-  name: "idv"
-
-env:
-  - name: IDV_COORDINATOR_CONFIG_PATH
-    value: /etc/idv/idv-config.yaml
-  # The 'idv' secret has to be preinstalled in the same namespace as the IDV Coordinator.
-  # Uncomment the following lines to use secrets for sensitive configuration values.
-  # - name: IDV_CONFIG__MONGO__URL
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__MONGO__URL
-  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__0__SECRET
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__0__SECRET
-  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__1__SECRET
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__1__SECRET
-  # - name: IDV_CONFIG__OAUTH2__PROVIDERS__3__SECRET
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__OAUTH2__PROVIDERS__3__SECRET
-  # - name: IDV_CONFIG__FERNETKEY
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__FERNETKEY
-  # - name: IDV_CONFIG__TOPICS__EVENT__URL
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__TOPICS__EVENT__URL
-  # - name: IDV_CONFIG__TOPICS__CLIENT__URL
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__TOPICS__CLIENT__URL
-  # - name: IDV_CONFIG__TOPICS__AUDIT__URL
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__TOPICS__AUDIT__URL
-  # - name: IDV_CONFIG__SMTP__PASSWORD
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__SMTP__PASSWORD
-  # - name: IDV_CONFIG__SMTP__USERNAME
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: IDV_CONFIG__SMTP__USERNAME
-  # - name: AWS_ACCESS_KEY_ID
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: AWS_ACCESS_KEY_ID
-  # - name: AWS_SECRET_ACCESS_KEY
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: idv
-  #       key: AWS_SECRET_ACCESS_KEY
-
-ingress:
-  enabled: false
-  # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
-  # className: ""
-
-  annotations: {}
-
-  # The hostnames or hosts configuration for the web Ingress
-  hosts: []
-    # - idv.domain.com
-  paths: []
-    # - /
-  pathType: Prefix
-
-  # TLS configuration for the IDV Ingress
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-podAnnotations: {}
-
-podSecurityContext: {}
-
-securityContext: {}
-
-config:
-  baseUrl: ""
-  mode: cluster  # "standalone" or "cluster"
-  fernetKey: ""
-  identifier: null
-
-  mobile: {}
-
-  logging:
-    level: INFO
-    formatter: "%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s"
-    console: true
-    file: false
-    path: /var/log
-    maxFileSize: 10485760
-    filesCount: 10
-
-  mongo:
-    url: ""
-    # Comment the line above and uncomment the line below to use MongoDB subchart
-    # url: mongodb://mongodb:27017/idv
-
-  metrics:
-    statsd:
-      enabled: true
-      prefix: idv
-    database:
-      enabled: true
-      expireAfterSeconds: 15552000
-    alerts:
-      enabled: false
-      source: prometheus
-      prometheus:
-        url: http://prometheus:9090
-        filter:
-          groups: ["idv.rules"]
-
-  storage:
-    type: fs
-    s3:
-      endpoint: ""
-      accessKey: ""
-      accessSecret: ""
-      region: master
-      secure: false
-    fs:
-      path: "/var/idv/data"
-
-    sessions:
-      location:
-        bucket: coordinator
-        prefix: "sessions"
-        folder: ""
-    persons:
-      location:
-        bucket: coordinator
-        prefix: "persons"
-        folder: "person_files"
-    workflows:
-      location:
-        bucket: coordinator
-        prefix: "workflows"
-        folder: ""
-    userFiles:
-      location:
-        bucket: "coordinator"
-        prefix: "files"
-        folder: "user_files"
-    locales:
-      location:
-        bucket: "coordinator"
-        prefix: "localization"
-        folder: "config"
-
-  faceSearch:
-    # Set opensearch.enabled.true if 'faceSearch' is enabled
-    enabled: false
-    limit: 1000
-    threshold: 0.75
-    database:
-      type: opensearch
-      opensearch:
-        host: opensearch
-        port: 9200
-        useSsl: false
-        verifyCerts: false
-        username: admin
-        password: ""
-        dimension: 512
-        indexName: hnsw
-        awsAuth:
-          enabled: false
-          region: ""
-          accessKey: ""
-          secretKey: ""
-
-  services:
-    api:
-      port: 8000
-      host: 0.0.0.0
-      workers: 2
-
-    analytics:
-      enabled: false
-      connectionString: ""
-
-    audit:
-      enabled: true
-      wsEnabled: true
-
-    workflow:
-      enabled: true
-      workers: 50
-
-    docreader:
-      enabled: false
-      prefix: drapi
-      url: ''
-
-    faceapi:
-      enabled: false
-      prefix: faceapi
-      url: ''
-
-    scheduler:
-      enabled: true
-      jobs:
-        expireSessions:
-          cron: "*/10 * * * * *"
-        reloadWorkflows:
-          cron: "*/5 * * * * *"
-        cleanSessions:
-          cron: "*/30 * * * * *"
-          keepFor: "1w"
-        expireDeviceLogs:
-          cron: "* */5 * * *"
-          keepFor: "30d"
-        reloadLocales:
-          cron: "*/15 * * * * *"
-
-  topics:
-    event:
-      url: memory://
-      # Comment the line above and uncomment the line below if valkey.enabled.true is set
-      # url: "redis://:t3stPss@valkey-primary:6379"
-      options: null
-    audit:
-      url: memory://
-      # Comment the line above and uncomment the line below if valkey.enabled.true is set
-      # url: "redis://:t3stPss@valkey-primary:6379"
-      options: null
-    client:
-      url: memory://
-      # Comment the line above and uncomment the line below if valkey.enabled.true is set
-      # url: "redis://:t3stPss@valkey-primary:6379"
-      options: null
-
-  oauth2:
-    enabled: false
-    providers: []
-
-  smtp:
-    enabled: false
-    host: ""
-    port: 587
-    tls: true
-    username: ""
-    password: ""
+# NOTE
+# The subcharts are used for the demonstration and Dev/Test purposes.
+# We strongly recommend to deploy separate installations of the DB in Production.
 
 mongodb:
   enabled: false
