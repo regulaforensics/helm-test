@@ -27,6 +27,15 @@ spec:
         component: audit
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.audit.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.audit.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.audit.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -62,13 +71,4 @@ spec:
         command: ["idv"]
         args: ["audit", "start"]
         env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
-        {{- with .Values.audit.nodeSelector }}
-        nodeSelector: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.audit.affinity }}
-        affinity: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.audit.tolerations }}
-        tolerations: {{- toYaml . | nindent 8 }}
-        {{- end }}
 {{ end }}

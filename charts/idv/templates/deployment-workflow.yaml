@@ -28,6 +28,15 @@ spec:
         component: workflow
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.workflow.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.workflow.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.workflow.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -63,14 +72,5 @@ spec:
         command: ["idv"]
         args: ["workflow", "start"]
         env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
-        {{- with .Values.workflow.nodeSelector }}
-        nodeSelector: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.workflow.affinity }}
-        affinity: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.workflow.tolerations }}
-        tolerations: {{- toYaml . | nindent 8 }}
-        {{- end }}
       terminationGracePeriodSeconds: 30
 {{- end }}

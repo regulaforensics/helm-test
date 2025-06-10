@@ -25,6 +25,15 @@ spec:
         component: statsd
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
+      {{- with .Values.statsd.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.statsd.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.statsd.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: config
         configMap:
@@ -78,15 +87,6 @@ spec:
         ports: {{- tpl (toYaml .) $ | nindent 10 }}
         {{- end }}
         env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
-        {{- with .Values.statsd.nodeSelector }}
-        nodeSelector: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.statsd.affinity }}
-        affinity: {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.statsd.tolerations }}
-        tolerations: {{- toYaml . | nindent 8 }}
-        {{- end }}
         volumeMounts:
           - name: config
             mountPath: /etc/statsd-exporter/mappings.yml
