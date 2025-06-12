@@ -87,12 +87,6 @@ config:
     logging:
       level: "INFO"
 
-    param:
-      # RegressionAge:
-      #   inferenceParams:
-      #     modelInfo:
-      #       halfInterval: 2
-
     detect:
       # scenarios:
       #   - scenario: AA
@@ -252,6 +246,8 @@ config:
         portrait: false
         video: false
       config:
+        firstImgFormat: ".png"
+        pngCompression: 3
         recalculateLandmarks: false
       sessions:
         location:
