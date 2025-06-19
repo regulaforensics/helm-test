@@ -19,6 +19,14 @@ services:
         secret: {{ .Values.config.services.api.auth.jwt.secret }}
         jwkUrl: {{ .Values.config.services.api.auth.jwt.jwkUrl }}
       {{- end }}
+    cors:
+      enabled: {{ .Values.config.services.api.cors.enabled }}
+      {{- if .Values.config.services.api.cors.enabled }}
+      origins: {{ quote .Values.config.services.api.cors.origins }}
+      methods: {{ quote .Values.config.services.api.cors.methods }}
+      headers: {{ quote .Values.config.services.api.cors.headers }}
+      maxAge: {{ .Values.config.services.api.cors.maxAge }}
+      {{- end }}
 
   audit:
     enabled: true
