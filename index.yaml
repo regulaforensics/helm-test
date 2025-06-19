@@ -3061,6 +3061,36 @@ entries:
   idv:
   - apiVersion: v2
     appVersion: 2.3.5
+    created: "2025-06-19T07:46:47.888964352Z"
+    dependencies:
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts
+      version: 2.19.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.0.8
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.5.17
+    description: IDV Platform. On-premise and cloud integration
+    digest: 72452a47acd4b2cbfbef4ad2f1c67617346dfec32d9710966c911e73d52b53b8
+    home: https://idv.regula.app/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - idv
+    - idv-platform
+    - regulaforensics
+    name: idv
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/idv-0.1.5/idv-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 2.3.5
     created: "2025-06-10T12:43:00.048079151Z"
     dependencies:
     - condition: opensearch.enabled
@@ -3195,4 +3225,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/idv-0.1.0/idv-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-10T12:43:00.048309434Z"
+generated: "2025-06-19T07:46:47.889235675Z"
