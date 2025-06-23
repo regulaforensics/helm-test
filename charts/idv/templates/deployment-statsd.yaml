@@ -24,7 +24,7 @@ spec:
         {{- include "idv.labels" . | nindent 8 }}
         component: statsd
     spec:
-      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      serviceAccountName: default
       {{- with .Values.statsd.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -86,7 +86,6 @@ spec:
         {{- with .Values.statsd.ports }}
         ports: {{- tpl (toYaml .) $ | nindent 10 }}
         {{- end }}
-        env: {{- tpl (toYaml .Values.env) . | nindent 10 }}
         volumeMounts:
           - name: config
             mountPath: /etc/statsd-exporter/mappings.yml

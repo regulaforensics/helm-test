@@ -83,11 +83,6 @@ metrics:
     port: 9125
     prefix: {{ quote .Values.config.metrics.statsd.prefix }}
     {{- end }}
-  database:
-    enabled: {{ .Values.config.metrics.database.enabled }}
-    {{- if .Values.config.metrics.database.enabled }}
-    expireAfterSeconds: {{ .Values.config.metrics.database.expireAfterSeconds }}
-    {{- end }}
   alerts:
     enabled: {{ .Values.config.metrics.alerts.enabled }}
     {{- if .Values.config.metrics.alerts.enabled }}
