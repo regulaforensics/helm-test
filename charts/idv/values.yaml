@@ -182,9 +182,6 @@ config:
     statsd:
       enabled: true
       prefix: idv
-    database:
-      enabled: true
-      expireAfterSeconds: 15552000
     alerts:
       enabled: false
       source: prometheus
