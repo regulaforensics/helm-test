@@ -4,12 +4,10 @@ apiVersion: policy/v1
 metadata:
   name: {{ include "idv.fullname" . }}-workflow
   labels:
-    {{- include "idv.labels" . | nindent 4 }}
-    component: workflow
+    {{- include "idv.workflow.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "idv.selectorLabels" . | nindent 6 }}
-      component: workflow
+      {{- include "idv.workflow.selectorLabels" . | nindent 6 }}
   {{- toYaml .Values.workflow.podDisruptionBudget.config | nindent 2 }}
 {{- end }}

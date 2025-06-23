@@ -1,6 +1,8 @@
 nameOverride: ""
 fullnameOverride: ""
 
+commonLabels: {}
+
 deployment:
   forceUpdate: ""
 
@@ -283,7 +285,7 @@ config:
 serviceAccount:
   create: true
   annotations: {}
-  name: "idv"
+  name: ""
 
 env:
   - name: IDV_COORDINATOR_CONFIG_PATH

@@ -4,14 +4,12 @@ kind: Deployment
 metadata:
   name: {{ include "idv.fullname" . }}-audit
   labels:
-    {{- include "idv.labels" . | nindent 4 }}
-    component: audit
+    {{- include "idv.audit.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.audit.replicaCount }}
   selector:
     matchLabels:
-      {{- include "idv.selectorLabels" . | nindent 6 }}
-      component: audit
+      {{- include "idv.audit.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -22,8 +20,7 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "idv.labels" . | nindent 8 }}
-        component: audit
+        {{- include "idv.audit.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "idv.serviceAccountName" . }}
       {{- with .Values.audit.nodeSelector }}

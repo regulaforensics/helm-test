@@ -4,14 +4,12 @@ kind: Deployment
 metadata:
   name: {{ include "idv.fullname" . }}-scheduler
   labels:
-    {{- include "idv.labels" . | nindent 4 }}
-    component: scheduler
+    {{- include "idv.scheduler.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.scheduler.replicaCount }}
   selector:
     matchLabels:
-      {{- include "idv.selectorLabels" . | nindent 6 }}
-      component: scheduler
+      {{- include "idv.scheduler.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -22,8 +20,7 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "idv.labels" . | nindent 8 }}
-        component: scheduler
+        {{- include "idv.scheduler.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "idv.serviceAccountName" . }}
       {{- with .Values.scheduler.nodeSelector }}

@@ -8,7 +8,7 @@ services:
   api:
     enabled: true
     port: {{ .Values.config.services.api.port }}
-    host: {{ .Values.config.services.api.host }}
+    host: {{ quote .Values.config.services.api.host }}
     workers: {{ .Values.config.services.api.workers }}
     keepalive: {{ .Values.config.services.api.keepalive }}
     timeout: {{ .Values.config.services.api.timeout }}
@@ -55,22 +55,22 @@ services:
   docreader:
     enabled: {{ .Values.config.services.docreader.enabled }}
     {{- if .Values.config.services.docreader.enabled }}
-    prefix: {{ .Values.config.services.docreader.prefix }}
+    prefix: {{ quote .Values.config.services.docreader.prefix }}
     url: {{ quote .Values.config.services.docreader.url }}
     {{- end }}
 
   faceapi:
     enabled: {{ .Values.config.services.faceapi.enabled }}
     {{- if .Values.config.services.faceapi.enabled }}
-    prefix: {{ .Values.config.services.faceapi.prefix }}
+    prefix: {{ quote .Values.config.services.faceapi.prefix }}
     url: {{ quote .Values.config.services.faceapi.url }}
     {{- end }}
 
 logging:
   level: {{ quote .Values.config.logging.level }}
   formatter: {{ quote .Values.config.logging.formatter }}
-  console: {{ quote .Values.config.logging.console }}
-  file: {{ quote .Values.config.logging.file }}
+  console: {{ .Values.config.logging.console }}
+  file: {{ .Values.config.logging.file }}
   path: {{ quote .Values.config.logging.path }}
   maxFileSize: {{ .Values.config.logging.maxFileSize }}
   filesCount: {{ .Values.config.logging.filesCount }}
@@ -157,7 +157,7 @@ storage:
       {{- end }}
 
 mongo:
-  url: {{ .Values.config.mongo.url }}
+  url: {{ quote .Values.config.mongo.url }}
 
 topics:
   event:
