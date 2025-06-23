@@ -48,7 +48,7 @@ spec:
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: api
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources: {{- toYaml .Values.api.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.securityContext | nindent 10 }}

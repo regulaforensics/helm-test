@@ -53,7 +53,7 @@ spec:
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: scheduler
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources: {{- toYaml .Values.scheduler.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.securityContext | nindent 10 }}

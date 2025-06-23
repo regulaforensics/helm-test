@@ -8,7 +8,7 @@ versionSha: latest
 image:
   repository: regulaforensics/idv-coordinator
   pullPolicy: Always
-  tag: latest
+  tag: ""
 
 imagePullSecrets: {}
 
