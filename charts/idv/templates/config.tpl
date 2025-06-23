@@ -79,18 +79,15 @@ metrics:
   statsd:
     enabled: {{ .Values.config.metrics.statsd.enabled }}
     {{- if .Values.config.metrics.statsd.enabled }}
-    host: {{ include "idv.fullname" . }}-statsd
-    port: 9125
-    prefix: {{ quote .Values.config.metrics.statsd.prefix }}
+    {{- if .Values.statsd.enabled }}
+    ## prometheus-statsd-exporter subchart is enabled
+    host: {{ template "idv.statsd" . }}
+    port: {{ .Values.statsd.statsd.tcpPort | default 9125 }}
+    {{- else }}
+    host: {{ quote .Values.config.metrics.statsd.host }}
+    port: {{ .Values.config.metrics.statsd.port | default 9125 }}
     {{- end }}
-  alerts:
-    enabled: {{ .Values.config.metrics.alerts.enabled }}
-    {{- if .Values.config.metrics.alerts.enabled }}
-    source: {{ .Values.config.metrics.alerts.source}}
-    prometheus:
-      url: {{ .Values.config.metrics.alerts.prometheus.url}}
-      filter:
-        groups: {{ .Values.config.metrics.alerts.prometheus.filter.groups}}
+    prefix: {{ quote .Values.config.metrics.statsd.prefix }}
     {{- end }}
 
 storage:
