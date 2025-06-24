@@ -1,6 +1,8 @@
 nameOverride: ""
 fullnameOverride: ""
 
+commonLabels: {}
+
 deployment:
   forceUpdate: ""
 
@@ -8,7 +10,7 @@ versionSha: latest
 image:
   repository: regulaforensics/idv-coordinator
   pullPolicy: Always
-  tag: latest
+  tag: ""
 
 imagePullSecrets: {}
 
@@ -180,15 +182,10 @@ config:
 
   metrics:
     statsd:
-      enabled: true
-      prefix: idv
-    alerts:
       enabled: false
-      source: prometheus
-      prometheus:
-        url: http://prometheus:9090
-        filter:
-          groups: ["idv.rules"]
+      host: null
+      port: 9125
+      prefix: idv
 
   storage:
     type: fs
@@ -288,7 +285,7 @@ config:
 serviceAccount:
   create: true
   annotations: {}
-  name: "idv"
+  name: ""
 
 env:
   - name: IDV_COORDINATOR_CONFIG_PATH
@@ -382,128 +379,69 @@ podSecurityContext: {}
 
 securityContext: {}
 
-statsd:
-  image:
-    repository: prom/statsd-exporter
-    tag: v0.28.0
-    pullPolicy: Always
-
-  replicaCount: 1
-
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  resources: {}
-
-  ports:
-    - name: statsd-ingest
-      containerPort: 9125
-      protocol: UDP
-    - name: statsd-scrape
-      containerPort: 9102
-      protocol: TCP
-
-  service:
-    type: ClusterIP
-    ports:
-      - name: statsd-ingest
-        port: 9125
-        targetPort: 9125
-        protocol: UDP
-      - name: statsd-scrape
-        port: 9102
-        targetPort: 9102
-        protocol: TCP
-
-  probes:
-    livenessProbe:
-      enabled: true
-      port: 9102
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
-      periodSeconds: 10
-      failureThreshold: 3
-      successThreshold: 1
-    readinessProbe:
-      enabled: true
-      port: 9102
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
-      periodSeconds: 10
-      failureThreshold: 3
-      successThreshold: 1
-    startupProbe:
-      enabled: false
-      port: 9102
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
-      periodSeconds: 10
-      failureThreshold: 3
-      successThreshold: 1
-
-  args:
-    - --statsd.mapping-config=/etc/statsd-exporter/mappings.yml
-
-  mappings:
-    - match: "idv.(.*)_http_method_(.*)_route_(.*)_status_(.*)_duration"
-      name: "idv_${1}_http_duration"
-      match_type: regex
-      labels:
-        service: "$1"
-        method: "$2"
-        url_rule: "$3"
-        status: "$4"
-    - match: "idv.(.*)_http_status_(.*)_total"
-      name: "idv_${1}_http_request_total"
-      match_type: regex
-      labels:
-        service: "$1"
-        status: "$2"
-    - match: "idv.(.*)_(.*)_duration"
-      name: "idv_${1}_duration"
-      match_type: regex
-      labels:
-        service: "$1"
-        operation: "$2"
-    - match: "idv.(.*)_(.*)_(.*)_condition_eval_count"
-      name: "idv_workflow_step_condition_eval_count"
-      match_type: regex
-      labels:
-        workflow_id: "$1"
-        condition: "$2"
-        result: "$3"
-    - match: "idv.(.*)_(.*)_error_count"
-      name: "idv_error"
-      match_type: regex
-      labels:
-        service: "$1"
-        operation: "$2"
-    - match: "idv.(.*)_(.*)_success_count"
-      name: "idv_${1}_success_count"
-      match_type: regex
-      labels:
-        service: "$1"
-        operation: "$2"
-    - match: "idv.(.*)_(.*)_error_count"
-      name: "idv_${1}_error_count"
-      match_type: regex
-      labels:
-        service: "$1"
-        operation: "$2"
-    - match: "idv.(.*)_(.*)_count"
-      name: "idv_${1}_total"
-      match_type: regex
-      labels:
-        service: "$1"
-        operation: "$2"
-
 
 ###################################
 # Subcharts
 ###################################
 
+statsd:
+  enabled: false
+  statsd:
+    mappingConfig: |-
+      - match: "idv.(.*)_http_method_(.*)_route_(.*)_status_(.*)_duration"
+        name: "idv_${1}_http_duration"
+        match_type: regex
+        labels:
+          service: "$1"
+          method: "$2"
+          url_rule: "$3"
+          status: "$4"
+      - match: "idv.(.*)_http_status_(.*)_total"
+        name: "idv_${1}_http_request_total"
+        match_type: regex
+        labels:
+          service: "$1"
+          status: "$2"
+      - match: "idv.(.*)_(.*)_duration"
+        name: "idv_${1}_duration"
+        match_type: regex
+        labels:
+          service: "$1"
+          operation: "$2"
+      - match: "idv.(.*)_(.*)_(.*)_condition_eval_count"
+        name: "idv_workflow_step_condition_eval_count"
+        match_type: regex
+        labels:
+          workflow_id: "$1"
+          condition: "$2"
+          result: "$3"
+      - match: "idv.(.*)_(.*)_error_count"
+        name: "idv_error"
+        match_type: regex
+        labels:
+          service: "$1"
+          operation: "$2"
+      - match: "idv.(.*)_(.*)_success_count"
+        name: "idv_${1}_success_count"
+        match_type: regex
+        labels:
+          service: "$1"
+          operation: "$2"
+      - match: "idv.(.*)_(.*)_error_count"
+        name: "idv_${1}_error_count"
+        match_type: regex
+        labels:
+          service: "$1"
+          operation: "$2"
+      - match: "idv.(.*)_(.*)_count"
+        name: "idv_${1}_total"
+        match_type: regex
+        labels:
+          service: "$1"
+          operation: "$2"
+
 # NOTE
-# The subcharts are used for the demonstration and Dev/Test purposes.
+# The subcharts below are used for the demonstration and Dev/Test purposes.
 # We strongly recommend to deploy separate installations of the DB in Production.
 
 mongodb:

@@ -4,8 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "idv.fullname" . }}-workflow
   labels:
-    {{- include "idv.labels" . | nindent 4 }}
-    component: workflow
+    {{- include "idv.workflow.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

@@ -1,8 +1,8 @@
 apiVersion: v2
 name: idv
 home: https://idv.regula.app/
-version: 0.1.6
-appVersion: "2.3.5"
+version: 0.1.7
+appVersion: "2.5.0"
 description: IDV Platform. On-premise and cloud integration
 icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
 keywords:
@@ -11,6 +11,10 @@ keywords:
   - idv-platform
   - regulaforensics
 dependencies:
+  - name: prometheus-statsd-exporter
+    version: 0.15.0
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: statsd.enabled
   - name: opensearch
     version: 2.19.0
     repository: https://opensearch-project.github.io/helm-charts

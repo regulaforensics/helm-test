@@ -45,7 +45,7 @@ spec:
           imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
           command: ["celery"]
           args:
-            - "--app=gateway"
+            - "--app=config"
             - "worker"
             - "--loglevel=INFO"
           resources:
