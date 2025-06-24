@@ -79,10 +79,10 @@ metrics:
   statsd:
     enabled: {{ .Values.config.metrics.statsd.enabled }}
     {{- if .Values.config.metrics.statsd.enabled }}
-    {{- if .Values.prometheusStatsdExporter.enabled }}
+    {{- if .Values.statsd.enabled }}
     ## prometheus-statsd-exporter subchart is enabled
     host: {{ template "idv.statsd" . }}
-    port: {{ .Values.prometheusStatsdExporter.statsd.tcpPort | default 9125 }}
+    port: {{ .Values.statsd.statsd.tcpPort | default 9125 }}
     {{- else }}
     host: {{ quote .Values.config.metrics.statsd.host }}
     port: {{ .Values.config.metrics.statsd.port | default 9125 }}
