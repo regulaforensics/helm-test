@@ -389,6 +389,7 @@ statsd:
   enabled: false
   statsd:
     mappingConfig: |-
+      mappings:
       - match: "idv.(.*)_http_method_(.*)_route_(.*)_status_(.*)_duration"
         name: "idv_${1}_http_duration"
         match_type: regex
