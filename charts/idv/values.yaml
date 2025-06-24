@@ -384,7 +384,7 @@ securityContext: {}
 # Subcharts
 ###################################
 
-statsd:
+prometheusStatsdExporter:
   enabled: false
   statsd:
     mappingConfig: |-

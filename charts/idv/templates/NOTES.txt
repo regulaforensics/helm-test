@@ -11,9 +11,9 @@ Kubernetes version compatibility: >= 1.23.0
 {{- if eq .Values.image.tag "latest" }}
 NOTE: Do not use "latest" mutable tag in production. Mutable tags can introduce multiple functional and security issues.
 {{- end }}
-{{- if and (not .Values.config.metrics.statsd.enabled) .Values.statsd.enabled }}
-MIND: Metrics collection is disabled, but prometheus-statsd-exporter subchart has been deployed
-{{- else if and .Values.config.metrics.statsd.enabled (not .Values.statsd.enabled) }}
+{{- if and (not .Values.config.metrics.statsd.enabled) .Values.prometheusStatsdExporter.enabled }}
+MIND: Metrics collection is disabled, but prometheusStatsdExporter subchart has been deployed
+{{- else if and .Values.config.metrics.statsd.enabled (not .Values.prometheusStatsdExporter.enabled) }}
 MIND: Metrics collection is configured to external statsd deployment
 {{- end }}
 

@@ -134,7 +134,7 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{/* Statsd host */}}
+{{/* prometheus-statsd-exporter host */}}
 {{- define "idv.statsd" -}}
-{{ default (printf "%s-prometheus-statsd-exporter" .Release.Name) }}
+{{ default (printf "%s-prometheusStatsdExporter" .Release.Name) }}
 {{- end }}
