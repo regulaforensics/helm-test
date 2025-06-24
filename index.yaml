@@ -29,6 +29,34 @@ entries:
   api-gateway:
   - apiVersion: v2
     appVersion: 2.4.2
+    created: "2025-06-24T08:23:42.158685091Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql-ha
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.4.11
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    description: ML. Airflow API Gateway
+    digest: 25f83414b0630f5944784d37cadbe67849455a8ab74c63a85ed20b7e0b8c9997
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - regulaforensics
+    - api-gateway
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: api-gateway
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/api-gateway-1.5.1/api-gateway-1.5.1.tgz
+    version: 1.5.1
+  - apiVersion: v2
+    appVersion: 2.4.2
     created: "2025-04-24T14:00:26.562782966Z"
     dependencies:
     - condition: postgresql.enabled
@@ -3060,6 +3088,40 @@ entries:
     version: 0.2.4
   idv:
   - apiVersion: v2
+    appVersion: 2.5.0
+    created: "2025-06-24T08:23:42.326704427Z"
+    dependencies:
+    - condition: statsd.enabled
+      name: prometheus-statsd-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 0.15.0
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts
+      version: 2.19.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.0.8
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.5.17
+    description: IDV Platform. On-premise and cloud integration
+    digest: 209bc3cd516a258fdc0ae7f6106df3a6ec005e5cabc6f432807f4366fb06bcb9
+    home: https://idv.regula.app/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - idv
+    - idv-platform
+    - regulaforensics
+    name: idv
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/idv-0.1.7/idv-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
     appVersion: 2.3.5
     created: "2025-06-23T10:08:07.002333699Z"
     dependencies:
@@ -3255,4 +3317,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/idv-0.1.0/idv-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-23T10:08:07.002575054Z"
+generated: "2025-06-24T08:23:42.327018828Z"
