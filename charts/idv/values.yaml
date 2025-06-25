@@ -134,10 +134,10 @@ config:
           jwkUrl: null
       cors:
         enabled: false
-        # origins: "*"
-        # methods: "POST,PUT,GET,DELETE,PATCH,HEAD"
-        # headers: "Content-Type,X-Client-Key"
-        # maxAge: 0
+        origins: "*"
+        methods: "POST,PUT,GET,DELETE,PATCH,HEAD"
+        headers: "Content-Type,X-Client-Key"
+        maxAge: 0
 
     audit:
       wsEnabled: true

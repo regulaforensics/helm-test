@@ -186,6 +186,7 @@ faceSearch:
   threshold: {{.Values.config.faceSearch.threshold}}
   database:
     type: {{ quote .Values.config.faceSearch.database.type}}
+    {{- if eq .Values.config.faceSearch.database.type "opensearch" }}
     opensearch:
       host: {{ quote .Values.config.faceSearch.database.opensearch.host }}
       port: {{ quote .Values.config.faceSearch.database.opensearch.port }}
@@ -200,6 +201,11 @@ faceSearch:
         region: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.region }}
         accessKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.accessKey }}
         secretKey: {{ quote .Values.config.faceSearch.database.opensearch.awsAuth.secretKey }}
+    {{- end }}
+    {{- if eq .Values.config.faceSearch.database.type "atlas" }}
+    atlas:
+      dimension: {{ .Values.config.faceSearch.database.atlas.dimension }}
+    {{- end }}
   {{- end }}
 
 mobile:
