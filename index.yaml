@@ -3089,6 +3089,41 @@ entries:
   idv:
   - apiVersion: v2
     appVersion: 2.5.0
+    created: "2025-06-30T11:49:41.403486662Z"
+    dependencies:
+    - alias: statsd
+      condition: statsd.enabled
+      name: prometheus-statsd-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 0.15.0
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts
+      version: 2.19.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.0.8
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.5.17
+    description: IDV Platform. On-premise and cloud integration
+    digest: 34615bc4398e5962166668f2b0c31042cce4b25fdfe1143bb7858c6e6c9f199d
+    home: https://idv.regula.app/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - idv
+    - idv-platform
+    - regulaforensics
+    name: idv
+    type: application
+    urls:
+    - https://github.com/regulaforensics/helm-test/releases/download/idv-0.1.12/idv-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 2.5.0
     created: "2025-06-25T09:07:30.830978842Z"
     dependencies:
     - alias: statsd
@@ -3457,4 +3492,4 @@ entries:
     urls:
     - https://github.com/regulaforensics/helm-test/releases/download/idv-0.1.0/idv-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-25T09:07:30.831243141Z"
+generated: "2025-06-30T11:49:41.403767801Z"
