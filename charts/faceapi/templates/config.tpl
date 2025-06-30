@@ -13,10 +13,6 @@ sdk:
   liveness: {{- toYaml .Values.config.sdk.liveness | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.config.sdk.param }}
-  param: {{- toYaml .Values.config.sdk.param | nindent 4 }}
-  {{- end }}
-
 service:
   webServer:
     port: {{ .Values.config.service.webServer.port }}
@@ -140,6 +136,8 @@ service:
       video: {{ .Values.config.service.liveness.exposeData.video }}
     config:
       recalculateLandmarks: {{ .Values.config.service.liveness.config.recalculateLandmarks }}
+      firstImgFormat: {{ .Values.config.service.liveness.config.firstImgFormat }}
+      pngCompression: {{ .Values.config.service.liveness.config.pngCompression }}
     sessions:
       location:
         {{- if or (eq .Values.config.service.storage.type "s3") (eq .Values.config.service.storage.type "gcs") }}
