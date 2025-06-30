@@ -155,6 +155,16 @@ storage:
       {{- if eq .Values.config.storage.type "fs" }}
       folder: {{ quote .Values.config.storage.locales.location.folder }}
       {{- end }}
+  
+  assets:
+    location:
+      {{- if eq .Values.config.storage.type "s3" }}
+      bucket: {{ quote .Values.config.storage.assets.location.bucket }}
+      prefix: {{ quote .Values.config.storage.assets.location.prefix }}
+      {{- end }}
+      {{- if eq .Values.config.storage.type "fs" }}
+      folder: {{ quote .Values.config.storage.assets.location.folder }}
+      {{- end }}
 
 mongo:
   url: {{ quote .Values.config.mongo.url }}

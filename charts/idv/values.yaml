@@ -223,6 +223,11 @@ config:
         bucket: "coordinator"
         prefix: "localization"
         folder: "config"
+    assets:
+      location:
+        bucket: "coordinator"
+        prefix: "assets"
+        folder: "assets"
 
   mongo:
     url: ""
