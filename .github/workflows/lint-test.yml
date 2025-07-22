@@ -16,7 +16,6 @@ on:
 
 env:
   CT_CONFIGFILE: ${{ inputs.ct_configfile }}
-  REGULA_LICENSE: ${{ secrets.REGULA_LICENSE }}
 
 jobs:
   lint-test:
@@ -58,7 +57,9 @@ jobs:
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
+        env:
+          BASE64_VALUE: ${{ secrets.REGULA_LICENSE }}
         run: |
           kubectl create namespace test-charts
-          kubectl create secret --namespace test-charts generic license --from-literal=regula.license="${{ env.REGULA_LICENSE }}"
+          kubectl create secret --namespace test-charts generic license --from-literal=regula.license="$(echo -n "$BASE64_VALUE" | base64 --decode)"
           ct install --namespace test-charts --config "${CT_CONFIGFILE}" --helm-extra-set-args "--set=licenseSecretName=license"
