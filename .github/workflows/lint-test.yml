@@ -58,6 +58,7 @@ jobs:
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
         run: |
+          kubectl create namespace test-charts
           kubectl create secret --namespace test-charts generic license \
             --from-literal=regula.license="${{ secrets.REGULA_LICENSE }}"
           ct install --namespace test-charts --config "${CT_CONFIGFILE}" --helm-extra-set-args "--set=licenseSecretName=license"
