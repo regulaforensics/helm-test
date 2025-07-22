@@ -4,11 +4,10 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  BASE64_VALUE: ${{ secrets.REGULA_LICENSE }}
-
 jobs:
   call-lint-test:
     uses: ./.github/workflows/lint-test.yml
+    secrets:
+      base64_value: ${{ secrets.REGULA_LICENSE }}
   call-chart-version:
     uses: ./.github/workflows/chart-version.yaml

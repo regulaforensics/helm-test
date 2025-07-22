@@ -13,6 +13,9 @@ on:
         default: v3.18.2
         required: false
         type: string
+    secrets:
+      base64_value:
+        required: true
 
 env:
   CT_CONFIGFILE: ${{ inputs.ct_configfile }}
@@ -59,5 +62,5 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           kubectl create namespace test-charts
-          kubectl create secret --namespace test-charts generic license --from-literal=regula.license="$(echo -n "$BASE64_VALUE" | base64 --decode)"
+          kubectl create secret --namespace test-charts generic license --from-literal=regula.license="$(echo -n ${{ secrets.base64_value }} | base64 --decode)"
           ct install --namespace test-charts --config "${CT_CONFIGFILE}" --helm-extra-set-args "--set=licenseSecretName=license"
