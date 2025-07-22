@@ -229,6 +229,38 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.liveness.sessions.persistence.existingClaim`       | Name of the existing Persistent Volume Claim                                                  | `""`                                  |
 
 
+## Search parameters
+
+| Parameter                                                             | Description                                                                               | Default                               |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------------|
+| `config.service.search.enabled`                                       | Whether to enable Identification 1:N (aka Search) mode                                    | `false`                               |
+| `config.service.search.persons.location.bucket`                       | The Search persons bucket name in case of `s3`/`gcs` storage type                         | `""`                                  |
+| `config.service.search.persons.location.container`                    | The Search persons storage container name in case of `az` storage type                    | `""`                                  |
+| `config.service.search.persons.location.folder`                       | The Search persons folder name in case of `fs` storage type                               | `"/app/faceapi-search/persons"`       |
+| `config.service.search.persons.location.prefix`                       | The Search persons prefix path in the `bucket/container`                                  | `"persons"`                           |
+| `config.service.search.persons.persistence.enabled`                   | Whether to enable Search persons persistence (Applicable only for the `fs` storage type)  | `false`                               |
+| `config.service.search.persons.persistence.accessMode`                | The Search persons data Persistence access modes                                          | `ReadWriteMany`                       |
+| `config.service.search.persons.persistence.size`                      | The size of Search persons data Persistent Volume Storage Class                           | `10Gi`                                |
+| `config.service.search.persons.persistence.storageClassName`          | The Search persons data Persistent Volume Storage Class                                   | `""`                                  |
+| `config.service.search.persons.persistence.existingClaim`             | Name of the existing Persistent Volume Claim                                              | `""`                                  |
+| `config.service.search.results.location.bucket`                       | (Optional) The Search results bucket name in case of `s3`/`gcs` storage type              | `""`                                  |
+| `config.service.search.results.location.container`                    | (Optional) The Search results storage container name in case of `az` storage type         | `""`                                  |
+| `config.service.search.results.location.folder`                       | (Optional) The Search results folder name in case of `fs` storage type                    | `"/app/faceapi-search/search-results"`|
+| `config.service.search.results.location.prefix`                       | (Optional) The Search results prefix path in the `bucket/container`                       | `"search-results"`                    |
+| `config.service.search.threshold`                                     | Search similarity threshold                                                               | `1.0`                                 |
+| `config.service.search.vectorDatabase.type`                           | Search VectorDatabase type (supported types: `milvus`/`atlas`)                            | `milvus`                              |
+| `config.service.search.vectorDatabase.milvus.user`                    | Milvus user                                                                               | `""`                                  |
+| `config.service.search.vectorDatabase.milvus.password`                | Milvus password                                                                           | `""`                                  |
+| `config.service.search.vectorDatabase.milvus.token`                   | Milvus token                                                                              | `""`                                  |
+| `config.service.search.vectorDatabase.milvus.endpoint`                | Milvus endpoint                                                                           | `"http://localhost:19530"`            |
+| `config.service.search.vectorDatabase.milvus.consistency`             | Milvus [consistency level](https://milvus.io/docs/consistency.md)                         | `"Bounded"`                           |
+| `config.service.search.vectorDatabase.milvus.reload`                  | Milvus reload                                                                             | `false`                               |
+| `config.service.search.vectorDatabase.milvus.index.type`              | Milvus [index type](https://milvus.io/docs/index.md)                                      | `IVF_FLAT`                            |
+| `config.service.search.vectorDatabase.milvus.index.params.nlist`      | Milvus nlist cluster units                                                                | `128`                                 |
+| `config.service.search.vectorDatabase.milvus.search.type`             | Milvus search type. [Similarity metrics](https://milvus.io/docs/metric.md)                | `"L2"`                                |
+| `config.service.search.vectorDatabase.milvus.search.params.nprobe`    | Milvus search parameters. nprobe. The number of cluster units to search                   | `5`                                   |
+
+
 ## HouseKeeper parameters
 
 | Parameter                                     | Description                                                        | Default    |
@@ -240,34 +272,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.houseKeeper.liveness.keepFor` | Time for keeping data for liveness in seconds                      | `31536000` |
 | `config.service.houseKeeper.search.enabled`   | Whether to enable clearing data for search                         | `false`    |
 | `config.service.houseKeeper.search.keepFor`   | Time for keeping data for search in seconds                        | `31536000` |
-
-
-## Search parameters
-
-| Parameter                                                             | Description                                                                               | Default                            |
-|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------------|------------------------------------|
-| `config.service.search.enabled`                                       | Whether to enable Identification 1:N (aka Search) mode                                    | `false`                            |
-| `config.service.search.persons.location.bucket`                       | The Search persons bucket name in case of `s3`/`gcs` storage type                         | `""`                               |
-| `config.service.search.persons.location.container`                    | The Search persons storage container name in case of `az` storage type                    | `""`                               |
-| `config.service.search.persons.location.folder`                       | The Search persons folder name in case of `fs` storage type                               | `"/app/faceapi-search/persons"`    |
-| `config.service.search.persons.location.prefix`                       | The Search persons prefix path in the `bucket/container`                                  | `"persons"`                        |
-| `config.service.search.persons.persistence.enabled`                   | Whether to enable Search persons persistence (Applicable only for the `fs` storage type)  | `false`                            |
-| `config.service.search.persons.persistence.accessMode`                | The Search persons data Persistence access modes                                          | `ReadWriteMany`                    |
-| `config.service.search.persons.persistence.size`                      | The size of Search persons data Persistent Volume Storage Class                           | `10Gi`                             |
-| `config.service.search.persons.persistence.storageClassName`          | The Search persons data Persistent Volume Storage Class                                   | `""`                               |
-| `config.service.search.persons.persistence.existingClaim`             | Name of the existing Persistent Volume Claim                                              | `""`                               |
-| `config.service.search.threshold`                                     | Search similarity threshold                                                               | `1.0`                              |
-| `config.service.search.vectorDatabase.type`                           | Search VectorDatabase type                                                                | `milvus`                           |
-| `config.service.search.vectorDatabase.milvus.user`                    | Milvus user                                                                               | `""`                               |
-| `config.service.search.vectorDatabase.milvus.password`                | Milvus password                                                                           | `""`                               |
-| `config.service.search.vectorDatabase.milvus.token`                   | Milvus token                                                                              | `""`                               |
-| `config.service.search.vectorDatabase.milvus.endpoint`                | Milvus endpoint                                                                           | `"http://localhost:19530"`         |
-| `config.service.search.vectorDatabase.milvus.consistency`             | Milvus [consistency level](https://milvus.io/docs/consistency.md)                         | `"Bounded"`                        |
-| `config.service.search.vectorDatabase.milvus.reload`                  | Milvus reload                                                                             | `false`                            |
-| `config.service.search.vectorDatabase.milvus.index.type`              | Milvus [index type](https://milvus.io/docs/index.md)                                      | `IVF_FLAT`                         |
-| `config.service.search.vectorDatabase.milvus.index.params.nlist`      | Milvus nlist cluster units                                                                | `128`                              |
-| `config.service.search.vectorDatabase.milvus.search.type`             | Milvus search type. [Similarity metrics](https://milvus.io/docs/metric.md)                | `"L2"`                             |
-| `config.service.search.vectorDatabase.milvus.search.params.nprobe`    | Milvus search parameters. nprobe. The number of cluster units to search                   | `5`                                |
 
 
 > [!NOTE]
