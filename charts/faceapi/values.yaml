@@ -30,10 +30,10 @@ resources: {}
   # Also, the resources (both requests and limits) section is mandatory for autoscaling
   # limits:
   #   cpu: 2000m
-  #   memory: 3Gi
+  #   memory: 4Gi
   # requests:
   #   cpu: 1000m
-  #   memory: 3Gi
+  #   memory: 4Gi
 
 securityContext: {}
   # capabilities:
@@ -272,20 +272,6 @@ config:
           # If defined, PVC must be created manually before volume will be bound
           existingClaim: ~
 
-    # Housekeeper configuration, for the cases when needs to have automatic cleanup of the data
-    # The housekeeper is responsible for cleaning up the data in the storage and database
-    # By default housekeeper is enabled, but clearing data for search and liveness is disabled
-    houseKeeper:
-      enabled: true
-      beatCadence: 10
-      keepFor: 14400
-      liveness:
-        enabled: false
-        keepFor: 31536000
-      search:
-        enabled: false
-        keepFor: 31536000
-
     search:
       enabled: false
       persons:
@@ -306,6 +292,14 @@ config:
           storageClassName: ~
           # If defined, PVC must be created manually before volume will be bound
           existingClaim: ~
+      ## Search results section for debug purposes
+      results:
+        # audit: true
+        # location:
+        #   folder: "/app/faceapi-search/search-results"
+        #   # bucket: "faceapi-search" # storage type s3/gcs
+        #   # container: "faceapi-search" # storage type az
+        #   prefix: "search-results"
 
       threshold: 1.0
 
@@ -326,6 +320,20 @@ config:
             type: "L2"
             params:
               nprobe: 5
+
+    # Housekeeper configuration, for the cases when needs to have automatic cleanup of the data
+    # The housekeeper is responsible for cleaning up the data in the storage and database
+    # By default housekeeper is enabled, but clearing data for search and liveness is disabled
+    houseKeeper:
+      enabled: true
+      beatCadence: 10
+      keepFor: 14400
+      liveness:
+        enabled: false
+        keepFor: 31536000
+      search:
+        enabled: false
+        keepFor: 31536000
 
 env: []
 # - name: ""
