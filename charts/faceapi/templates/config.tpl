@@ -2,8 +2,10 @@
 sdk:
   compare:
     limitPerImageTypes: {{ .Values.config.sdk.compare.limitPerImageTypes }}
-  logging:
-    level: {{ quote .Values.config.sdk.logging.level }}
+
+  {{- if .Values.config.sdk.param }}
+  param: {{- toYaml .Values.config.sdk.param | nindent 4 }}
+  {{- end }}
 
   {{- if .Values.config.sdk.detect }}
   detect: {{- toYaml .Values.config.sdk.detect | nindent 4 }}
@@ -130,14 +132,12 @@ service:
     ecdhSchema: {{ quote .Values.config.service.liveness.ecdhSchema }}
     hideMetadata: {{ .Values.config.service.liveness.hideMetadata }}
     consistency: {{ quote .Values.config.service.liveness.consistency }}
-    protectPersonalInfo: {{ .Values.config.service.liveness.protectPersonalInfo }}
-    exposeData:
-      portrait: {{ .Values.config.service.liveness.exposeData.portrait }}
-      video: {{ .Values.config.service.liveness.exposeData.video }}
-    config:
-      recalculateLandmarks: {{ .Values.config.service.liveness.config.recalculateLandmarks }}
-      firstImgFormat: {{ .Values.config.service.liveness.config.firstImgFormat }}
-      pngCompression: {{ .Values.config.service.liveness.config.pngCompression }}
+    {{- if .Values.config.service.liveness.exposeData }}
+    exposeData: {{- toYaml .Values.config.service.liveness.exposeData | nindent 6 }}
+    {{- end }}
+    {{- if .Values.config.service.liveness.config }}
+    config: {{- toYaml .Values.config.service.liveness.config | nindent 6 }}
+    {{- end }}
     sessions:
       location:
         {{- if or (eq .Values.config.service.storage.type "s3") (eq .Values.config.service.storage.type "gcs") }}
