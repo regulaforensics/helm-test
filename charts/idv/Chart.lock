@@ -1,4 +1,7 @@
 dependencies:
+- name: prometheus-statsd-exporter
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 0.15.0
 - name: opensearch
   repository: https://opensearch-project.github.io/helm-charts
   version: 2.19.0
@@ -8,5 +11,5 @@ dependencies:
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
   version: 16.5.17
-digest: sha256:255b88e0c18d83061ac344bbc3049848893cf5fe10e3e8ad1e46b7219f673f45
-generated: "2025-06-06T12:22:19.922847+03:00"
+digest: sha256:4aa3dfee528c8480e81d131b068da95c762c76dc9d07d79edd4f550206d56e14
+generated: "2025-06-24T12:54:10.672764146+03:00"

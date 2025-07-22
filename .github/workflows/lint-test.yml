@@ -13,6 +13,9 @@ on:
         default: v3.18.2
         required: false
         type: string
+    secrets:
+      base64_value:
+        required: true
 
 env:
   CT_CONFIGFILE: ${{ inputs.ct_configfile }}
@@ -33,7 +36,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: "3.13"
           check-latest: true
 
       - name: Set up chart-testing
@@ -57,4 +60,8 @@ jobs:
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct install --config "${CT_CONFIGFILE}"
+        run: |
+          kubectl create namespace test-charts
+          echo -n ${{ secrets.base64_value }} | base64 --decode > regula.license
+          kubectl create secret --namespace test-charts generic license --from-file=regula.license
+          ct install --namespace test-charts --config "${CT_CONFIGFILE}" --helm-extra-set-args "--set=licenseSecretName=license"

@@ -9,4 +9,5 @@ chart-repos:
   - opensearch=https://opensearch-project.github.io/helm-charts
   - valkey=https://charts.bitnami.com/bitnami
   - mongodb=https://charts.bitnami.com/bitnami
+  - prometheus-statsd-exporter=https://prometheus-community.github.io/helm-charts
 check-version-increment: false

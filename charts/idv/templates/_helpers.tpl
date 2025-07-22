@@ -34,10 +34,9 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "idv.labels" -}}
-helm.sh/chart: {{ include "idv.chart" . }}
 app: idv
 mode: {{ .Values.config.mode }}
-{{ include "idv.selectorLabels" . }}
+helm.sh/chart: {{ include "idv.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,19 +44,97 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+API labels
 */}}
-{{- define "idv.selectorLabels" -}}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- define "idv.api.labels" -}}
+{{ include "idv.labels" . }}
+{{ include "idv.api.selectorLabels" . }}
+{{- end }}
+
+{{/*
+API Selector labels
+*/}}
+{{- define "idv.api.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "idv.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-api
+app.kubernetes.io/component: api
+{{- if .Values.commonLabels }}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end }}
+
+{{/*
+Audit labels
+*/}}
+{{- define "idv.audit.labels" -}}
+{{ include "idv.labels" . }}
+{{ include "idv.audit.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Audit Selector labels
+*/}}
+{{- define "idv.audit.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "idv.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-audit
+app.kubernetes.io/component: audit
+{{- if .Values.commonLabels }}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end }}
+
+{{/*
+Scheduler labels
+*/}}
+{{- define "idv.scheduler.labels" -}}
+{{ include "idv.labels" . }}
+{{ include "idv.scheduler.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Scheduler Selector labels
+*/}}
+{{- define "idv.scheduler.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "idv.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-scheduler
+app.kubernetes.io/component: scheduler
+{{- if .Values.commonLabels }}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end }}
+
+{{/*
+Workflow labels
+*/}}
+{{- define "idv.workflow.labels" -}}
+{{ include "idv.labels" . }}
+{{ include "idv.workflow.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Workflow Selector labels
+*/}}
+{{- define "idv.workflow.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "idv.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-workflow
+app.kubernetes.io/component: workflow
+{{- if .Values.commonLabels }}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "app.serviceAccountName" -}}
+{{- define "idv.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- tpl .Values.serviceAccount.name . }}
+{{- default (include "idv.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
+{{- end }}
+
+{{/* prometheus-statsd-exporter host */}}
+{{- define "idv.statsd" -}}
+{{ default (printf "%s-statsd" .Release.Name ) }}
 {{- end }}
