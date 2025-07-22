@@ -16,6 +16,7 @@ on:
 
 env:
   CT_CONFIGFILE: ${{ inputs.ct_configfile }}
+  REGULA_LICENSE: ${{ secrets.REGULA_LICENSE }}
 
 jobs:
   lint-test:
@@ -59,6 +60,5 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           kubectl create namespace test-charts
-          kubectl create secret --namespace test-charts generic license \
-            --from-literal=regula.license="${{ secrets.REGULA_LICENSE }}"
+          kubectl create secret --namespace test-charts generic license --from-literal=regula.license="${{ env.REGULA_LICENSE }}"
           ct install --namespace test-charts --config "${CT_CONFIGFILE}" --helm-extra-set-args "--set=licenseSecretName=license"
