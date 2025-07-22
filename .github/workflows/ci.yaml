@@ -2,7 +2,10 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+env:
+  BASE64_VALUE: ${{ secrets.REGULA_LICENSE }}
 
 jobs:
   call-lint-test:

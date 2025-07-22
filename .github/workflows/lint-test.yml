@@ -57,8 +57,6 @@ jobs:
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
-        env:
-          BASE64_VALUE: ${{ secrets.REGULA_LICENSE }}
         run: |
           kubectl create namespace test-charts
           kubectl create secret --namespace test-charts generic license --from-literal=regula.license="$(echo -n "$BASE64_VALUE" | base64 --decode)"
