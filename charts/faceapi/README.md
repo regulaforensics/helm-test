@@ -153,7 +153,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `licenseSecretName`                                       | The name of an existing secret containing the regula.license file                 | `""`                                                          |
 | `config.sdk.compare.limitPerImageTypes`                   | Limit per Image Type                                                              | `2`                                                           |
-| `config.sdk.logging.level`                                | Specify application logs level. Possible values: `ERROR`, `WARN`, `INFO`, `DEBUG` | `INFO`                                                        |
+| `config.sdk.param`                                       | Configuration of SDK `param` capabilities                                        | `[]`                                                          |
 | `config.sdk.detect`                                       | Configuration of SDK `detect` capabilities                                        | `[]`                                                          |
 | `config.sdk.liveness`                                     | Configuration of SDK `liveness` capabilities                                      | `[]`                                                          |
 |                                                                                                                                                                                                               |
@@ -215,9 +215,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `config.service.liveness.enabled`                                  | Whether to enable Liveness mode                                                               | `false`                               |
 | `config.service.liveness.ecdhSchema`                               | ECDH schema to use                                                                            | `default`                             |
 | `config.service.liveness.hideMetadata`                             | Whether to hide processing data's metadata                                                    | `false`                               |
-| `config.service.liveness.protectPersonalInfo`                      | Whether to hide Personal information metadata                                                 | `false`                               |
-| `config.service.liveness.exposeData.portrait`                      | Whether to expose Portrait metadata                                                           | `false`                               |
-| `config.service.liveness.exposeData.video`                         | Whether to expose Video metadata                                                              | `false`                               |
+| `config.service.liveness.consistency`                              | The consistency model `eventual/strong`                                                       | `eventual`                            |
+| `config.service.liveness.exposeData`                               | (Optional) Whether to expose portrait/video metadata                                          | `[]`                                  |
+| `config.service.liveness.config`                                   | (Optional) Client configuration block                                                         | `[]`                                  |
 | `config.service.liveness.sessions.location.bucket`                 | The Liveness sessions bucket name in case of `s3`/`gcs` storage type                          | `""`                                  |
 | `config.service.liveness.sessions.location.container`              | The Liveness sessions storage container name in case of `az` storage type                     | `""`                                  |
 | `config.service.liveness.sessions.location.folder`                 | The Liveness sessions folder name in case of `fs` storage type                                | `"/app/faceapi-liveness/sessions"`    |
