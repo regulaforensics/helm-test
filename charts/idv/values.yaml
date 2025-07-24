@@ -124,7 +124,7 @@ config:
     api:
       port: 8000
       host: 0.0.0.0
-      workers: 2
+      workers: auto
       keepalive: 120
       timeout: 120
       auth:
@@ -143,7 +143,7 @@ config:
       wsEnabled: true
 
     workflow:
-      workers: 50
+      workers: auto
 
     scheduler:
       enabled: true
