@@ -55,6 +55,8 @@ services:
         keepFor: {{ quote .Values.config.services.scheduler.jobs.expireDeviceLogs.keepFor }}
       reloadLocales:
         cron: {{ quote .Values.config.services.scheduler.jobs.reloadLocales.cron }}
+      cronWorkflow:
+        cron: {{ quote .Values.config.services.scheduler.jobs.cronWorkflow.cron }}
 
   docreader:
     enabled: {{ .Values.config.services.docreader.enabled }}

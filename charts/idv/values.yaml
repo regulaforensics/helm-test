@@ -170,6 +170,8 @@ config:
           keepFor: "30d"
         reloadLocales:
           cron: "*/15 * * * * *"
+        cronWorkflow:
+          cron: "*/5 * * * *"
 
     docreader:
       enabled: false
