@@ -31,6 +31,10 @@ services:
   audit:
     enabled: true
     wsEnabled: {{ .Values.config.services.audit.wsEnabled }}
+  
+  indexer:
+    enabled: true
+    timeout: {{ .Values.config.services.indexer.timeout }}
 
   workflow:
     enabled: true
@@ -250,5 +254,14 @@ smtp:
   username: {{ .Values.config.smtp.username | quote }}
   password: {{ .Values.config.smtp.password | quote }}
   tls: {{ .Values.config.smtp.tls }}
+  {{- end }}
+
+textSearch:
+  enabled: {{ .Values.config.textSearch.enabled }}
+  {{- if .Values.config.textSearch.enabled }}
+  limit: {{ .Values.config.textSearch.limit }}
+  analyzers: {{ .Values.config.textSearch.analyzers | toYaml | nindent 4 }}
+  database:
+    type: {{ quote .Values.config.textSearch.database.type }}
   {{- end }}
 {{- end }}

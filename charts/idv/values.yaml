@@ -113,6 +113,13 @@ audit:
   affinity: {}
   resources: {}
 
+indexer:
+  replicaCount: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
 
 config:
   baseUrl: ""
@@ -138,6 +145,9 @@ config:
         methods: "POST,PUT,GET,DELETE,PATCH,HEAD"
         headers: "Content-Type,X-Client-Key"
         maxAge: 0
+      
+    indexer:
+      timeout: 60
 
     audit:
       wsEnabled: true
@@ -286,6 +296,15 @@ config:
     tls: true
     username: ""
     password: ""
+  
+  textSearch:
+    enabled: true
+    limit: 1000
+    analyzers:
+      - "english"
+      - "russian"
+    database:
+      type: atlas
 
 serviceAccount:
   create: true

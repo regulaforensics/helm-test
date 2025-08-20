@@ -84,6 +84,26 @@ app.kubernetes.io/component: audit
 {{- end }}
 
 {{/*
+Indexer labels
+*/}}
+{{- define "idv.indexer.labels" -}}
+{{ include "idv.labels" . }}
+{{ include "idv.indexer.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Indexer Selector labels
+*/}}
+{{- define "idv.indexer.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "idv.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-indexer
+app.kubernetes.io/component: indexer
+{{- if .Values.commonLabels }}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end }}
+
+{{/*
 Scheduler labels
 */}}
 {{- define "idv.scheduler.labels" -}}
