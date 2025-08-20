@@ -145,7 +145,7 @@ config:
         methods: "POST,PUT,GET,DELETE,PATCH,HEAD"
         headers: "Content-Type,X-Client-Key"
         maxAge: 0
-      
+
     indexer:
       timeout: 60
 
@@ -296,7 +296,7 @@ config:
     tls: true
     username: ""
     password: ""
-  
+
   textSearch:
     enabled: true
     limit: 1000
