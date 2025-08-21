@@ -282,7 +282,7 @@ ingress:
   hosts: []
     # - docreader.domain.com
   paths: []
-    # - path: /
+    # - /
   pathType: Prefix
 
   # TLS configuration for the Docreader Ingress
