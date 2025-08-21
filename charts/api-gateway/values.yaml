@@ -79,7 +79,7 @@ gateway:
     hosts: []
       # - api-gateway.domain.com
     paths: []
-      # - /
+      # - path: /
     pathType: Prefix
 
     # TLS configuration for the Gateway Ingress
@@ -170,7 +170,7 @@ flower:
     hosts: []
       # - api-gateway-flower.domain.com
     paths: []
-      # - /
+      # - path: /
     pathType: Prefix
 
     # TLS configuration for the Flower Ingress
