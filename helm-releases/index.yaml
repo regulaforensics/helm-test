@@ -3,14 +3,14 @@ entries:
   afis-api:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-08-21T07:53:17.484489143Z"
+    created: "2025-08-21T09:36:59.540748288Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
       repository: https://charts.bitnami.com/bitnami
       version: 11.9.13
     description: Afis api service. On-premise and cloud integration
-    digest: ecd0a5e85abc6fa4e013c8add313bc39e18a8994b3e83a9a22a479fb46944908
+    digest: a02cb351096c2eb9bbf0b6c0432cff4d7649da4bfb11a5390a15388b0baadab3
     home: https://test-afisapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -29,7 +29,7 @@ entries:
   api-gateway:
   - apiVersion: v2
     appVersion: 2.4.2
-    created: "2025-08-21T07:53:17.493078312Z"
+    created: "2025-08-21T09:36:59.548862287Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql-ha
@@ -40,7 +40,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 17.15.2
     description: ML. Airflow API Gateway
-    digest: 4f2f825b269293acf63fd4907d799dec2041beaa4172197ea42e5d77e909c2b7
+    digest: 08d11d4220592ea5ae2c261ec66c4426d2bad04be39e66235e35f43d98a7e7ec
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
     - regula
@@ -84,6 +84,32 @@ entries:
     - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/api-gateway-1.5.0.tgz
     version: 1.5.0
   docreader:
+  - apiVersion: v2
+    appVersion: nightly
+    created: "2025-08-21T09:36:59.554166277Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.4.4
+    description: Fast and accurate data extraction from identity documents. On-premise
+      and cloud integration
+    digest: d3bd02d7178d2878f86aa2323f34342b2ff576439083d3bb2e5a39fcdb47c8b9
+    home: https://api.regulaforensics.com/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - docreader
+    - regulaforensics
+    maintainers:
+    - email: support@regulaforensics.com
+      name: Regula Forensics Support
+      url: https://support.regulaforensics.com
+    name: docreader
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/docreader-2.1.2.tgz
+    version: 2.1.2
   - apiVersion: v2
     appVersion: nightly
     created: "2025-08-21T07:53:17.497671296Z"
@@ -139,7 +165,7 @@ entries:
   faceapi:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-08-21T07:53:17.516973233Z"
+    created: "2025-08-21T09:36:59.57260963Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -150,7 +176,7 @@ entries:
       repository: https://zilliztech.github.io/milvus-helm/
       version: 4.1.28
     description: Face Recognition Service. On-premise and cloud integration
-    digest: dd023d0531399cde7275be2fb0c88e5994a50aefe02bb5512b1f1cbbe6406470
+    digest: a30613a9b91b2e0ab28b48f217c2d0138d849f55dff96dfe618b15f41c5ad00f
     home: https://faceapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -290,7 +316,7 @@ entries:
   idv:
   - apiVersion: v2
     appVersion: develop
-    created: "2025-08-21T07:53:17.530320464Z"
+    created: "2025-08-21T09:36:59.586087313Z"
     dependencies:
     - alias: statsd
       condition: statsd.enabled
@@ -310,7 +336,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 16.5.17
     description: IDV Platform. On-premise and cloud integration
-    digest: eae3df09ac7df644652f614b6a810b781279be1c497aafe71aaa6ded07bcc92d
+    digest: 2a3558ff0d82563bca35452b927711bf652b14c50d2fbf916033a41dcd780369
     home: https://idv.regula.app/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -763,4 +789,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/idv-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-21T07:53:17.480021398Z"
+generated: "2025-08-21T09:36:59.537188153Z"
