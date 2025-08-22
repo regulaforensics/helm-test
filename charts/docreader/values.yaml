@@ -164,6 +164,7 @@ config:
       #   # You can load it to a k8s generic secret via the following command:
       #   #  `kubectl create secret generic gcs-credentials -n <namespace> --from-file=gcs_key.json=<path_to_key>`
       #   gcsKeyJsonSecretName: ~
+      #   bucket: ~
       # az:
       #   storageAccount: ~
       #   connectionString: "<AZURE_STORAGE_CONNECTION_STRING>"
