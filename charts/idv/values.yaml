@@ -27,6 +27,7 @@ api:
   tolerations: []
   affinity: {}
   resources: {}
+  topologySpreadConstraints: []
 
   service:
     type: ClusterIP
@@ -80,6 +81,7 @@ scheduler:
   tolerations: []
   affinity: {}
   resources: {}
+  topologySpreadConstraints: []
 
 workflow:
   replicaCount: 1
@@ -88,6 +90,7 @@ workflow:
   tolerations: []
   affinity: {}
   resources: {}
+  topologySpreadConstraints: []
 
   autoscaling:
     enabled: false
@@ -112,6 +115,7 @@ audit:
   tolerations: []
   affinity: {}
   resources: {}
+  topologySpreadConstraints: []
 
 indexer:
   replicaCount: 1
@@ -120,6 +124,7 @@ indexer:
   tolerations: []
   affinity: {}
   resources: {}
+  topologySpreadConstraints: []
 
 config:
   baseUrl: ""
