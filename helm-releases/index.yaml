@@ -3,14 +3,14 @@ entries:
   afis-api:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-08-21T09:36:59.540748288Z"
+    created: "2025-08-25T09:30:28.367349982Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
       repository: https://charts.bitnami.com/bitnami
       version: 11.9.13
     description: Afis api service. On-premise and cloud integration
-    digest: a02cb351096c2eb9bbf0b6c0432cff4d7649da4bfb11a5390a15388b0baadab3
+    digest: 40cc74727a6f496bdb7da683aa0d1042d1454e5f6eafeaa55c40b065d06da686
     home: https://test-afisapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -29,7 +29,7 @@ entries:
   api-gateway:
   - apiVersion: v2
     appVersion: 2.4.2
-    created: "2025-08-21T09:36:59.548862287Z"
+    created: "2025-08-25T09:30:28.375790232Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql-ha
@@ -40,7 +40,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 17.15.2
     description: ML. Airflow API Gateway
-    digest: 08d11d4220592ea5ae2c261ec66c4426d2bad04be39e66235e35f43d98a7e7ec
+    digest: 52219ceb2ffbf05bcf5958f2d8c3bcbd1f9b457bf336a2d453954a60cee9f6da
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
     - regula
@@ -86,7 +86,7 @@ entries:
   docreader:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-08-21T09:36:59.554166277Z"
+    created: "2025-08-25T09:30:28.380793947Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -94,7 +94,7 @@ entries:
       version: 13.4.4
     description: Fast and accurate data extraction from identity documents. On-premise
       and cloud integration
-    digest: d3bd02d7178d2878f86aa2323f34342b2ff576439083d3bb2e5a39fcdb47c8b9
+    digest: f88a3188d68b57c131e321cfc862067f838c4de799bb2680c10c9d51a4bd46b7
     home: https://api.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -165,7 +165,7 @@ entries:
   faceapi:
   - apiVersion: v2
     appVersion: nightly
-    created: "2025-08-21T09:36:59.57260963Z"
+    created: "2025-08-25T09:30:28.404222584Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -176,7 +176,7 @@ entries:
       repository: https://zilliztech.github.io/milvus-helm/
       version: 4.1.28
     description: Face Recognition Service. On-premise and cloud integration
-    digest: a30613a9b91b2e0ab28b48f217c2d0138d849f55dff96dfe618b15f41c5ad00f
+    digest: b6230ef1c24f32f6908677204c999cd00f59771194e54df04ce8dd4568899e0f
     home: https://faceapi.regulaforensics.com/
     icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
     keywords:
@@ -314,6 +314,41 @@ entries:
     - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/faceapi-2.0.0.tgz
     version: 2.0.0
   idv:
+  - apiVersion: v2
+    appVersion: develop
+    created: "2025-08-25T09:30:28.424944942Z"
+    dependencies:
+    - alias: statsd
+      condition: statsd.enabled
+      name: prometheus-statsd-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 0.15.0
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts
+      version: 2.19.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.0.8
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.5.17
+    description: IDV Platform. On-premise and cloud integration
+    digest: ff8777ff0263d771c66a12b4fc28eb66c498bdbdb8f3c045b47607ccce0a41ab
+    home: https://idv.regula.app/
+    icon: https://secure.gravatar.com/avatar/71a5efd69d82e444129ad18f51224bbb.jpg
+    keywords:
+    - regula
+    - idv
+    - idv-platform
+    - regulaforensics
+    name: idv
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/idv-0.2.1.tgz
+    version: 0.2.1
   - apiVersion: v2
     appVersion: develop
     created: "2025-08-21T09:36:59.586087313Z"
@@ -789,4 +824,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/regulaforensics/helm-test/refs/heads/helm-chart-releases/helm-releases/idv-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-21T09:36:59.537188153Z"
+generated: "2025-08-25T09:30:28.363740478Z"
