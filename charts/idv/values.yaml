@@ -150,6 +150,7 @@ config:
         methods: "POST,PUT,GET,DELETE,PATCH,HEAD"
         headers: "Content-Type,X-Client-Key"
         maxAge: 0
+      openapi: false
 
     indexer:
       timeout: 60
