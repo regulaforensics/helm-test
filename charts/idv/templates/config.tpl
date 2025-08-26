@@ -27,6 +27,7 @@ services:
       headers: {{ quote .Values.config.services.api.cors.headers }}
       maxAge: {{ .Values.config.services.api.cors.maxAge }}
       {{- end }}
+    openapi: {{ .Values.config.services.api.openapi }}
 
   audit:
     enabled: true
