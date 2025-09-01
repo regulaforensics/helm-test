@@ -112,6 +112,9 @@ storage:
     region: {{ quote .Values.config.storage.s3.region }}
     secure: {{ .Values.config.storage.s3.secure }}
   {{- end }}
+  {{- if eq .Values.config.storage.type "gcs" }}
+  type: gcs
+  {{- end}}
 
   sessions:
     location:
