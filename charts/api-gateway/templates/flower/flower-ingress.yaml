@@ -4,7 +4,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-flower
   labels:
     {{- include "flower.labels" . | nindent 4 }}
   {{- with .Values.flower.ingress.annotations }}
@@ -19,27 +19,25 @@ spec:
   tls:
     {{- range .Values.flower.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
+        {{- range $.Values.flower.ingress.hosts }}
         - {{ . | quote }}
         {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.flower.ingress.hosts }}
-    - host: {{ .host | quote }}
+    {{- range $host := .Values.flower.ingress.hosts }}
+    - host: {{ $host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- with .pathType }}
-            pathType: {{ . }}
-            {{- end }}
+          {{- range $.Values.flower.ingress.paths }}
+          - path: {{ . }}
+            pathType: Prefix
             backend:
               service:
-                name: {{ $fullName }}
+                name: {{ $fullName }}-flower
                 port:
-                  number: {{ $.Values.flower.service.port }}
+                  number: {{ $svcPort }}
           {{- end }}
     {{- end }}
 {{- end }}

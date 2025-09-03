@@ -19,27 +19,25 @@ spec:
   tls:
     {{- range .Values.gateway.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
+        {{- range $.Values.gateway.ingress.hosts }}
         - {{ . | quote }}
         {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.gateway.ingress.hosts }}
-    - host: {{ .host | quote }}
+    {{- range $host := .Values.gateway.ingress.hosts }}
+    - host: {{ $host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- with .pathType }}
-            pathType: {{ . }}
-            {{- end }}
+          {{- range $.Values.gateway.ingress.paths }}
+          - path: {{ . }}
+            pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $.Values.gateway.service.port }}
+                  number: {{ $svcPort }}
           {{- end }}
     {{- end }}
 {{- end }}
