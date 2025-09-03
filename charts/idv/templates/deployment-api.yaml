@@ -53,6 +53,9 @@ spec:
             - key: idv-config
               path: idv-config.yaml
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.api.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.api.terminationGracePeriodSeconds }}
+      {{- end }}
       containers:
       - name: api
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -92,6 +95,7 @@ spec:
           failureThreshold: {{ .Values.api.probes.startupProbe.failureThreshold }}
           successThreshold: {{ .Values.api.probes.startupProbe.successThreshold }}
         {{- end }}
+        lifecycle: {{- toYaml .Values.api.lifecycle | nindent 10 }}
         ports:
         - name: api
           containerPort: {{ .Values.config.services.api.port }}
