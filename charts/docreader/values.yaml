@@ -54,6 +54,7 @@ lifecycle: {}
   #     command: ["/bin/sh", "-c", "sleep 45"]
 
 nodeSelector: {}
+
 jobNodeSelector: {}
 
 affinity: {}
