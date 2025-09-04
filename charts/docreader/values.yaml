@@ -53,10 +53,8 @@ lifecycle: {}
   #   exec:
   #     command: ["/bin/sh", "-c", "sleep 45"]
 
-# If you use GKE autopilot mode, please use this var for creating Job with correct nodeSelectors 
-# gkeClusterMode: autopilot
-
 nodeSelector: {}
+jobNodeSelector: {}
 
 affinity: {}
 
