@@ -60,7 +60,7 @@ lifecycle: {}
 nodeSelector: {}
 
 jobNodeSelector: {}
-  
+
 affinity: {}
 
 tolerations: []
