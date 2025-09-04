@@ -17,8 +17,8 @@ spec:
       labels: {{- include "faceapi.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "faceapi.serviceAccount" . }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- if and .Values.nodeSelector (ne .Values.gkeClusterMode "autopilot") }}
+      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
