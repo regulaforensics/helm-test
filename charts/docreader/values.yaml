@@ -209,7 +209,7 @@ config:
           existingClaim: ~
 
     sessionApi:
-      enabled: true
+      enabled: false
       transactions:
         location:
           folder: "/app/docreader-session-api/transactions"
