@@ -179,25 +179,8 @@ storage:
 mongo:
   url: {{ quote .Values.config.mongo.url }}
 
-topics:
-  event:
-    name: event
-    url: {{ quote .Values.config.topics.event.url }}
-    {{- if .Values.config.topics.event.options }}
-    options: {{- toYaml  .Values.config.topics.event.options | nindent 8 }}
-    {{- end }}
-  audit:
-    name: audit
-    url: {{ quote .Values.config.topics.audit.url }}
-    {{- if .Values.config.topics.audit.options }}
-    options: {{- toYaml  .Values.config.topics.audit.options | nindent 8 }}
-    {{- end }}
-  client:
-    name: client
-    url: {{ quote .Values.config.topics.client.url }}
-    {{- if .Values.config.topics.client.options }}
-    options: {{- toYaml  .Values.config.topics.client.options | nindent 8 }}
-    {{- end }}
+messageBroker:
+  url: {{ quote .Values.config.messageBroker.url }}
 
 faceSearch:
   enabled: {{ .Values.config.faceSearch.enabled }}
