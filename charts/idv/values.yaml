@@ -259,22 +259,8 @@ config:
     # Comment the line above and uncomment the line below to use MongoDB subchart
     # url: mongodb://mongodb:27017/idv
 
-  topics:
-    event:
-      url: memory://
-      # Comment the line above and uncomment the line below if valkey.enabled.true is set
-      # url: "redis://:t3stPss@valkey-primary:6379"
-      options: null
-    audit:
-      url: memory://
-      # Comment the line above and uncomment the line below if valkey.enabled.true is set
-      # url: "redis://:t3stPss@valkey-primary:6379"
-      options: null
-    client:
-      url: memory://
-      # Comment the line above and uncomment the line below if valkey.enabled.true is set
-      # url: "redis://:t3stPss@valkey-primary:6379"
-      options: null
+  messageBroker:
+    url: memory://
 
   faceSearch:
     # Set opensearch.enabled.true if 'faceSearch' is enabled
